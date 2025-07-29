@@ -72,7 +72,7 @@ function getTcList(params) {
 function trialSave(params) {
   return new Promise((resolve, reject) => {
     service.post(
-      basicApi.trialSave,
+      MemberService.trialSave,
       params
     ).then(res => {
       if (res.status === 200) resolve(res.data);
@@ -85,7 +85,7 @@ function trialSave(params) {
 function trialRemove(params) {
   return new Promise((resolve, reject) => {
     service.post(
-      basicApi.trialRemove,
+      MemberService.trialRemove,
       params
     ).then(res => {
       if (res.status === 200) resolve(res.data);
