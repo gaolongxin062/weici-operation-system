@@ -102,6 +102,8 @@ function edit() {
   sessionStorage.setItem('user_name', '')
   sessionStorage.setItem('session', '')
   sessionStorage.setItem('defaultPath', '')
+  vocabularyStore.setUserName('')
+  vocabularyStore.setSession('')
 }
 function password() {
   dialogVisible.value = true;
