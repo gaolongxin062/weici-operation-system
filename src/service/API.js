@@ -90,3 +90,13 @@ export let manageApi = {
   getDownsNumber: '/operation/downs/getDownsNumber', // 获取下架数量
   getActivationList: '/operation/activation/getActivationList' // 获取数据列表
 }
+
+export let memberApi = {
+  getProvincesList: '/account/provincesList', // 获取所有的省
+  getCityList: '/account/cityList', // 获取所有的市
+  getCountyList: '/account/countyList', // 获取所有的区县
+  getTrialList: '/account/trialList', // 教师体验开通列表
+  trialSave: '/account/trialSave', // 教师体验开通编辑
+  trialRemove: '/account/trialRemove', // 教师体验开通删除
+  getTcList: '/account/Tclist', // 教师列表
+}
