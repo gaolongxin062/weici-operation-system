@@ -1,17 +1,12 @@
 import service from "../utils/HttpUtil";
 import {
-  basicApi,
+  MemberService,
 } from './API';
 
 
-function getQuestionInfo(user_name, session, question_id) {
+function getProvincesList(params) {
   return new Promise((resolve, reject) => {
-    let params = {
-      user_name,
-      session,
-      question_id
-    }
-    service.get(basicApi.getQuestionInfo, {
+    service.get(MemberService.getProvincesList, {
       params
     }).then(res => {
       if (res.status === 200) {
@@ -22,16 +17,75 @@ function getQuestionInfo(user_name, session, question_id) {
     });
   });
 }
-
-function delQuestion(user_name, session, question_id) {
+function getCityList(params) {
   return new Promise((resolve, reject) => {
-    let params = {
-      user_name,
-      session,
-      question_id
-    }
+    service.get(MemberService.getCityList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+function getCountyList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(MemberService.getCountyList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+function getTrialList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(MemberService.getTrialList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+function getTcList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(MemberService.getTcList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+function trialSave(params) {
+  return new Promise((resolve, reject) => {
     service.post(
-      basicApi.delQuestion,
+      basicApi.trialSave,
+      params
+    ).then(res => {
+      if (res.status === 200) resolve(res.data);
+      else reject(res);
+    }).catch(err => {
+      reject(err);
+    })
+  });
+}
+function trialRemove(params) {
+  return new Promise((resolve, reject) => {
+    service.post(
+      basicApi.trialRemove,
       params
     ).then(res => {
       if (res.status === 200) resolve(res.data);
@@ -43,6 +97,11 @@ function delQuestion(user_name, session, question_id) {
 }
 
 export default {
-  getQuestionInfo,
-  delQuestion,
+  getProvincesList,
+  getCityList,
+  getCountyList,
+  getTrialList,
+  getTcList,
+  trialSave,
+  trialRemove,
 }
