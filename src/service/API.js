@@ -92,14 +92,14 @@ export let manageApi = {
 }
 
 export let memberApi = {
-  getProvincesList: '/account/provincesList', // 获取所有的省
-  getCityList: '/account/cityList', // 获取所有的市
-  getCountyList: '/account/countyList', // 获取所有的区县
+  getProvincesList: '/provincesList', // 获取所有的省
+  getCityList: '/cityList', // 获取所有的市
+  getCountyList: '/countyList', // 获取所有的区县
   getTrialList: '/account/trialList', // 教师体验开通列表
   trialSave: '/account/trialSave', // 教师体验开通编辑
   trialRemove: '/account/trialRemove', // 教师体验开通删除
   getTcList: '/account/Tclist', // 教师列表
   removeStudentMember: '/account/removeStudentMember', // 学生会员开通删除
   saveStudentMember: '/account/saveStudentMember', // 学生会员开通编辑
-  studentMemberList: '/account/studentMemberList', // 学生会员开通列表
+  studentMemberList: '/studentMemberList', // 学生会员开通列表
 }

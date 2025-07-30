@@ -1,12 +1,13 @@
 import service from "../utils/HttpUtil";
 import {
-  MemberService,
+  memberApi,
 } from './API';
 
 
 function getProvincesList(params) {
   return new Promise((resolve, reject) => {
-    service.get(MemberService.getProvincesList, {
+    console.log('params', params)
+    service.get(memberApi.getProvincesList, {
       params
     }).then(res => {
       if (res.status === 200) {
@@ -19,7 +20,7 @@ function getProvincesList(params) {
 }
 function getCityList(params) {
   return new Promise((resolve, reject) => {
-    service.get(MemberService.getCityList, {
+    service.get(memberApi.getCityList, {
       params
     }).then(res => {
       if (res.status === 200) {
@@ -32,7 +33,7 @@ function getCityList(params) {
 }
 function getCountyList(params) {
   return new Promise((resolve, reject) => {
-    service.get(MemberService.getCountyList, {
+    service.get(memberApi.getCountyList, {
       params
     }).then(res => {
       if (res.status === 200) {
@@ -45,7 +46,7 @@ function getCountyList(params) {
 }
 function getTrialList(params) {
   return new Promise((resolve, reject) => {
-    service.get(MemberService.getTrialList, {
+    service.get(memberApi.getTrialList, {
       params
     }).then(res => {
       if (res.status === 200) {
@@ -58,7 +59,7 @@ function getTrialList(params) {
 }
 function getTcList(params) {
   return new Promise((resolve, reject) => {
-    service.get(MemberService.getTcList, {
+    service.get(memberApi.getTcList, {
       params
     }).then(res => {
       if (res.status === 200) {
@@ -72,7 +73,7 @@ function getTcList(params) {
 function trialSave(params) {
   return new Promise((resolve, reject) => {
     service.post(
-      MemberService.trialSave,
+      memberApi.trialSave,
       params
     ).then(res => {
       if (res.status === 200) resolve(res.data);
@@ -85,7 +86,7 @@ function trialSave(params) {
 function trialRemove(params) {
   return new Promise((resolve, reject) => {
     service.post(
-      MemberService.trialRemove,
+      memberApi.trialRemove,
       params
     ).then(res => {
       if (res.status === 200) resolve(res.data);
@@ -98,7 +99,7 @@ function trialRemove(params) {
 function removeStudentMember(params) {
   return new Promise((resolve, reject) => {
     service.post(
-      MemberService.removeStudentMember,
+      memberApi.removeStudentMember,
       params
     ).then(res => {
       if (res.status === 200) resolve(res.data);
@@ -111,7 +112,7 @@ function removeStudentMember(params) {
 function saveStudentMember(params) {
   return new Promise((resolve, reject) => {
     service.post(
-      MemberService.saveStudentMember,
+      memberApi.saveStudentMember,
       params
     ).then(res => {
       if (res.status === 200) resolve(res.data);
@@ -123,7 +124,7 @@ function saveStudentMember(params) {
 }
 function studentMemberList(params) {
   return new Promise((resolve, reject) => {
-    service.get(MemberService.studentMemberList, {
+    service.get(memberApi.studentMemberList, {
       params
     }).then(res => {
       if (res.status === 200) {
