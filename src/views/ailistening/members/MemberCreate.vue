@@ -5,9 +5,9 @@
     </div>
 
     <el-form id="cityForms" :inline="true" :model="memberForm" size="large" label-width="80px">
-      <div style="display: flex;align-items: center;justify-content: space-between;">
-        <div>
-          <el-form-item label="省份">
+      <div style="display: flex;align-items: center;justify-content: flex-end;">
+        <div style="margin-right: 20px;">
+          <!-- <el-form-item label="省份">
             <el-select
               v-model="memberForm.province"
               placeholder="请选择"
@@ -59,6 +59,15 @@
               clearable
               placeholder="请输入内容"
               v-model="memberForm.school"
+              >
+            </el-input>
+          </el-form-item> -->
+          <el-form-item label="账号">
+            <el-input style="width: 120px" 
+              class="search-input"
+              clearable
+              placeholder="请输入内容"
+              v-model="memberForm.userCode"
               >
             </el-input>
           </el-form-item>
@@ -218,23 +227,24 @@
 <script setup>
   import { ref, onMounted, reactive} from 'vue';
   import memberApi from '@/service/MemberService.js';
-  // import basicService from '@/service/BasicService.js';
+  import basicService from '@/service/BasicService.js';
   import { useVocabularyStore } from '@/store/vocabulary';
   import format from '@/utils/DateUtil.js'
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
   let vocabularyStore = useVocabularyStore();
   let memberForm = reactive({
-    province: '', // 省份
-    city: '', // 城市
-    area: '', // 区域
-    school: '', // 学校
+    // province: '', // 省份
+    // city: '', // 城市
+    // area: '', // 区域
+    // school: '', // 学校
+    userCode: '' // 账号
   })
   let pageIndex = ref(1)
   let pageSize = ref(10) 
   let total = ref(0)
-  let provinceData = ref([]) // 省份
-  let cityData = ref([]) // 城市
-  let areaData = ref([]) // 区域
+  // let provinceData = ref([]) // 省份
+  // let cityData = ref([]) // 城市
+  // let areaData = ref([]) // 区域
   let dialogAddMember = ref(false)
   let loading = ref(false)
   let memberList = ref([]) // 表格数据
@@ -279,13 +289,12 @@
   let memberIds = ref(0) // 开通记录id(自增主键)
   let formref = ref()
 
-  let addPower = ref(true) // 用户是否有增加操作权限
-  let editPower = ref(true) // 用户是否有编辑操作权限
-  let deletePower = ref(true) // 用户是否有删除操作权限
-  let userCode = ref('') // 学生账号: 非必须
+  let addPower = ref(false) // 用户是否有增加操作权限
+  let editPower = ref(false) // 用户是否有编辑操作权限
+  let deletePower = ref(false) // 用户是否有删除操作权限
   onMounted(() =>{
-    // getUserPower() // 获取用户权限列表
-    getProvinceList() // 获取省份
+    getUserPower() // 获取用户权限列表
+    // getProvinceList() // 获取省份
     window.addEventListener('resize', updateScreenHeight);
     updateScreenHeight();
     getSchoolListData() // 表格数据
@@ -293,24 +302,24 @@
   // const disabledStartDate = (time) => {
   //   return format.formatDateDay(time.getTime()) < format.formatDateDay(new Date().getTime())
   // }
-  // function getUserPower() {
-  //   return basicService.getPower(
-  //     vocabularyStore.user_name,
-  //     vocabularyStore.session,
-  //   )
-  //     .then((res) => {
-  //       // console.log(res)
-  //       if (res.data.findIndex(item => item.menu_index == 'base_school_add') !== -1) addPower.value = true
-  //       if (res.data.findIndex(item => item.menu_index == 'base_school_edit') !== -1) editPower.value = true
-  //       if (res.data.findIndex(item => item.menu_index == 'base_school_dele') !== -1) deletePower.value = true
-  //     })
-  //     .catch((error) => {
-  //       console.log(error)
-  //     })
-  //     .finally(() => {
-  //       loading.value = false
-  //     })
-  // } // 获取用户权限
+  function getUserPower() {
+    return basicService.getPower(
+      vocabularyStore.user_name,
+      vocabularyStore.session,
+    )
+      .then((res) => {
+        // console.log(res)
+        if (res.data.findIndex(item => item.menu_index == 'member-create-add') !== -1) addPower.value = true
+        if (res.data.findIndex(item => item.menu_index == 'member-create-edit') !== -1) editPower.value = true
+        if (res.data.findIndex(item => item.menu_index == 'member-create-dele') !== -1) deletePower.value = true
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  } // 获取用户权限
   function updateScreenHeight () {
     var element = document.getElementById('cityForms');
     if (element) {
@@ -414,59 +423,59 @@
       }
     })
   }
-  function changeProvince () { // 切换省份
-    memberForm.city = ''
-    memberForm.area = ''
-    getCityList()
-  }
-  function changeCity () { // 切换城市
-    memberForm.area = ''
-    getAreaList()
-  }
-  function changeArea () { // 切换区域
+  // function changeProvince () { // 切换省份
+  //   memberForm.city = ''
+  //   memberForm.area = ''
+  //   getCityList()
+  // }
+  // function changeCity () { // 切换城市
+  //   memberForm.area = ''
+  //   getAreaList()
+  // }
+  // function changeArea () { // 切换区域
 
-  }
-  function getProvinceList () { // 省份
-    let params = {
-      user_name: vocabularyStore.user_name,
-      session: vocabularyStore.session
-    }
-    memberApi.getProvincesList(params).then((res) => {
-      if (res.result_code === 200) {
-        provinceData.value = res.list
-      }
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-  function getCityList () { // 城市
-    let params = {
-      id: memberForm.province,
-      user_name: vocabularyStore.user_name,
-      session: vocabularyStore.session
-    }
-    memberApi.getCityList(params).then((res) => {
-      if (res.result_code === 200) {
-        cityData.value = res.list
-      }
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-  function getAreaList () { // 区域
-    let params = {
-      id: memberForm.city,
-      user_name: vocabularyStore.user_name,
-      session: vocabularyStore.session
-    }
-    memberApi.getCountyList(params).then((res) => {
-      if (res.result_code === 200) {
-        areaData.value = res.list
-      }
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
+  // }
+  // function getProvinceList () { // 省份
+  //   let params = {
+  //     user_name: vocabularyStore.user_name,
+  //     session: vocabularyStore.session
+  //   }
+  //   memberApi.getProvincesList(params).then((res) => {
+  //     if (res.result_code === 200) {
+  //       provinceData.value = res.list
+  //     }
+  //   }).catch((error) => {
+  //     console.log(error)
+  //   })
+  // }
+  // function getCityList () { // 城市
+  //   let params = {
+  //     id: memberForm.province,
+  //     user_name: vocabularyStore.user_name,
+  //     session: vocabularyStore.session
+  //   }
+  //   memberApi.getCityList(params).then((res) => {
+  //     if (res.result_code === 200) {
+  //       cityData.value = res.list
+  //     }
+  //   }).catch((error) => {
+  //     console.log(error)
+  //   })
+  // }
+  // function getAreaList () { // 区域
+  //   let params = {
+  //     id: memberForm.city,
+  //     user_name: vocabularyStore.user_name,
+  //     session: vocabularyStore.session
+  //   }
+  //   memberApi.getCountyList(params).then((res) => {
+  //     if (res.result_code === 200) {
+  //       areaData.value = res.list
+  //     }
+  //   }).catch((error) => {
+  //     console.log(error)
+  //   })
+  // }
   function handleBlur () { // 学校名称/详细地址-禁止首尾空格
     memberDialogForm.user_codes = memberDialogForm.user_codes.trim()
   }
@@ -480,7 +489,7 @@
       session: vocabularyStore.session,
       page_index: pageIndex.value,
       page_size: pageSize.value,
-      user_code: userCode.value
+      user_code: memberForm.userCode
     }
     memberApi.studentMemberList(params).then((res) => {
       if (res.status === 200) {
@@ -499,10 +508,11 @@
     getSchoolListData()
   }
   function btnReset () { // 重置
-    memberForm.province = ''
-    memberForm.city = ''
-    memberForm.area = ''
-    memberForm.school = ''
+    // memberForm.province = ''
+    // memberForm.city = ''
+    // memberForm.area = ''
+    // memberForm.school = ''
+    memberForm.userCode = ''
     pageIndex.value = 1
     getSchoolListData()
     // total.value = 0
@@ -520,9 +530,14 @@
     memberDialogForm.trial_start_times = row.trial_start_time
     // memberDialogForm.recharge_types = row.trial_start_time
     memberIds.value = row.id
-    rechargeType.value = row.recharge_type
-    memberTypeId.value = row.member_type
-    trialDate.value = row.trial_date
+    rechargeType.value = row.recharge_type // 充值类型: 1是会员套餐 2是体验天数
+    memberTypeId.value = row.member_type === 0 ? 4 : row.member_type // 套餐
+    trialDate.value = row.trial_date // 自定义天数
+    if (row.recharge_type === 1) {
+      trialDate.value = 30
+    } else {
+      memberTypeId.value = 1
+    }
   }
   function delSchool (row) { // 删除
     ElMessageBox.confirm(

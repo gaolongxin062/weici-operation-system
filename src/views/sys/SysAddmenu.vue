@@ -38,13 +38,13 @@
         <el-table-column prop="menu_name" label="菜单名称" width="170" sortable />
         <el-table-column prop="icon" label="图标"/>
         <el-table-column prop="path" label="路径" width="170" />
-        <!-- <el-table-column prop="right_flag" label="权限标记">
+        <el-table-column prop="right_flag" label="权限标记">
           <template #default="scope">
             <el-button class="button-style" link :type="scope.row.right_flag === 0 ? 'danger' : 'success'">
               {{scope.row.right_flag === 0 ? '否' : '是'}}
             </el-button>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column prop="stop_flag" label="状态">
           <template #default="scope">
             <el-button class="button-style" link :type="scope.row.stop_flag === 0 ? 'success' : 'danger'">
@@ -152,9 +152,9 @@
           </el-input>
         </el-form-item>
 
-        <!-- <el-form-item label="权限标记">
+        <el-form-item label="权限标记">
           <el-checkbox v-model="formDialog.right_flag"/>
-        </el-form-item> -->
+        </el-form-item>
 
         <el-form-item label="停用">
           <el-checkbox v-model="formDialog.stop_flag"/>
@@ -201,7 +201,7 @@
     menu_name: '',
     icon: '',
     path: '',
-    // right_flag: false,
+    right_flag: false,
     stop_flag: false
   })
   let sysMenuDataList = ref([])
@@ -239,7 +239,7 @@
     formDialog.icon = row.icon
     formDialog.path = row.path
     menuId.value = row.menu_id
-    // formDialog.right_flag = row.right_flag === 0 ? false : true
+    formDialog.right_flag = row.right_flag === 0 ? false : true
     formDialog.stop_flag = row.stop_flag === 0 ? false : true
   }
   function delTest (row) {
@@ -326,7 +326,7 @@
     formDialog.menu_name = ''
     formDialog.icon = ''
     formDialog.path = ''
-    // formDialog.right_flag = false
+    formDialog.right_flag = false
     formDialog.stop_flag = false
   }
   function handleNodeClick (data) { // 点击切换左侧功能菜单
@@ -340,7 +340,7 @@
     formref.value.validate((valid) => {
       if (valid) {
         // console.log(formDialog)
-        IndexService.accountEditmenu(vocabularyStore.user_name, vocabularyStore.session, formDialog.stop_flag, 0, formDialog.path, formDialog.parent_code, formDialog.menu_name, formDialog.menu_index, menuId.value, formDialog.menu_code, formDialog.icon,).then((res) => {
+        IndexService.accountEditmenu(vocabularyStore.user_name, vocabularyStore.session, formDialog.stop_flag, formDialog.right_flag, formDialog.path, formDialog.parent_code, formDialog.menu_name, formDialog.menu_index, menuId.value, formDialog.menu_code, formDialog.icon,).then((res) => {
           if (res.result_code === 200) {
             ElMessage({
               message: '添加成功',
