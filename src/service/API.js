@@ -95,10 +95,10 @@ export let memberApi = {
   getProvincesList: '/provincesList', // 获取所有的省
   getCityList: '/cityList', // 获取所有的市
   getCountyList: '/countyList', // 获取所有的区县
-  getTrialList: '/account/trialList', // 教师体验开通列表
-  trialSave: '/account/trialSave', // 教师体验开通编辑
-  trialRemove: '/account/trialRemove', // 教师体验开通删除
-  getTcList: '/account/Tclist', // 教师列表
+  getTrialList: '/trialList', // 教师体验开通列表
+  trialSave: '/trialSave', // 教师体验开通编辑
+  trialRemove: '/trialRemove', // 教师体验开通删除
+  getTcList: '/Tclist', // 教师列表
   removeStudentMember: '/removeStudentMember', // 学生会员开通删除
   saveStudentMember: '/saveStudentMember', // 学生会员开通编辑
   studentMemberList: '/studentMemberList', // 学生会员开通列表
