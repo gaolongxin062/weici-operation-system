@@ -1,6 +1,6 @@
 
-function formatDate () {
-  const date = new Date();
+function formatDate (inputTime) {
+  const date = new Date(inputTime);
   const year = date.getFullYear();
   const month = padZero(date.getMonth() + 1);
   const day = padZero(date.getDate());
@@ -10,8 +10,8 @@ function formatDate () {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-function formatDateDay () {
-  const date = new Date();
+function formatDateDay (inputTime) {
+  const date = new Date(inputTime);
   const year = date.getFullYear();
   const month = padZero(date.getMonth() + 1);
   const day = padZero(date.getDate());

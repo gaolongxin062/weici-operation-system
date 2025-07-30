@@ -6,7 +6,6 @@ import {
 
 function getProvincesList(params) {
   return new Promise((resolve, reject) => {
-    console.log('params', params)
     service.get(memberApi.getProvincesList, {
       params
     }).then(res => {
