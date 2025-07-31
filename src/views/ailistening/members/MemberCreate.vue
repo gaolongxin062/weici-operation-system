@@ -274,9 +274,28 @@
   ])
   let memberTypeId = ref(1) // 会员套餐:是一年套餐(默认值1
   let trialDate = ref(30) // 体验天数 (默认值0)
+  function validatePhoneNumbers(str) {
+    if (!str) return false
+    const phoneNumbers = str.split(',')
+    for (const phone of phoneNumbers) {
+      if (!phone || phone.length !== 11) {
+        return false
+      }
+    }
+    return true
+  }
+  var validateUserCode = (rule, value, callback) => {
+    let result = validatePhoneNumbers(value)
+    if (!result) {
+      callback(new Error("请输入有效的11位账号、多个用，隔开、末尾不能是，"))
+    } else {
+      callback()
+    }
+  }
   let rules = ref({
     user_codes: [
-      { required: true, message: '请输入账号', trigger: 'blur' }
+      { required: true, message: '请输入账号', trigger: 'blur' },
+      {validator: validateUserCode, trigger: 'blur'}
     ],
     recharge_types: [
       { required: true, message: '请选择', trigger: 'blur' }
