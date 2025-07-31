@@ -69,6 +69,19 @@ function getTcList(params) {
     });
   });
 }
+function getTeacherList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(memberApi.getTeacherList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
 function trialSave(params) {
   return new Promise((resolve, reject) => {
     service.post(
@@ -141,6 +154,7 @@ export default {
   getCountyList,
   getTrialList,
   getTcList,
+  getTeacherList,
   trialSave,
   trialRemove,
   removeStudentMember,

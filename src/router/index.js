@@ -59,6 +59,11 @@ const routes = [{
         name: 'BuyPackage',
         component: () => import('@/views/ailistening/members/BuyPackage.vue')
       },
+      {
+        path: '/wordrace/member/trial',
+        name: 'WordRaceMemberTrial',
+        component: () => import('@/views/wordrace/members/MemberTrial.vue')
+      },
     ]
   }
 ];

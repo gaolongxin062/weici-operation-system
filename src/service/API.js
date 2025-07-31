@@ -99,6 +99,7 @@ export let memberApi = {
   trialSave: '/trialSave', // 教师体验开通编辑
   trialRemove: '/trialRemove', // 教师体验开通删除
   getTcList: '/Tclist', // 教师列表
+  getTeacherList: '/teacher/list', // 教师列表
   removeStudentMember: '/removeStudentMember', // 学生会员开通删除
   saveStudentMember: '/saveStudentMember', // 学生会员开通编辑
   studentMemberList: '/studentMemberList', // 学生会员开通列表
