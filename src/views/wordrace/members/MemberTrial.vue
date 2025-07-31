@@ -121,7 +121,7 @@
 import { ref, onMounted } from 'vue';
 import basicService from '@/service/BasicService.js';
 import MemberService from '@/service/MemberService';
-import MemberSet from '@/components/member/MemberSet';
+import MemberSet from '@/components/wordrace/member/MemberSet';
 import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage, ElMessageBox } from 'element-plus'
 let vocabularyStore = useVocabularyStore();
