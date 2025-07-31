@@ -204,6 +204,7 @@
           <el-form-item label="开始时间" prop="trial_start_times" label-width="130px">
             <!-- :disabled-date="disabledStartDate" -->
             <el-date-picker
+              @change="dataChange"
               v-model="memberDialogForm.trial_start_times"
               placeholder="选择日期"
             />
@@ -381,6 +382,9 @@
   }
   function handleChange () { // 自定义天数输入框
     // console.log(trialDate.value)
+  }
+  function dataChange (now) {
+    memberDialogForm.trial_start_times = format.formatDateDay(now.getTime())
   }
   function makeSureBtn () { // 确定新增/编辑
     formref.value.validate((valid) => {
