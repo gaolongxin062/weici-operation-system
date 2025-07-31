@@ -356,7 +356,8 @@
   }
   function handleInput (value) {
     // 只允许输入数字或英文逗号
-    const filteredValue = value.replace(/[^0-9,]/g, "");
+    //编辑时候的账号不能输入, 新增时候可以输入,
+    const filteredValue = memberIds.value ? value.replace(/[^0-9]/g, "") : value.replace(/[^0-9,]/g, "");
     memberDialogForm.user_codes = filteredValue
   }
   function handleChange () { // 自定义天数输入框
