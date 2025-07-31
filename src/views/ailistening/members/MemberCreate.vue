@@ -516,7 +516,7 @@
       user_code: memberForm.userCode
     }
     memberApi.studentMemberList(params).then((res) => {
-      if (res.status === 200) {
+      if (res.result_code === 200) {
         memberList.value = res.list
         total.value = res.total
         if (res.list.length === 0 && pageIndex.value > 1) {
