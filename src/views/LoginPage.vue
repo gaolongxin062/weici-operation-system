@@ -5,7 +5,7 @@
       <div class="login-right">
         <div class="login-top">
           <img src="../assets/images/logo-icon.png" alt="">
-          <div>维词听力管理后台</div>
+          <div>维词听力运营管理后台</div>
         </div>
         <div class="title">高中版</div>
         <el-form ref="loginFormref"  @submit.prevent :model="loginForm" :rules="rules">
