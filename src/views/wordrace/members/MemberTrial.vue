@@ -79,23 +79,23 @@
           <div>{{ showIndex(scope.$index) }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="user_code" label="账号" min-width />
+      <el-table-column prop="user_code" label="账号" min-width="120px" />
       <el-table-column width="80" align="center" label="体验天数">
         <template #default="scope">
           <div>{{ scope.row.trial_date }}天</div>
         </template>
       </el-table-column>
-      <el-table-column prop="trial_start_time" label="开始时间" min-width />
-      <el-table-column prop="trial_end_time" label="结束时间" min-width />
+      <el-table-column prop="trial_start_time" label="开始时间" min-width="100px" />
+      <el-table-column prop="trial_end_time" label="结束时间" min-width="100px" />
       <el-table-column prop="name" label="姓名" min-width />
       <el-table-column prop="province" label="省" min-width />
       <el-table-column prop="city" label="市" min-width />
       <el-table-column prop="county" label="区县" min-width />
-      <el-table-column prop="school" label="学校" min-width />
+      <el-table-column prop="school" label="学校" min-width="230px" />
       <el-table-column prop="maker_name" label="创建人" min-width />
-      <el-table-column prop="make_date" label="创建日期" min-width />
+      <el-table-column prop="make_date" label="创建日期" min-width="160px" />
       <el-table-column prop="modifier_name" label="修改人" min-width />
-      <el-table-column prop="modify_date" label="修改日期" min-width />
+      <el-table-column prop="modify_date" label="修改日期" min-width="160px" />
 
 
       <el-table-column label="操作" fixed="right"  min-width="120px" v-if="deletePower || editPower">
@@ -120,7 +120,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import basicService from '@/service/BasicService.js';
-import MemberService from '@/service/MemberService';
+import WordRaceService from '@/service/WordRaceService.js';
 import MemberSet from '@/components/wordrace/member/MemberSet';
 import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -195,9 +195,9 @@ function getUserPower() {
   )
     .then((res) => {
       // console.log(res)
-      if (res.data.findIndex(item => item.menu_index == 'ailisten_memeber_trial_add') !== -1) addPower.value = true
-      if (res.data.findIndex(item => item.menu_index == 'ailisten_memeber_trial_edit') !== -1) editPower.value = true
-      if (res.data.findIndex(item => item.menu_index == 'ailisten_memeber_trial_delete') !== -1) deletePower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'wordrace_member_trial_add') !== -1) addPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'wordrace_memeber_trial_edit') !== -1) editPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'wordrace_memeber_trial_delete') !== -1) deletePower.value = true
     })
     .catch((error) => {
       console.log(error)
@@ -209,10 +209,10 @@ function getUserPower() {
 function initMemberList() {
   loading.value = true
   let params = dealSearchParams()
-  return MemberService.getTrialList(params)
+  return WordRaceService.getTrialList(params)
     .then((res) => {
       console.log(res.data)
-      dataList.value = res.list
+      dataList.value = res.data
       total.value = res.total
     })
     .catch((error) => {
@@ -256,7 +256,7 @@ function getProvinceList () {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session
   }
-  return MemberService.getProvincesList(params)
+  return WordRaceService.getProvincesList(params)
     .then((res) => {
       if (res.result_code === 200) {
         provinceData.value = res.list
@@ -271,7 +271,7 @@ function getCityList () {
     session: vocabularyStore.session,
     id: formData.value.province_id
   }
-  return MemberService.getCityList(params)
+  return WordRaceService.getCityList(params)
     .then((res) => {
       if (res.result_code === 200) {
         cityData.value = res.list
@@ -307,7 +307,7 @@ function getAreaList () {
     session: vocabularyStore.session,
     id: formData.value.city_id
   }
-  return MemberService.getCountyList(params)
+  return WordRaceService.getCountyList(params)
     .then((res) => {
       if (res.result_code === 200) {
         areaData.value = res.list
@@ -349,7 +349,7 @@ async function addMember(content) {
 function saveMember() {
   let params = dealSaveOrUpdateParams() // 获取接口参数
   console.log(params)
-  return MemberService.trialSave(params)
+  return WordRaceService.trialSave(params)
     .then((res) => {
       // 所有账号都在有效期内，无法开通
       if (res.result_code === 1004 || res.result_code === 1006) {
@@ -419,7 +419,7 @@ async function editMemberInfo(content) {
 function updateMember() {
   let params = dealSaveOrUpdateParams(true) // 获取接口参数
   console.log(params)
-  return MemberService.trialSave(params)
+  return WordRaceService.trialSave(params)
     .then((res) => {
       // 如果当前正在发布数据，则更改标记，防止后续操作
       if (res.result_code === 1002) {
@@ -458,7 +458,7 @@ function deleteMemberApi() {
     session: vocabularyStore.session,
     id: rowInfo.value.id
   }
-  return MemberService.trialRemove(params)
+  return WordRaceService.trialRemove(params)
     .then((res) => {
       if (res.result_code === 200) {
         ElMessage({

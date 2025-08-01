@@ -104,3 +104,12 @@ export let memberApi = {
   saveStudentMember: '/saveStudentMember', // 学生会员开通编辑
   studentMemberList: '/studentMemberList', // 学生会员开通列表
 }
+
+export let wordRaceMemberApi = {
+  getProvincesList: '/provincesList', // 获取所有的省
+  getCityList: '/cityList', // 获取所有的市
+  getCountyList: '/countyList', // 获取所有的区县
+  getTrialList: '/contest/list', // 教师体验开通列表
+  trialSave: '/contest/save', // 教师体验开通编辑
+  trialRemove: '/contest/del', // 教师体验开通删除
+}

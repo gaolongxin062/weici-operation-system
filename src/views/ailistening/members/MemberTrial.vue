@@ -79,23 +79,23 @@
           <div>{{ showIndex(scope.$index) }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="user_code" label="账号" min-width />
+      <el-table-column prop="user_code" label="账号" min-width="120px" />
       <el-table-column width="80" align="center" label="体验天数">
         <template #default="scope">
           <div>{{ scope.row.trial_date }}天</div>
         </template>
       </el-table-column>
-      <el-table-column prop="trial_start_time" label="开始时间" min-width />
-      <el-table-column prop="trial_end_time" label="结束时间" min-width />
+      <el-table-column prop="trial_start_time" label="开始时间" min-width="100px" />
+      <el-table-column prop="trial_end_time" label="结束时间" min-width="100px" />
       <el-table-column prop="name" label="姓名" min-width />
       <el-table-column prop="province" label="省" min-width />
       <el-table-column prop="city" label="市" min-width />
       <el-table-column prop="county" label="区县" min-width />
-      <el-table-column prop="school" label="学校" min-width />
+      <el-table-column prop="school" label="学校" min-width="230px" />
       <el-table-column prop="maker_name" label="创建人" min-width />
-      <el-table-column prop="make_date" label="创建日期" min-width />
+      <el-table-column prop="make_date" label="创建日期" min-width="160px" />
       <el-table-column prop="modifier_name" label="修改人" min-width />
-      <el-table-column prop="modify_date" label="修改日期" min-width />
+      <el-table-column prop="modify_date" label="修改日期" min-width="160px" />
 
 
       <el-table-column label="操作" fixed="right"  min-width="120px" v-if="deletePower || editPower">
