@@ -103,6 +103,9 @@ export let memberApi = {
   removeStudentMember: '/removeStudentMember', // 学生会员开通删除
   saveStudentMember: '/saveStudentMember', // 学生会员开通编辑
   studentMemberList: '/studentMemberList', // 学生会员开通列表
+  packageList: '/packageList', // 会员套餐列表
+  savePackage: '/savePackage', // 会员套餐编辑
+  removePackage: '/removePackage', // 会员套餐删除
 }
 
 export let wordRaceMemberApi = {

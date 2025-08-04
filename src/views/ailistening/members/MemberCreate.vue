@@ -89,7 +89,7 @@
         </div>
       </div>
     </el-form>
-    <div class="line"></div>
+    <!-- <div class="line"></div> -->
     <el-table :data="memberList" class="table-info" :max-height="screenHeight" 
       v-loading="loading" header-cell-class-name="header_row_class" ref="multipleTable"  stripe
       element-loading-text="拼命加载中，主人请稍后...">
