@@ -113,8 +113,22 @@
       @current-change="handleCurrentChange" :current-page="pageIndex" :page-size="pageSize"
       layout="total, prev, pager, next" prev-text="上一页" next-text="下一页" :total="total">
     </el-pagination>
-
     </div>
+  <el-dialog v-model="dialogVisible" title="提示" width="800" :show-close="false" :close-on-click-modal="false" append-to-body>
+    <div class="no-success-list">
+      <div style="margin-bottom: 20px;">结果信息：{{ noSuccessInfo.description }}</div>
+      <div>未开通账号:</div>
+      <div style="margin-bottom: 5px;margin-left: 85px;" v-for="(item, index) in noSuccessInfo.filteredUserCodes" :key="index">
+        {{ item }}
+      </div>
+    </div>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">确定</el-button>
+      </div>
+    </template>
+  </el-dialog>
   </div>
 </template>
 <script setup>
@@ -157,6 +171,8 @@ let addPower = ref(false) // 用户是否有增加操作权限
 let editPower = ref(false) // 用户是否有编辑操作权限
 let deletePower = ref(false) // 用户是否有删除操作权限
 let isSaveError = ref(false) // 数据库当前是否正在发布数据，如果正在发布数据，则不能保存成功，则后续逻辑不执行
+let dialogVisible = ref(false) // 未开通账户弹框
+let noSuccessInfo = ref(null) // 为开通成功的信息
 
 onMounted(() => {
   getUserPower() // 获取用户权限列表
@@ -352,19 +368,25 @@ function saveMember() {
   return MemberService.trialSave(params)
     .then((res) => {
       // 所有账号都在有效期内，无法开通
-      if (res.result_code === 1004 || res.result_code === 1006) {
+      if (res.result_code === 1004) {
         isSaveError.value = true
-        ElMessage({
-          message: res.description,
-          type: 'error',
-          duration: 1000
-        })
-      }
-      // 部分开通成功或者全部成功 1007全部 1005部分
-      if (res.result_code === 1007 || res.result_code === 1005) {
+        noSuccessInfo.value = res
+        dialogVisible.value = true
+      } else if (res.result_code === 1005) { // 部分开通成功或者全部成功 1007全部 1005部分
+        noSuccessInfo.value = res
+        dialogVisible.value = true
+      } else if (res.result_code === 1007) {
+        // 部分开通成功或者全部成功 1007全部 1005部分
         ElMessage({
           message: res.description,
           type: 'success',
+          duration: 1000
+        })
+      } else {
+        isSaveError.value = true
+        ElMessage({
+          message: '新建失败，请重试',
+          type: 'error',
           duration: 1000
         })
       }
@@ -422,7 +444,13 @@ function updateMember() {
   return MemberService.trialSave(params)
     .then((res) => {
       // 如果当前正在发布数据，则更改标记，防止后续操作
-      if (res.result_code === 1002) {
+      if (res.result_code === 200) {
+         ElMessage({
+          message: '编辑成功',
+          type: 'success',
+          duration: 1000
+        })
+      } else {
         isSaveError.value = true
       }
     })
@@ -482,5 +510,10 @@ function showIndex(index) {
 }
 #form .el-select {
   --el-select-width: 150px;
+}
+
+.no-success-list {
+  max-height: 50vh;
+  overflow: auto;
 }
 </style>
