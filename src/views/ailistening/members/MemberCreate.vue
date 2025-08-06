@@ -164,6 +164,16 @@
         :destroy-on-close="true"
         @close="closeDialogAdd"
         >
+        <el-dialog
+          v-model="notActivatedVisible"
+          width="300"
+          title="未开通账号"
+          append-to-body
+        >
+        <div v-for="(item, index) in filteredUserCodesList" :key="index" style="margin-bottom: 10px;">
+          {{ item }}
+        </div>
+        </el-dialog>
         <el-form :inline="true" ref="formref" id="form" :model="memberDialogForm" size="large" label-width="100px" :rules="rules">
              
           <el-form-item label="账号" prop="user_codes" label-width="130px">
@@ -247,6 +257,8 @@
   // let cityData = ref([]) // 城市
   // let areaData = ref([]) // 区域
   let dialogAddMember = ref(false)
+  let notActivatedVisible = ref(false)
+  let filteredUserCodesList= ref('') // 未开通的账号数组
   let loading = ref(false)
   let memberList = ref([]) // 表格数据
   let memberDialogForm = reactive({
@@ -421,22 +433,37 @@
           trial_date: rechargeType.value === 2 ? trialDate.value : 0 // 体验天数 (默认值0)
         }
         // console.log(formDialog)
+        // 1004 @@@所有账号都在有效期内，无法开通  1005 部分账号开通成功 1006 所有用户都已经是正式会员，不能重复添加体验会员 1007 全部账号开通成功 @@@
         memberApi.saveStudentMember(params).then((res) => {
-          if (res.result_code === 200) {
+          if (res.result_code === 1004 || res.result_code === 1006) {
             ElMessage({
-              message: `${memberIds.value ? '编辑成功' : '新增成功'}`,
+              message: res.description,
+              type: 'error',
+              // duration: 1000
+            })
+            closeDialogAdd()
+          }
+          // 部分开通成功或者全部成功 1007全部 1005部分
+          if (res.result_code === 1007) {
+            ElMessage({
+              message: res.description,
               type: 'success',
-              duration: 3000
+              // duration: 1000
             })
             pageIndex.value = 1
             getSchoolListData()
             closeDialogAdd()
-          } else {
+          }
+          if (res.result_code === 1005) {
+            filteredUserCodesList.value = res.filteredUserCodes
             ElMessage({
-              message: res.description,
-              type: 'info',
-              duration: 3000
+              message: `${res.description}`,
+              type: 'success',
+              duration: 1000
             })
+            setTimeout(() => {
+              notActivatedVisible.value = true
+            }, 900)
           }
           loading.close()
         }).catch((error) => {
