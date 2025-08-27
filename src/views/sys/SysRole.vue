@@ -231,6 +231,7 @@
               type: 'info',
               duration: 1000
             })
+            loading.value = false
           }
         }).catch((error) => {
           console.log(error)
