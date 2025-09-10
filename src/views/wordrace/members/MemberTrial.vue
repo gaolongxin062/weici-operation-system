@@ -1,7 +1,7 @@
 <template>
   <div class="page define-page">
     <div class="page-title" id="page-title">
-      <h4>会员体验开通</h4>
+      <h4>老师体验开通</h4>
     </div>
     <div class="content-box">
       <el-form :inline="true" id="form" :model="formData" size="large" label-width="60px" @submit.prevent>
@@ -98,11 +98,11 @@
       <el-table-column prop="modify_date" label="修改日期" min-width="160px" />
 
 
-      <el-table-column label="操作" fixed="right"  min-width="120px" v-if="deletePower || editPower">
+      <el-table-column label="操作" fixed="right"  min-width="80px" v-if="deletePower || editPower">
         <template #default="scope">
-          <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower">
+          <!-- <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower">
             编辑
-          </el-button>
+          </el-button> -->
           <el-button class="button-style" link type="danger" @click="delCurrentMember(scope.row)" v-if="deletePower">
             删除
           </el-button>
@@ -393,10 +393,10 @@ function dealSaveOrUpdateParams(isEdit = false) {
   }
   return params
 } // 处理添加标签接口参数
-function editUser(row) {
-  editDialog.value = true
-  rowInfo.value = row
-} // 编辑会员体验
+// function editUser(row) {
+//   editDialog.value = true
+//   rowInfo.value = row
+// } // 编辑会员体验1
 function closeEditDialog() {
   editDialog.value = false
 } // 取消修改

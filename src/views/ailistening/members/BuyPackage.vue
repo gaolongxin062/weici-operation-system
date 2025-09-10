@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page-title" id="page-title">
-      <h4>会员套餐配置</h4>
+      <h4>学生购买套餐配置</h4>
     </div>
 
     <el-form id="cityForms" :inline="true" :model="memberForm" size="large" label-width="80px">

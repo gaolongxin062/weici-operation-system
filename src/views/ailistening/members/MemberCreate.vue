@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page-title" id="page-title">
-      <h4>会员开通</h4>
+      <h4>学生体验开通</h4>
     </div>
 
     <el-form id="cityForms" :inline="true" :model="memberForm" size="large" label-width="80px">
@@ -138,9 +138,9 @@
 
       <el-table-column  label="操作"  fixed="right">
         <template #default="scope">
-            <el-button class="button-style" link type="primary" v-if="editPower" @click="editSchool(scope.row)">
+            <!-- <el-button class="button-style" link type="primary" v-if="editPower" @click="editSchool(scope.row)">
               编辑
-            </el-button>
+            </el-button> -->
             <el-button class="button-style" link type="danger" v-if="deletePower" @click="delSchool(scope.row)">
               删除
           </el-button>
@@ -589,21 +589,21 @@
     const now = new Date();
     memberDialogForm.trial_start_times = format.formatDateDay(now.getTime())
   }
-  function editSchool (row) { // 编辑
-    dialogAddMember.value = true
-    memberDialogForm.user_codes = row.user_code
-    memberDialogForm.trial_start_times = row.trial_start_time
-    // memberDialogForm.recharge_types = row.trial_start_time
-    memberIds.value = row.id
-    rechargeType.value = row.recharge_type // 充值类型: 1是会员套餐 2是体验天数
-    memberTypeId.value = row.member_type === 0 ? 4 : row.member_type // 套餐
-    trialDate.value = row.trial_date // 自定义天数
-    if (row.recharge_type === 1) {
-      trialDate.value = 30
-    } else {
-      memberTypeId.value = 1
-    }
-  }
+  // function editSchool (row) { // 编辑
+  //   dialogAddMember.value = true
+  //   memberDialogForm.user_codes = row.user_code
+  //   memberDialogForm.trial_start_times = row.trial_start_time
+  //   // memberDialogForm.recharge_types = row.trial_start_time
+  //   memberIds.value = row.id
+  //   rechargeType.value = row.recharge_type // 充值类型: 1是会员套餐 2是体验天数
+  //   memberTypeId.value = row.member_type === 0 ? 4 : row.member_type // 套餐
+  //   trialDate.value = row.trial_date // 自定义天数
+  //   if (row.recharge_type === 1) {
+  //     trialDate.value = 30
+  //   } else {
+  //     memberTypeId.value = 1
+  //   }
+  // }
   function delSchool (row) { // 删除
     ElMessageBox.confirm(
       // '删除后将同步下架其学校的商品，请谨慎操作',
