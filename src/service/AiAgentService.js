@@ -44,6 +44,19 @@ function saveComposition(params) {
     })
   });
 }
+function batchComposition(params) {
+  return new Promise((resolve, reject) => {
+    service.post(
+      aiAgentApi.batchComposition,
+      params
+    ).then(res => {
+      if (res.status === 200) resolve(res.data);
+      else reject(res);
+    }).catch(err => {
+      reject(err);
+    })
+  });
+}
 // 删除
 function getCompositionDetail(params) {
   return new Promise((resolve, reject) => {
@@ -64,4 +77,5 @@ export default {
   saveComposition,
   getUse,
   getCompositionDetail,
+  batchComposition,
 }

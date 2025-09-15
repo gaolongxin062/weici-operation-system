@@ -123,6 +123,7 @@ export let aiAgentApi = {
   saveComposition: '/composition/save', // 新增编辑ai agent权限
   removeComposition: '/composition/del', // 教师体验开通删除
   getCompositionDetail: '/composition/detail', // 获取用户权限详情
+  batchComposition: '/composition/batch', // 批量续期
   getTcList: '/Tclist', // 教师列表
   getTeacherList: '/teacher/list', // 教师列表
   removeStudentMember: '/removeStudentMember', // 学生会员开通删除

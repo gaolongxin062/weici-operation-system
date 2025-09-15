@@ -3,10 +3,10 @@
     <el-form ref="formRef" id="form" :model="formData" size="large" label-width="100px" :rules="rules">
 
       <el-form-item label="选择账号" label-width="130px" prop="user_codes">
-        <el-input class="search-input" clearable placeholder="请输入账号（只能输入数字，多账号用英文逗号分隔）" :disabled="isCheck"
+        <el-input class="search-input" clearable placeholder="请输入账号（只能输入数字，多账号用英文逗号分隔）" :disabled="userCodeDisabled"
           v-model="formData.user_codes" @input="handleInput">
         </el-input>
-        <el-button type="primary" :disabled="isEdit" class="select-btn" @click="showSelectAccountNumber">选择账号</el-button>
+        <el-button type="primary" :disabled="selectBtnDisabled" class="select-btn" @click="showSelectAccountNumber">选择账号</el-button>
       </el-form-item>
       <el-form-item label="体验天数" label-width="130px" prop="trial_date">
          <el-input-number
@@ -19,7 +19,7 @@
          />
       </el-form-item>
       <el-form-item label="开始时间" label-width="130px" prop="trial_start_time">
-        <el-date-picker v-model="formData.trial_start_time" value-format="YYYY-MM-DD" type="date" placeholder="请选择开始时间" clearable />
+        <el-date-picker v-model="formData.trial_start_time" value-format="YYYY-MM-DD" type="date" :disabled="isRenewal" placeholder="请选择开始时间" clearable />
       </el-form-item>
       <el-form-item label="限制使用次数" label-width="130px" prop="use_points" v-if="formData.use_info.length">
         <div class="user_info_box">
@@ -97,6 +97,10 @@
   });
 
   let props = defineProps({
+    isRenewal: {
+      type: Boolean,
+      default: false
+    }, // 是否为批量续期
     isEdit: {
       type: Boolean,
       default: false
@@ -115,8 +119,18 @@
 
   let dealTitle = computed(() => {
     // if (props.isCheck) return '查看资源'
-    return props.isEdit ? '修改' : '新增'
+    return props.isEdit ? '修改' : props.isRenewal ? '批量续期' : '新增'
   })
+  let userCodeDisabled = computed(() => {
+    if (props.isRenewal) return true // 批量续期
+    if (props.isCheck) return true // 查看
+    return false
+  }) // 用户输入框是否禁用
+  let selectBtnDisabled = computed(() => {
+    if (props.isRenewal) return true // 批量续期
+    if (props.isEdit) return true // 编辑
+    return false
+  }) // 选择用户按钮是否禁用
 
   let emit = defineEmits([
     'cancelDialog',
@@ -132,6 +146,12 @@
       formData.value.user_codes = props.row.user_code // 体验时长
       formData.value.trial_date = props.row.trial_date // 开始时长
       getCompositionDetail() // 获取用户权限详情
+    } else if (props.isRenewal) { // 如果当前是批量续期
+      // 初始化开始时间
+      const now = new Date();
+      formData.value.trial_start_time = format.formatDateDay(now.getTime())
+      // 初始化用户账号
+      formData.value.user_codes = props.row.map(item=> item.user_code).join(',')
     } else { // 如果当前是新建
       // 初始化开始时间
       const now = new Date();
@@ -215,12 +235,12 @@
       trial_date: formData.value.trial_date, // 体验天数
       trial_start_time: formData.value.trial_start_time, // 开始时间
       user_codes: dealAccountNumber(formData.value.user_codes), // 账号
-      use_info: formData.value.use_info // 使用次数设置
     }
     // 如果是编辑，添加id
     if (props.isEdit) {
       params = {
         ...params,
+        use_info: formData.value.use_info, // 使用次数设置
         id: props.row.id
       }
     }
