@@ -66,14 +66,27 @@
       <el-form-item v-if="addPower">
         <el-button type="success" @click="newlyAdded">新增</el-button>
       </el-form-item>
+      <el-form-item v-if="delayPower">
+        <el-button type="success" @click="batchRenewal">批量续期</el-button>
+      </el-form-item>
     </el-form>
 
     <MemberSet v-if="addDialog" @cancelDialog="closeAddDialog" @saveDialog="addMember"></MemberSet>
     <MemberSet v-if="editDialog" :isEdit="true" :row="rowInfo" @cancelDialog="closeEditDialog"
       @saveDialog="editMemberInfo"></MemberSet>
+    <MemberSet v-if="renewalDialog" :isRenewal="true" :row="selectUsers" @cancelDialog="closeRenewalDialog"
+      @saveDialog="editRenewalInfo"></MemberSet>
 
     <el-table :data="dataList" class="table-info" v-loading="loading" header-cell-class-name="header_row_class" style="width: 100%" stripe
-      element-loading-text="拼命加载中，主人请稍后..." :max-height="screenHeight">
+      element-loading-text="拼命加载中，主人请稍后..." :max-height="screenHeight"
+      ref="multipleTable"
+      @select="selectionChange"
+      @select-all="selectionChange"
+      >
+      <el-table-column
+              type="selection"
+              width="55">
+            </el-table-column>
       <el-table-column width="80" align="center" label="序号">
         <template #default="scope">
           <div>{{ showIndex(scope.$index) }}</div>
@@ -83,6 +96,11 @@
       <el-table-column width="80" align="center" label="体验天数">
         <template #default="scope">
           <div>{{ scope.row.trial_date }}天</div>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" align="center" label="状态">
+        <template #default="scope">
+          <div>{{ dealStateTitle(scope.row.state) }}</div>
         </template>
       </el-table-column>
       <el-table-column prop="trial_start_time" label="开始时间" min-width="100px" />
@@ -98,11 +116,15 @@
       <el-table-column prop="modify_date" label="修改日期" min-width="160px" />
 
 
-      <el-table-column label="操作" fixed="right"  min-width="80px" v-if="deletePower || editPower">
+      <el-table-column label="操作" fixed="right"  min-width="120px" v-if="deletePower || editPower">
         <template #default="scope">
-          <!-- <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower">
+          <!-- 只有体验中的才显示 -->
+          <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower && scope.row.state === 1">
             编辑
-          </el-button> -->
+          </el-button>
+          <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-else style="color: transparent;">
+            编辑
+          </el-button>
           <el-button class="button-style" link type="danger" @click="delCurrentMember(scope.row)" v-if="deletePower">
             删除
           </el-button>
@@ -118,7 +140,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import basicService from '@/service/BasicService.js';
 import WordRaceService from '@/service/WordRaceService.js';
 import MemberSet from '@/components/wordrace/member/MemberSet';
@@ -157,7 +179,13 @@ let addPower = ref(false) // 用户是否有增加操作权限
 let editPower = ref(false) // 用户是否有编辑操作权限
 let deletePower = ref(false) // 用户是否有删除操作权限
 let isSaveError = ref(false) // 数据库当前是否正在发布数据，如果正在发布数据，则不能保存成功，则后续逻辑不执行
-
+let delayPower = ref(false) // 是否有批量续期权利
+let renewalDialog = ref(false) // 批量续期弹框
+// 表格选中逻辑
+let multipleSelection = ref([])
+let selectUsers = ref([])
+let dataIdKey = ref('id')
+let multipleTable = ref(null)
 onMounted(() => {
   getUserPower() // 获取用户权限列表
   getProvinceList() // 获取省份
@@ -166,12 +194,15 @@ onMounted(() => {
   window.addEventListener('resize', updateScreenHeight)
   updateScreenHeight()
 })
-function onSubmit() {
+async function onSubmit() {
   pageIndex.value = 1 // 重置页码
   unChangeFormData.value = JSON.parse(JSON.stringify(formData.value)) // 保存当前的查询条件
-  initMemberList()
+  await initMemberList()
+  nextTick(() => {
+    setSelectRow()
+  })
 } // 点击搜索按钮获取会员体验列表
-function onReset() {
+async function onReset() {
   // 重置所有筛选条件
   formData.value = {
     province_id: '', // 省份
@@ -182,11 +213,17 @@ function onReset() {
   }
   unChangeFormData.value = JSON.parse(JSON.stringify(formData.value)) // 保存当前的查询条件
   pageIndex.value = 1 // 重置页码
-  initMemberList()
+  await initMemberList()
+  nextTick(() => {
+    setSelectRow()
+  })
 } // 点击重置按钮获取会员体验列表
-function handleCurrentChange(page) { // 切换下一页
+async function handleCurrentChange(page) { // 切换下一页
   pageIndex.value = page
-  initMemberList()
+  await initMemberList()
+  nextTick(() => {
+    setSelectRow()
+  })
 } // 点击分页获取会员体验
 function getUserPower() {
   return basicService.getPower(
@@ -198,6 +235,7 @@ function getUserPower() {
       if (res.data.findIndex(item => item.menu_index == 'wordrace_member_trial_add') !== -1) addPower.value = true
       if (res.data.findIndex(item => item.menu_index == 'wordrace_memeber_trial_edit') !== -1) editPower.value = true
       if (res.data.findIndex(item => item.menu_index == 'wordrace_memeber_trial_delete') !== -1) deletePower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'wordrace_memeber_trial_dealy_time') !== -1) delayPower.value = true
     })
     .catch((error) => {
       console.log(error)
@@ -393,10 +431,10 @@ function dealSaveOrUpdateParams(isEdit = false) {
   }
   return params
 } // 处理添加标签接口参数
-// function editUser(row) {
-//   editDialog.value = true
-//   rowInfo.value = row
-// } // 编辑会员体验1
+function editUser(row) {
+  editDialog.value = true
+  rowInfo.value = row
+} // 编辑会员体验
 function closeEditDialog() {
   editDialog.value = false
 } // 取消修改
@@ -474,6 +512,131 @@ function deleteMemberApi() {
 function showIndex(index) {
   return index + 1 + (pageIndex.value - 1) * pageSize.value
 } // 序号
+// 状态文案
+function dealStateTitle (state) {
+  switch (+state) {
+    case 1:
+      return '体验中'
+    case 2:
+      return '已过期'
+    case 3:
+      return '待启用'
+  }
+}
+// 表格选中逻辑
+function selectionChange (val) {
+  multipleSelection.value = val
+  memorySelect()
+}
+function setSelectRow () {
+  let idKey = dataIdKey.value
+  if (!selectUsers.value.length || selectUsers.value.length <= 0) {
+    return
+  }
+  const selectAllUserIds = selectUsers.value.map(item => item[idKey])
+  multipleTable.value.clearSelection()
+  dataList.value.forEach(item => {
+    const isSelect = selectAllUserIds.includes(item[idKey])
+    if (isSelect) {
+      multipleTable.value.toggleRowSelection(item, true)
+    }
+  })
+} // 设置选中方法
+function memorySelect () {
+  // 标识当前行的唯一键的名称
+  let idKey = dataIdKey.value
+  // let self = this
+  // 如果总记忆中还没有选择的数据，那么就直接取当前页选中的数据，不需要后面一系列计算
+  if (selectUsers.value.length <= 0) {
+    selectUsers.value = multipleSelection.value
+    return
+  }
+  // 总选择里面的key集合
+  let selectAllIds = []
+  selectUsers.value.forEach(row => selectAllIds.push(row[idKey]))
+  let selectIds = []
+  // 获取当前页选中id
+  multipleSelection.value.forEach(row => {
+    selectIds.push(row[idKey])
+    // 如果总选择里面不包含当前页选中的数据，那么就假如到总选择里面
+    if (selectAllIds.indexOf(row[idKey]) < 0) selectUsers.value.push(row)
+  })
+  let noSelectIds = []
+  // 得到当前页没有选中的id
+  dataList.value.forEach(row => {
+    if (selectIds.indexOf(row[idKey]) < 0) noSelectIds.push(row[idKey])
+  })
+  noSelectIds.forEach(id => {
+    if (selectAllIds.indexOf(id) >= 0) {
+      for (let i = 0; i < selectUsers.value.length; i++) {
+        if (selectUsers.value[i][idKey] === id) {
+          // 如果总选择中有未被选中的，那么删除这条
+          selectUsers.value.splice(i, 1)
+          break
+        }
+      }
+    }
+  })
+} // 记住选中方法
+// 批量续期
+function batchRenewal() {
+  console.log(selectUsers.value)
+  // 如果没有选中续期的内容
+  if (selectUsers.value.length === 0) {
+    ElMessage({
+      type: 'error',
+      message: '请先选择需要续期内容'
+    })
+    return
+  }
+  // 展开弹框
+  renewalDialog.value = true
+}
+function closeRenewalDialog() {
+  renewalDialog.value = false
+} // 取消批量续期
+async function editRenewalInfo(content) {
+  console.log(content)
+  setConfig.value = content // 保存设置
+  renewalDialog.value = false // 关闭弹框
+  await batchComposition() // 保存批量续期
+  // 如果当前正在发布，则未保存成功，需要阻止后续操作
+  if (isSaveError.value) {
+    isSaveError.value = false // 重置标记
+    return
+  }
+  // 检查是否需要调整页码
+  if (dataList.value.length === 0 && pageIndex.value > 1) {
+    pageIndex.value -= 1
+  }
+  initMemberList() // 会员体验列表
+} // 确认批量续期
+function batchComposition() {
+  let params = {
+    user_name: vocabularyStore.user_name,
+    session: vocabularyStore.session,
+    trial_date: setConfig.value.trial_date, // 体验时间
+    teacher_codes: setConfig.value.user_codes, // 老师账号
+  }
+  console.log(params)
+  return WordRaceService.renewalMember(params)
+    .then((res) => {
+      // 如果当前正在发布数据，则更改标记，防止后续操作
+      if (res.result_code === 200) {
+         ElMessage({
+          message: '批量续期成功',
+          type: 'success',
+          duration: 1000
+         })
+        selectUsers.value = [] // 清空选中
+      } else {
+        isSaveError.value = true
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+} // 批量续期接口
 </script>
 <style scoped>
 .content-box {

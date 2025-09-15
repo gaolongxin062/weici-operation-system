@@ -136,6 +136,9 @@
           <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower && scope.row.state === 1">
             编辑
           </el-button>
+           <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-else style="color: transparent;">
+            编辑
+          </el-button>
           <el-button class="button-style" link type="danger" @click="delCurrentMember(scope.row)" v-if="deletePower">
             删除
           </el-button>
@@ -675,7 +678,6 @@ function batchComposition() {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    trial_start_time: setConfig.value.trial_start_time, // 体验开始时间
     trial_date: setConfig.value.trial_date, // 体验时间
     teacher_codes: setConfig.value.user_codes, // 老师账号
   }
@@ -688,7 +690,8 @@ function batchComposition() {
           message: '批量续期成功',
           type: 'success',
           duration: 1000
-        })
+         })
+        selectUsers.value = [] // 清空选中
       } else {
         isSaveError.value = true
       }

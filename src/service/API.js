@@ -115,6 +115,7 @@ export let wordRaceMemberApi = {
   getTrialList: '/contest/list', // 教师体验开通列表
   trialSave: '/contest/save', // 教师体验开通编辑
   trialRemove: '/contest/del', // 教师体验开通删除
+  renewalMember: '/renewalContestMember', // 教师体验开通删除
 }
 
 export let aiAgentApi = {

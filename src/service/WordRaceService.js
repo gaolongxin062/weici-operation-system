@@ -97,6 +97,19 @@ function trialRemove(params) {
     })
   });
 }
+function renewalMember(params) {
+  return new Promise((resolve, reject) => {
+    service.post(
+      wordRaceMemberApi.renewalMember,
+      params
+    ).then(res => {
+      if (res.status === 200) resolve(res.data);
+      else reject(res);
+    }).catch(err => {
+      reject(err);
+    })
+  });
+}
 
 export default {
   getProvincesList,
@@ -106,4 +119,5 @@ export default {
   getTeacherList,
   trialSave,
   trialRemove,
+  renewalMember,
 }
