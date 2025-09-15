@@ -116,3 +116,19 @@ export let wordRaceMemberApi = {
   trialSave: '/contest/save', // 教师体验开通编辑
   trialRemove: '/contest/del', // 教师体验开通删除
 }
+
+export let aiAgentApi = {
+  getCompositionList: '/composition/list', // 教师体验开通列表
+  getUse: '/composition/getUse', // 获取使用次数
+  saveComposition: '/composition/save', // 新增编辑ai agent权限
+  removeComposition: '/composition/del', // 教师体验开通删除
+  getCompositionDetail: '/composition/detail', // 获取用户权限详情
+  getTcList: '/Tclist', // 教师列表
+  getTeacherList: '/teacher/list', // 教师列表
+  removeStudentMember: '/removeStudentMember', // 学生会员开通删除
+  saveStudentMember: '/saveStudentMember', // 学生会员开通编辑
+  studentMemberList: '/studentMemberList', // 学生会员开通列表
+  packageList: '/packageList', // 会员套餐列表
+  savePackage: '/savePackage', // 会员套餐编辑
+  removePackage: '/removePackage', // 会员套餐删除
+}

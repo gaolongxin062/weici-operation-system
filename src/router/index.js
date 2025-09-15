@@ -64,6 +64,11 @@ const routes = [{
         name: 'WordRaceMemberTrial',
         component: () => import('@/views/wordrace/members/MemberTrial.vue')
       },
+      {
+        path: '/ai/agent/manage',
+        name: 'AiAgent',
+        component: () => import('@/views/aiAgent/AiAgent.vue')
+      },
     ]
   }
 ];
