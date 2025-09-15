@@ -19,7 +19,7 @@
          />
       </el-form-item>
       <el-form-item label="开始时间" label-width="130px" prop="trial_start_time">
-        <el-date-picker v-model="formData.trial_start_time" value-format="YYYY-MM-DD" type="date" :disabled="isRenewal" placeholder="请选择开始时间" clearable />
+        <el-date-picker v-model="formData.trial_start_time" value-format="YYYY-MM-DD" type="date" :disabled="true" placeholder="请选择开始时间" clearable />
       </el-form-item>
       <el-form-item label="限制使用次数" label-width="130px" prop="use_points" v-if="formData.use_info.length">
         <div class="user_info_box">

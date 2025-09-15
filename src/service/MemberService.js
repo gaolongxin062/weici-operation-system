@@ -186,7 +186,19 @@ function removePackage(params) {
     })
   });
 }
-
+function renewalMember(params) {
+  return new Promise((resolve, reject) => {
+    service.post(
+      memberApi.renewalMember,
+      params
+    ).then(res => {
+      if (res.status === 200) resolve(res.data);
+      else reject(res);
+    }).catch(err => {
+      reject(err);
+    })
+  });
+}
 export default {
   getProvincesList,
   getCityList,
@@ -201,5 +213,6 @@ export default {
   studentMemberList,
   packageList,
   savePackage,
-  removePackage
+  removePackage,
+  renewalMember,
 }

@@ -106,6 +106,7 @@ export let memberApi = {
   packageList: '/packageList', // 会员套餐列表
   savePackage: '/savePackage', // 会员套餐编辑
   removePackage: '/removePackage', // 会员套餐删除
+  renewalMember: '/renewalMember', // 批量续期
 }
 
 export let wordRaceMemberApi = {
@@ -115,7 +116,7 @@ export let wordRaceMemberApi = {
   getTrialList: '/contest/list', // 教师体验开通列表
   trialSave: '/contest/save', // 教师体验开通编辑
   trialRemove: '/contest/del', // 教师体验开通删除
-  renewalMember: '/renewalContestMember', // 教师体验开通删除
+  renewalMember: '/renewalContestMember', // 批量续期
 }
 
 export let aiAgentApi = {
