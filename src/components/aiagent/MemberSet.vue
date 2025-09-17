@@ -231,16 +231,17 @@
     })
   } // 点击保存
   function getConfig () {
+    console.log(formData.value)
     let params = { 
       trial_date: formData.value.trial_date, // 体验天数
       trial_start_time: formData.value.trial_start_time, // 开始时间
       user_codes: dealAccountNumber(formData.value.user_codes), // 账号
+      use_info: formData.value.use_info, // 使用次数设置
     }
     // 如果是编辑，添加id
     if (props.isEdit) {
       params = {
         ...params,
-        use_info: formData.value.use_info, // 使用次数设置
         id: props.row.id
       }
     }

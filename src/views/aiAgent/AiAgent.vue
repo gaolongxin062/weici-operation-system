@@ -469,10 +469,11 @@ function saveMember() {
     })
 } // 新增会员体验信息
 function dealSaveOrUpdateParams(isEdit = false) {
-  // console.log()
+  console.log(setConfig.value)
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
+    trial_start_time: setConfig.value.trial_start_time, // 体验开始时间
     trial_date: setConfig.value.trial_date, // 体验时间
     user_codes: setConfig.value.user_codes, // 老师账号
     use_info: JSON.stringify(setConfig.value.use_info), // 使用次数

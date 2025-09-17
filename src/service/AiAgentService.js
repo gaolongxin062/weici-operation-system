@@ -58,10 +58,10 @@ function batchComposition(params) {
   });
 }
 // 删除
-function getCompositionDetail(params) {
+function removeComposition(params) {
   return new Promise((resolve, reject) => {
     service.post(
-      aiAgentApi.getCompositionDetail,
+      aiAgentApi.removeComposition,
       params
     ).then(res => {
       if (res.status === 200) resolve(res.data);
@@ -76,6 +76,6 @@ export default {
   getCompositionList,
   saveComposition,
   getUse,
-  getCompositionDetail,
+  removeComposition,
   batchComposition,
 }
