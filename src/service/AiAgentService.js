@@ -71,6 +71,19 @@ function removeComposition(params) {
     })
   });
 }
+function getCompositionDetail(params) {
+  return new Promise((resolve, reject) => {
+    service.post(
+      aiAgentApi.getCompositionDetail,
+      params
+    ).then(res => {
+      if (res.status === 200) resolve(res.data);
+      else reject(res);
+    }).catch(err => {
+      reject(err);
+    })
+  });
+}
 
 export default {
   getCompositionList,
@@ -78,4 +91,5 @@ export default {
   getUse,
   removeComposition,
   batchComposition,
+  getCompositionDetail,
 }

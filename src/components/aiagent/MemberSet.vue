@@ -124,6 +124,7 @@
   let userCodeDisabled = computed(() => {
     if (props.isRenewal) return true // 批量续期
     if (props.isCheck) return true // 查看
+    if (props.isEdit) return true // 编辑
     return false
   }) // 用户输入框是否禁用
   let selectBtnDisabled = computed(() => {
