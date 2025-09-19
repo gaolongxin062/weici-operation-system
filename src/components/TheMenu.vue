@@ -2,7 +2,7 @@
     <div class="menu">
         <div class="menu-logo">
             <div style="display: flex;align-items: center;">
-              <h3>维词AI听力训练营运营管理后台</h3>
+              <h3>维词运营管理后台</h3>
                 <!-- <img src="@/assets/logo.png"/> -->
                 <el-icon color="#fff" size="25" v-if="expand"  @click="expandClick"><Expand /></el-icon>
                 <el-icon color="#fff" size="25" v-else   @click="foldClick"><Fold /></el-icon>
