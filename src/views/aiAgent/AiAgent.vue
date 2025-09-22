@@ -190,10 +190,10 @@ let stateList = ref([
     id: 2,
     name: '已过期'
   },
-  {
-    id: 3,
-    name: '待启用'
-  }
+  // {
+  //   id: 3,
+  //   name: '待启用'
+  // }
 ]) // 状态列表
 let formData = ref({
   province_id: '', // 省份
