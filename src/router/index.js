@@ -69,6 +69,11 @@ const routes = [{
         name: 'AiAgent',
         component: () => import('@/views/aiAgent/AiAgent.vue')
       },
+      {
+        path: '/teacher/certification',
+        name: 'TeacherCertification',
+        component: () => import('@/views/review/TeacherCertification.vue')
+      },
     ]
   }
 ];

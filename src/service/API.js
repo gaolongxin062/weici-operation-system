@@ -135,3 +135,13 @@ export let aiAgentApi = {
   savePackage: '/savePackage', // 会员套餐编辑
   removePackage: '/removePackage', // 会员套餐删除
 }
+
+// 审核管理
+export let reviewApi = {
+  getTeacherCheckList: '/getTeacherCheckList', // 教师认证列表
+  getAppList: '/getAppList', // 高中维词产品列表
+  getSchoolList: '/getSchoolList', // 学校列表
+  deleteTeacherCheck: '/deleteTeacherCheck', // 删除教师认证列表
+  saveTeacherCheck: '/saveTeacherCheck', // 新增与修改教师认证列表
+  changeTeacherCheck: '/changeTeacherCheck', // 管理教师认证资格
+}
