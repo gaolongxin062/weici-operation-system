@@ -40,6 +40,7 @@
                 class="search-input"
                 clearable
                 maxlength="8"  
+                @blur="handleBlur" 
                 placeholder="请输入您的真实姓名"
                 v-model="form.userName">
               </el-input>
@@ -296,6 +297,9 @@
     }).catch((error) => {
       console.log(error)
     })
+  }
+  function handleBlur () { // 姓名-禁止首尾空格
+    form.userName = form.userName.trim()
   }
   function getCityList () { // 城市
     let params = {

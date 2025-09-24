@@ -181,6 +181,7 @@
                   :disabled="btnTypes === 'see'"
                   class="search-input"
                   clearable
+                  @blur="handleBlur" 
                   maxlength="8"  
                   placeholder="请输入您的真实姓名"
                   v-model="form.userName">
@@ -432,6 +433,9 @@
   function handleCurrentChange (page) { // 切换下一页
     pageIndex.value = page
     getListData() // 表格数据
+  }
+  function handleBlur () { // 姓名-禁止首尾空格
+    form.userName = form.userName.trim()
   }
   function getListData () { // 表格数据
     let params = {
