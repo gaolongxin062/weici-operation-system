@@ -130,7 +130,7 @@
       <el-table-column prop="modify_date" label="修改日期" min-width="160px" />
 
 
-      <el-table-column label="操作" fixed="right"  min-width="140px" v-if="deletePower || editPower">
+      <el-table-column label="操作" fixed="right"  min-width="160px" v-if="deletePower || editPower">
         <template #default="scope">
           <!-- 只有体验中的才显示 -->
           <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower && scope.row.state === 1">
@@ -141,6 +141,9 @@
           </el-button>
           <el-button class="button-style" link type="danger" @click="delCurrentMember(scope.row)" v-if="deletePower">
             删除
+          </el-button>
+          <el-button class="button-style" link type="primary" v-if="scope.row.is_power === 0" @click="certification(scope.row)">
+            认证
           </el-button>
         </template>
       </el-table-column>
@@ -165,6 +168,9 @@
       </div>
     </template>
   </el-dialog>
+
+  <!-- 认证弹窗 -->
+  <CertificationSet v-if="dialogCertification" @cancelTeaching="cancelTeaching" @saveTeaching="saveTeaching" :userCode="userCode"></CertificationSet>
   </div>
 </template>
 <script setup>
@@ -173,6 +179,7 @@ import basicService from '@/service/BasicService.js';
 import MemberService from '@/service/MemberService';
 import AiAgentService from '@/service/AiAgentService';
 import MemberSet from '@/components/aiagent/MemberSet';
+import CertificationSet from '@/components/CertificationSet';
 import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage, ElMessageBox } from 'element-plus'
 let vocabularyStore = useVocabularyStore();
@@ -233,7 +240,8 @@ let multipleSelection = ref([])
 let selectUsers = ref([])
 let dataIdKey = ref('id')
 let multipleTable = ref(null)
-
+let dialogCertification = ref(false) // 认证弹窗
+let userCode = ref('') // 用户输入得账号
 onMounted(() => {
   getUserPower() // 获取用户权限列表
   getProvinceList() // 获取省份
@@ -425,7 +433,7 @@ function closeAddDialog() {
 async function addMember(content) {
   console.log(content)
   setConfig.value = content // 保存设置
-  addDialog.value = false // 关闭弹框
+  userCode.value = content.user_codes // 用户输入得账号
   await saveMember() // 保存设置
   // 如果当前正在发布，则未保存成功，需要阻止后续操作
   if (isSaveError.value) {
@@ -442,20 +450,26 @@ function saveMember() {
     .then((res) => {
       // 所有账号都在有效期内，无法开通
       if (res.result_code === 1004) {
+        addDialog.value = false // 关闭弹框
         isSaveError.value = true
         noSuccessInfo.value = res
         dialogVisible.value = true
       } else if (res.result_code === 1005) { // 部分开通成功或者全部成功 1007全部 1005部分
+        addDialog.value = false // 关闭弹框
         noSuccessInfo.value = res
         dialogVisible.value = true
       } else if (res.result_code === 1007) {
         // 部分开通成功或者全部成功 1007全部 1005部分
+        addDialog.value = false // 关闭弹框
         ElMessage({
           message: res.description,
           type: 'success',
           duration: 1000
         })
+      } else if (res.result_code === 940) { // 未认证
+        dialogCertification.value = true // 教师认证弹窗
       } else {
+        addDialog.value = false // 关闭弹框
         isSaveError.value = true
         ElMessage({
           message: '新建失败，请重试',
@@ -468,6 +482,13 @@ function saveMember() {
       console.log(error)
     })
 } // 新增会员体验信息
+function cancelTeaching () { // 取消教师认证
+  dialogCertification.value = false // 教师认证弹窗
+}
+function saveTeaching () { // 保存教师认证
+  initMemberList() // 会员体验列表
+  cancelTeaching()
+}
 function dealSaveOrUpdateParams(isEdit = false) {
   console.log(setConfig.value)
   let params = {
@@ -532,6 +553,10 @@ function updateMember() {
       console.log(error)
     })
 } // 修改会员体验信息
+function certification (row) { // 认证
+  dialogCertification.value = true // 教师认证弹窗
+  userCode.value = row.user_code // 用户输入得账号
+}
 function delCurrentMember(row) {
   // 判断当前会员体验是否被引用到书籍
   rowInfo.value = row // 保存当前点击内容
