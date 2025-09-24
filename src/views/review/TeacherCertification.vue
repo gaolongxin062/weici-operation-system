@@ -113,7 +113,7 @@
 
       <el-table-column label="认证日期" width="200">
         <template #default="scope">
-          <div class="over-hidden" :title="scope.row.check_date">{{scope.row.check_date ? scope.row.check_date : '-'}}</div>
+          <div class="over-hidden" :title="scope.row.make_date">{{scope.row.make_date ? scope.row.make_date : '-'}}</div>
         </template>
       </el-table-column>
 
