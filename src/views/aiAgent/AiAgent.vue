@@ -136,7 +136,7 @@
           <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower && scope.row.state === 1">
             编辑
           </el-button>
-           <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-else style="color: transparent;">
+           <el-button class="button-style" link type="primary" v-else style="color: transparent;">
             编辑
           </el-button>
           <el-button class="button-style" link type="danger" @click="delCurrentMember(scope.row)" v-if="deletePower">

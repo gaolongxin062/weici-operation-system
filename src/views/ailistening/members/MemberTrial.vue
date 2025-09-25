@@ -116,17 +116,20 @@
       <el-table-column prop="modify_date" label="修改日期" min-width="160px" />
 
 
-      <el-table-column label="操作" fixed="right"  min-width="120px" v-if="deletePower || editPower">
+      <el-table-column label="操作" fixed="right"  min-width="160px" v-if="deletePower || editPower">
         <template #default="scope">
           <!-- 只有体验中的才显示 -->
           <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower && scope.row.state === 1">
             编辑
           </el-button>
-          <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-else style="color: transparent;">
+          <el-button class="button-style" link type="primary" v-else style="color: transparent;">
             编辑
           </el-button>
           <el-button class="button-style" link type="danger" @click="delCurrentMember(scope.row)" v-if="deletePower">
             删除
+          </el-button>
+          <el-button class="button-style" link type="primary" v-if="scope.row.is_power === 0" @click="certification(scope.row)">
+            认证
           </el-button>
         </template>
       </el-table-column>
@@ -151,6 +154,8 @@
       </div>
     </template>
   </el-dialog>
+  <!-- 认证弹窗 -->
+  <CertificationSet v-if="dialogCertification" @cancelTeaching="cancelTeaching" @saveTeaching="saveTeaching" :userCode="userCode"></CertificationSet>
   </div>
 </template>
 <script setup>
@@ -158,6 +163,7 @@ import { ref, onMounted, nextTick } from 'vue';
 import basicService from '@/service/BasicService.js';
 import MemberService from '@/service/MemberService';
 import MemberSet from '@/components/member/MemberSet';
+import CertificationSet from '@/components/CertificationSet';
 import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage, ElMessageBox } from 'element-plus'
 let vocabularyStore = useVocabularyStore();
@@ -184,6 +190,8 @@ let provinceData = ref([]) // 省份
 let cityData = ref([]) // 城市
 let areaData = ref([]) // 区域
 let dataList = ref([]) // 会员体验列表
+let dialogCertification = ref(false) // 认证弹窗
+let userCode = ref('') // 用户输入得账号
 
 let addDialog = ref(false) // 新增会员体验弹框
 let editDialog = ref(false) // 编辑会员体验弹框
@@ -391,13 +399,13 @@ function closeAddDialog() {
 async function addMember(content) {
   console.log(content)
   setConfig.value = content // 保存设置
-  addDialog.value = false // 关闭弹框
   await saveMember() // 保存设置
   // 如果当前正在发布，则未保存成功，需要阻止后续操作
   if (isSaveError.value) {
     isSaveError.value = false // 重置标记
     return
   }
+  addDialog.value = false // 关闭弹框
   pageIndex.value = 1 // 重置页码
   initMemberList() // 会员体验列表
 } // 新增会员体验
@@ -421,6 +429,10 @@ function saveMember() {
           type: 'success',
           duration: 1000
         })
+      } else if (res.result_code === 940) { // 未认证
+        userCode.value = setConfig.value.user_codes // 保存当前认证手机号
+        dialogCertification.value = true // 教师认证弹窗
+        isSaveError.value = true
       } else {
         isSaveError.value = true
         ElMessage({
@@ -666,6 +678,19 @@ function batchComposition() {
       console.log(error)
     })
 } // 批量续期接口
+// 老师认证
+function certification(row) { // 认证
+  console.log(111)
+  dialogCertification.value = true // 教师认证弹窗
+  userCode.value = row.user_code // 用户输入得账号
+}
+function cancelTeaching () { // 取消教师认证
+  dialogCertification.value = false // 教师认证弹窗
+}
+function saveTeaching () { // 保存教师认证
+  initMemberList() // 会员体验列表
+  cancelTeaching()
+}
 </script>
 <style scoped>
 .content-box {
