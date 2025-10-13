@@ -70,6 +70,26 @@ const routes = [{
         component: () => import('@/views/aiAgent/AiAgent.vue')
       },
       {
+        path: '/ai/agent/province',
+        name: 'AiProvince',
+        component: () => import('@/views/aiAgent/AiProvince.vue')
+      },
+      {
+        path: '/ai/agent/city',
+        name: 'AiCity',
+        component: () => import('@/views/aiAgent/AiCity.vue')
+      },
+      {
+        path: '/ai/agent/county',
+        name: 'AiCounty',
+        component: () => import('@/views/aiAgent/AiCounty.vue')
+      },
+      {
+        path: '/ai/agent/school',
+        name: 'AiSchool',
+        component: () => import('@/views/aiAgent/AiSchool.vue')
+      },
+      {
         path: '/teacher/certification',
         name: 'TeacherCertification',
         component: () => import('@/views/review/TeacherCertification.vue')
