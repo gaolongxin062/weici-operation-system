@@ -134,6 +134,16 @@ export let aiAgentApi = {
   packageList: '/packageList', // 会员套餐列表
   savePackage: '/savePackage', // 会员套餐编辑
   removePackage: '/removePackage', // 会员套餐删除
+  getProvincesList: '/getAiProvinceList', // 获取所有的省
+  editProvinces: '/editAiProvince', // 编辑跟新增省
+  delAiProvince: '/delAiProvince', // 删除省市区县
+  getAiCityList: '/getAiCityList', // 获取所有的市
+  editAiCity: '/editAiCity', // 编辑跟新增市
+  getAiCountyList: '/getAiCountyList', // 获取所有的区县列表
+  editAiCounty: '/editAiCounty', // 编辑跟新增区县
+  getAiSchoolList: '/getAiSchoolList', // 获取所有的学校列表
+  editAiSchool: '/editAiSchool', // 编辑跟新增区县
+  delAiSchool: '/delAiSchool', // 删除学校信息
 }
 
 // 审核管理
