@@ -326,13 +326,14 @@
       if (res.result_code === 200) {
         if (res.list && res.list.length) {
           if(type === 'edit') {
-            dialogCityList = res.list
+            dialogCityList.value = res.list
           } else {
             cityList.value = res.list
+            console.log('222',cityList )
           }
         } else {
           cityList.value = []
-          dialogCityList = []
+          dialogCityList.value = []
         }
       } else {
         ElMessage({
@@ -437,7 +438,7 @@
       dialogFormDisabled.value = false
     } else {
       dialogProvinceList = []
-      dialogCityList = []
+      dialogCityList.value = []
       dialogCountyListt = []
       dialogAdd.value = false
       formref.value.resetFields()

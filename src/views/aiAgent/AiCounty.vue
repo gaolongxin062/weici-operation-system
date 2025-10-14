@@ -272,9 +272,9 @@
       if (res.list && res.list.length) {
         if (res.result_code === 200) {
           if (type === 'edit') {
-            dialogCityList = res.list
+            dialogCityList.value = res.list
           } else {
-            cityList = res.list
+            cityList.value = res.list
           }
         } else {
           ElMessage({
@@ -282,10 +282,9 @@
             type: 'error',
           })
         }
-        console.log(cityList)
       } else {
         cityList.value = []
-        dialogCityList = []
+        dialogCityList.value = []
       }
     } catch (error) {
       console.error('获取列表失败', error)
@@ -349,7 +348,7 @@
       dialogFormDisabled.value = false
     } else {
       dialogProvinceList = []
-      dialogCityList = []
+      dialogCityList.value = []
       dialogAdd.value = false
       formref.value.resetFields()
       dialogForm.province_id = ''
