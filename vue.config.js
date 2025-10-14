@@ -5,7 +5,7 @@ module.exports = defineConfig({
     config
         .plugin('html')
         .tap(args => {
-          args[0].title = '维词AI听力训练营管理后台';
+          args[0].title = '维词运营管理后台';
           return args;
         })
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="page define-page">
     <div class="page-title" id="page-title">
-      <h4>AI agent管理</h4>
+      <h4>作文批改权限开通管理</h4>
     </div>
     <div class="content-box">
       <el-form :inline="true" id="form" :model="formData" size="large" label-width="60px" @submit.prevent>
