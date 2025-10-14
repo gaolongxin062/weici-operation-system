@@ -80,9 +80,9 @@
       <el-form-item v-if="addPower">
         <el-button type="success" @click="newlyAdded">新增</el-button>
       </el-form-item>
-      <el-form-item v-if="delayPower">
+      <!-- <el-form-item v-if="delayPower">
         <el-button type="success" @click="batchRenewal">批量续期</el-button>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
 
     <MemberSet v-if="addDialog" @cancelDialog="closeAddDialog" @saveDialog="addMember"></MemberSet>
@@ -97,10 +97,10 @@
       @select="selectionChange"
       @select-all="selectionChange"
       >
-      <el-table-column
+      <!-- <el-table-column
               type="selection"
               width="55">
-            </el-table-column>
+            </el-table-column> -->
       <el-table-column width="80" align="center" label="序号">
         <template #default="scope">
           <div>{{ showIndex(scope.$index) }}</div>
@@ -707,19 +707,19 @@ function memorySelect () {
   })
 } // 记住选中方法
 // 批量续期
-function batchRenewal() {
-  console.log(selectUsers.value)
-  // 如果没有选中续期的内容
-  if (selectUsers.value.length === 0) {
-    ElMessage({
-      type: 'error',
-      message: '请先选择需要续期内容'
-    })
-    return
-  }
-  // 展开弹框
-  renewalDialog.value = true
-}
+// function batchRenewal() {
+//   console.log(selectUsers.value)
+//   // 如果没有选中续期的内容
+//   if (selectUsers.value.length === 0) {
+//     ElMessage({
+//       type: 'error',
+//       message: '请先选择需要续期内容'
+//     })
+//     return
+//   }
+//   // 展开弹框
+//   renewalDialog.value = true
+// }
 function closeRenewalDialog() {
   renewalDialog.value = false
 } // 取消批量续期
