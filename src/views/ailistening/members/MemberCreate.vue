@@ -4,7 +4,7 @@
       <h4>学生体验开通</h4>
     </div>
 
-    <el-form id="cityForms" :inline="true" :model="memberForm" size="large" label-width="80px">
+    <el-form id="forms" :inline="true" :model="memberForm" size="large" label-width="80px">
       <div style="display: flex;align-items: center;justify-content: flex-end;">
         <div style="margin-right: 20px;">
           <!-- <el-form-item label="省份">
@@ -243,6 +243,8 @@
   import format from '@/utils/DateUtil.js'
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
   let vocabularyStore = useVocabularyStore();
+  import { useScreenHeight } from '@/hooks/useScreenHeight.js';
+  const { screenHeight } = useScreenHeight();
   let memberForm = reactive({
     // province: '', // 省份
     // city: '', // 城市
@@ -317,7 +319,6 @@
       { required: true, message: '请选择日期', trigger: 'change' }
     ]
   });
-  let screenHeight = ref(0) // 表格高
   let memberIds = ref(0) // 开通记录id(自增主键)
   let formref = ref()
 
@@ -327,8 +328,6 @@
   onMounted(() =>{
     getUserPower() // 获取用户权限列表
     // getProvinceList() // 获取省份
-    window.addEventListener('resize', updateScreenHeight);
-    updateScreenHeight();
     getSchoolListData() // 表格数据
   })
   // const disabledStartDate = (time) => {
@@ -352,27 +351,6 @@
         loading.value = false
       })
   } // 获取用户权限
-  function updateScreenHeight () {
-    var element = document.getElementById('cityForms');
-    if (element) {
-      var rect = element.getBoundingClientRect();
-      var formHeight = rect.height // form表单的高
-    }
-
-    var titleElement = document.getElementById('page-title');
-    if (titleElement) {
-      var rectTitle = titleElement.getBoundingClientRect();
-      var titleHeight = rectTitle.height // 标题-页头高度
-      
-      var pageHeight = 80 // 分页高度
-
-      var menuHeight = 64 // 导航栏高度
-
-      // console.log(height)
-      screenHeight.value = window.innerHeight - formHeight - titleHeight - pageHeight - menuHeight
-      // wordSelectHeight.value = window.innerHeight - titleHeight - menuHeight - 50
-    }
-  }
   function selectedYears (item) {
     memberTypeId.value = item.id
   }
@@ -671,10 +649,10 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#cityForms {
+#forms {
   padding: 0 20px;
 }
-#cityForms :deep(.el-form-item){
+#forms :deep(.el-form-item){
   margin-right: 10px !important;
 }
 .year-box{

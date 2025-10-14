@@ -4,7 +4,7 @@
       <h4>学生购买套餐配置</h4>
     </div>
 
-    <el-form id="cityForms" :inline="true" :model="memberForm" size="large" label-width="80px">
+    <el-form id="forms" :inline="true" :model="memberForm" size="large" label-width="80px">
       <div style="display: flex;align-items: center;justify-content: flex-end;">
         <div style="margin-right: 20px;">
           <el-form-item label="套餐名称">
@@ -215,6 +215,8 @@
   import basicService from '@/service/BasicService.js';
   import { useVocabularyStore } from '@/store/vocabulary';
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
+  import { useScreenHeight } from '@/hooks/useScreenHeight.js';
+  const { screenHeight } = useScreenHeight();
   let vocabularyStore = useVocabularyStore();
   let memberForm = reactive({
     vip_name: '' // 套餐名称
@@ -268,7 +270,6 @@
       { required: true, message: '请输入', trigger: 'blur' }
     ]
   });
-  let screenHeight = ref(0) // 表格高
   let memberIds = ref(0) // 会员套餐id
   let formref = ref()
 
@@ -277,8 +278,6 @@
   let deletePower = ref(false) // 用户是否有删除操作权限
   onMounted(() =>{
     getUserPower() // 获取用户权限列表
-    window.addEventListener('resize', updateScreenHeight);
-    updateScreenHeight();
     getListData() // 表格数据
   })
   function getUserPower() {
@@ -304,27 +303,6 @@
     // memberDialogForm.original_money = memberDialogForm.original_money.trim()
     // memberDialogForm.now_money = memberDialogForm.now_money.trim()
     // memberDialogForm.apple_id = memberDialogForm.apple_id.trim()
-  }
-  function updateScreenHeight () {
-    var element = document.getElementById('cityForms');
-    if (element) {
-      var rect = element.getBoundingClientRect();
-      var formHeight = rect.height // form表单的高
-    }
-
-    var titleElement = document.getElementById('page-title');
-    if (titleElement) {
-      var rectTitle = titleElement.getBoundingClientRect();
-      var titleHeight = rectTitle.height // 标题-页头高度
-      
-      var pageHeight = 80 // 分页高度
-
-      var menuHeight = 64 // 导航栏高度
-
-      // console.log(height)
-      screenHeight.value = window.innerHeight - formHeight - titleHeight - pageHeight - menuHeight
-      // wordSelectHeight.value = window.innerHeight - titleHeight - menuHeight - 50
-    }
   }
   function closeDialogAdd () { // 取消新增
     dialogAddMember.value = false
@@ -508,10 +486,10 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#cityForms {
+#forms {
   padding: 0 20px;
 }
-#cityForms :deep(.el-form-item){
+#forms :deep(.el-form-item){
   margin-right: 10px !important;
 }
 .year-box{
