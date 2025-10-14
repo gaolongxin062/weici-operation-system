@@ -230,6 +230,11 @@
           const res = await aiAgentService.editProvinces(params)
           if (res.result_code===200) {
             getProvinceList()
+          } else if (res.result_code===913){
+            ElMessage({
+              message: '省份已存在',
+              type: 'error',
+            })
           } else {
             ElMessage({
               message: res.description,

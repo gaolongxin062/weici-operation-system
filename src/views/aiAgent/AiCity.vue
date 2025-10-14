@@ -284,6 +284,16 @@
           const res = await aiAgentService.editAiCity(params)
           if (res.result_code===200) {
             getCityList()
+          }else if (res.result_code===913){
+            ElMessage({
+              message: '城市已存在',
+              type: 'error',
+            })
+          }else if (res.result_code===918){
+            ElMessage({
+              message: '不能修改直辖市',
+              type: 'error',
+            })
           } else {
             ElMessage({
               message: res.description,
