@@ -38,6 +38,7 @@
         <el-table-column prop="menu_name" label="菜单名称" width="170" sortable />
         <el-table-column prop="icon" label="图标"/>
         <el-table-column prop="path" label="路径" width="170" />
+        <el-table-column prop="sort" label="排序" width="170" />
         <el-table-column prop="right_flag" label="权限标记">
           <template #default="scope">
             <el-button class="button-style" link :type="scope.row.right_flag === 0 ? 'danger' : 'success'">
@@ -152,6 +153,14 @@
           </el-input>
         </el-form-item>
 
+        <el-form-item label="排序">
+          <el-input
+            @input="handleInputSort"
+            v-model="formDialog.sort"
+            :maxlength="50"
+          />
+        </el-form-item>
+
         <el-form-item label="权限标记">
           <el-checkbox v-model="formDialog.right_flag"/>
         </el-form-item>
@@ -201,6 +210,7 @@
     menu_name: '',
     icon: '',
     path: '',
+    sort: '',
     right_flag: false,
     stop_flag: false
   })
@@ -239,8 +249,14 @@
     formDialog.icon = row.icon
     formDialog.path = row.path
     menuId.value = row.menu_id
+    formDialog.sort = row.sort
     formDialog.right_flag = row.right_flag === 0 ? false : true
     formDialog.stop_flag = row.stop_flag === 0 ? false : true
+  }
+  function handleInputSort (value) { // 排序
+    // 只允许输入数字
+    const filteredValue = value.replace(/[^0-9]/g, "")
+    formDialog.sort = filteredValue
   }
   function delTest (row) {
     ElMessageBox.confirm('确定删除该记录吗？', '提示信息', {
@@ -326,6 +342,7 @@
     formDialog.menu_name = ''
     formDialog.icon = ''
     formDialog.path = ''
+    formDialog.sort = ''
     formDialog.right_flag = false
     formDialog.stop_flag = false
   }
@@ -340,7 +357,7 @@
     formref.value.validate((valid) => {
       if (valid) {
         // console.log(formDialog)
-        IndexService.accountEditmenu(vocabularyStore.user_name, vocabularyStore.session, formDialog.stop_flag, formDialog.right_flag, formDialog.path, formDialog.parent_code, formDialog.menu_name, formDialog.menu_index, menuId.value, formDialog.menu_code, formDialog.icon,).then((res) => {
+        IndexService.accountEditmenu(vocabularyStore.user_name, vocabularyStore.session, formDialog.stop_flag, formDialog.right_flag, formDialog.path, formDialog.parent_code, formDialog.menu_name, formDialog.menu_index, menuId.value, formDialog.menu_code, formDialog.icon, formDialog.sort).then((res) => {
           if (res.result_code === 200) {
             ElMessage({
               message: '添加成功',
@@ -350,6 +367,12 @@
             initTree() // 左侧导航tree数据更新
             closeDialog()
             initAccountSysmenu()
+          } else {
+            ElMessage({
+              message: res.description,
+              type: 'info',
+              duration: 1000
+            })
           }
         }).catch((error) => {
           console.log(error)

@@ -823,7 +823,7 @@ function accountPassword(user_name, session, old_password, new_password, confirm
 /**
  * 添加 / 修改功能菜单
  */
-function accountEditmenu(user_name, session, stop_flag, right_flag, path, parent_code, menu_name, menu_index, menu_id, menu_code, icon) {
+function accountEditmenu(user_name, session, stop_flag, right_flag, path, parent_code, menu_name, menu_index, menu_id, menu_code, icon, sort) {
   return new Promise((resolve, reject) => {
     service.post(vocabularyApi.accountEditmenu, {
       user_name: user_name,
@@ -836,7 +836,8 @@ function accountEditmenu(user_name, session, stop_flag, right_flag, path, parent
       menu_index: menu_index,
       menu_id: menu_id,
       menu_code: menu_code,
-      icon: icon
+      icon: icon,
+      sort: sort
     }).then(res => {
       if (res.status === 200) resolve(res.data);
       else reject(res);
