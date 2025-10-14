@@ -8,7 +8,7 @@
       <div style="display: flex;align-items: center;">
         <div style="margin-right: 20px;">
           <el-form-item label="省" v-if="provinceList.length">
-            <el-select v-model="searchForm.province_id" placeholder="请选择内容" style="width: 240px" @change="changeProvince">
+            <el-select filterable v-model="searchForm.province_id" placeholder="请选择内容" style="width: 240px" @change="changeProvince">
               <el-option
                 v-for="item in provinceList"
                 :key="item.id"
@@ -18,7 +18,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="市">
-            <el-select v-model="searchForm.city_id" placeholder="请选择内容" style="width: 240px">
+            <el-select filterable v-model="searchForm.city_id" placeholder="请选择内容" style="width: 240px">
               <el-option
                 v-for="item in cityList"
                 :key="item.id"
@@ -139,7 +139,7 @@
         >
         <el-form :inline="true" ref="formref" id="form" :model="dialogForm" size="large" label-width="100px" :disabled="dialogFormDisabled" :rules="rules">
           <el-form-item label="省" prop="province_id">
-            <el-select v-model="dialogForm.province_id" placeholder="请选择内容" style="width: 240px" @change="changeDialogProvince">
+            <el-select v-model="dialogForm.province_id" placeholder="请选择内容" style="width: 240px" @change="changeDialogProvince" filterable>
               <el-option
                 v-for="item in dialogProvinceList"
                 :key="item.id"
@@ -149,7 +149,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="市" prop="city_id" label-width="100px">
-            <el-select v-model="dialogForm.city_id" placeholder="请选择内容" style="width: 240px">
+            <el-select v-model="dialogForm.city_id" placeholder="请选择内容" style="width: 240px" filterable>
               <el-option
                 v-for="item in dialogCityList"
                 :key="item.id"
@@ -277,6 +277,8 @@
             dialogCityList = res.list
           } else {
             cityList = res.list
+            console.log('555555555', cityList)
+            
           }
         } else {
           ElMessage({
