@@ -28,7 +28,7 @@
 
       <div>
         <el-form-item label="省" label-width="130px" prop="province">
-          <el-select v-model="formData.province" placeholder="请选择省份"  @change="changeProvince">
+          <el-select v-model="formData.province" placeholder="请选择省份" filterable @change="changeProvince">
             <el-option
               v-for="item in provinceList"
               :key="item.id"
@@ -41,7 +41,7 @@
 
       <div>
         <el-form-item label="市" label-width="130px" prop="city">
-          <el-select v-model="formData.city" placeholder="请选择市"  @change="changeCity">
+          <el-select v-model="formData.city" placeholder="请选择市" filterable @change="changeCity">
             <el-option
                 v-for="item in cityList"
                 :key="item.id"
@@ -54,7 +54,7 @@
 
       <div>
         <el-form-item label="区/县" label-width="130px" prop="county">
-          <el-select v-model="formData.county" placeholder="请选择区/县" @change="changeCounty">
+          <el-select v-model="formData.county" placeholder="请选择区/县" filterable @change="changeCounty">
             <el-option
                 v-for="item in countyList"
                 :key="item.id"

@@ -5,6 +5,7 @@
       <el-form :inline="true" id="form" :model="formData" size="large" label-width="60px" @submit.prevent>
       <el-form-item label="省份">
         <el-select
+          filterable
           v-model="formData.province_id"
           placeholder="请选择"
           @change="changeProvince"
@@ -20,6 +21,7 @@
       </el-form-item>
       <el-form-item label="市">
         <el-select
+          filterable
           v-model="formData.city_id"
           placeholder="请选择"
           @change="changeCity"
@@ -35,6 +37,7 @@
       </el-form-item>
       <el-form-item label="区县">
         <el-select
+          filterable
           v-model="formData.county_id"
           placeholder="请选择"
           @change="changeArea"

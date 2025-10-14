@@ -9,6 +9,7 @@
         <el-select
           v-model="formData.province_id"
           placeholder="请选择"
+          filterable
           @change="changeProvince"
           clearable
         >
@@ -23,6 +24,7 @@
       <el-form-item label="市">
         <el-select
           v-model="formData.city_id"
+          filterable
           placeholder="请选择"
           @change="changeCity"
           clearable
@@ -38,6 +40,7 @@
       <el-form-item label="区县">
         <el-select
           v-model="formData.county_id"
+          filterable
           placeholder="请选择"
           clearable
         >
