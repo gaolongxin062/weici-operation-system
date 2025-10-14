@@ -15,7 +15,7 @@
         <el-option
           v-for="item in provinceData"
           :key="item.id"
-          :label="item.name"
+          :label="item.province"
           :value="item.id"
         />
         </el-select>
@@ -30,7 +30,7 @@
         <el-option
           v-for="item in cityData"
           :key="item.id"
-          :label="item.name"
+          :label="item.city"
           :value="item.id"
         />
         </el-select>
@@ -44,7 +44,7 @@
         <el-option
           v-for="item in areaData"
           :key="item.id"
-          :label="item.name"
+          :label="item.county"
           :value="item.id"
         />
         </el-select>
@@ -120,10 +120,29 @@
       <el-table-column prop="trial_start_time" label="开始时间" min-width="100px" />
       <el-table-column prop="trial_end_time" label="结束时间" min-width="100px" />
       <el-table-column prop="name" label="姓名" min-width />
-      <el-table-column prop="province" label="省" min-width />
-      <el-table-column prop="city" label="市" min-width />
-      <el-table-column prop="county" label="区县" min-width />
-      <el-table-column prop="school" label="学校" min-width="230px" />
+      <el-table-column prop="province" label="认证省" min-width />
+      <el-table-column prop="city" label="认证市" min-width />
+      <el-table-column prop="county" label="认证区县" min-width />
+      <el-table-column prop="school" label="认证学校" min-width="230px" />
+      <el-table-column prop="new_province" label="省" min-width />
+      <el-table-column prop="new_city" label="市" min-width />
+      <el-table-column prop="new_county" label="区县" min-width />
+      <el-table-column prop="new_school" label="学校" min-width="230px" />
+      <el-table-column label="停用标记" min-width="100px" >
+        <template #default="scope">
+          <div>{{ (scope.row.stop_flag === 1 ? '停用' : '正常') }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="用户类型" min-width="100px" >
+        <template #default="scope">
+          <div>{{ (scope.row.user_type === 1 ? '体验用户' : '付费用户') }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="用户归属" min-width="100px" >
+        <template #default="scope">
+          <div>{{ dealUserSourceTitle(scope.row.user_source) }}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="maker_name" label="创建人" min-width />
       <el-table-column prop="make_date" label="创建日期" min-width="160px" />
       <el-table-column prop="modifier_name" label="修改人" min-width />
@@ -175,8 +194,8 @@
 </template>
 <script setup>
 import { ref, onMounted, nextTick } from 'vue';
+import aiAgentService from '@/service/AiAgentService.js';
 import basicService from '@/service/BasicService.js';
-import MemberService from '@/service/MemberService';
 import AiAgentService from '@/service/AiAgentService';
 import MemberSet from '@/components/aiagent/MemberSet';
 import CertificationSet from '@/components/CertificationSet';
@@ -353,7 +372,7 @@ function getProvinceList () {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session
   }
-  return MemberService.getProvincesList(params)
+  return aiAgentService.getProvincesList(params)
     .then((res) => {
       if (res.result_code === 200) {
         provinceData.value = res.list
@@ -366,9 +385,9 @@ function getCityList () {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    id: formData.value.province_id
+    province_id: formData.value.province_id
   }
-  return MemberService.getCityList(params)
+  return aiAgentService.getAiCityList(params)
     .then((res) => {
       if (res.result_code === 200) {
         cityData.value = res.list
@@ -402,9 +421,9 @@ function getAreaList () {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    id: formData.value.city_id
+    city_id: formData.value.city_id
   }
-  return MemberService.getCountyList(params)
+  return aiAgentService.getAiCountyList(params)
     .then((res) => {
       if (res.result_code === 200) {
         areaData.value = res.list
@@ -494,10 +513,17 @@ function dealSaveOrUpdateParams(isEdit = false) {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    trial_start_time: setConfig.value.trial_start_time, // 体验开始时间
-    trial_date: setConfig.value.trial_date, // 体验时间
+    trial_end_time: setConfig.value.trial_end_time, // 体验结束时间
+    // trial_date: setConfig.value.trial_date, // 体验时间
     user_codes: setConfig.value.user_codes, // 老师账号
+    stop_flag: setConfig.value.stop_flag, // 停用标记
+    user_source: setConfig.value.user_source, // 用户来源
+    user_type: setConfig.value.user_type, // 用户类型
     use_info: JSON.stringify(setConfig.value.use_info), // 使用次数
+    province_id: setConfig.value.province_id,
+    city_id: setConfig.value.city_id,
+    county_id: setConfig.value.county_id,
+    school_id: setConfig.value.school_id,
   }
 
   // 如果是编辑的话，需要添加id
@@ -610,6 +636,19 @@ function dealStateTitle (state) {
       return '已过期'
     case 3:
       return '待启用'
+  }
+}
+// 用户归属
+function dealUserSourceTitle (user_source) {
+  switch (+user_source) {
+    case 0:
+      return '正常用户'
+    case 1:
+      return '维学'
+    case 2:
+      return '维克多发行'
+    case 3:
+      return '经销商'
   }
 }
 // 表格选中逻辑
