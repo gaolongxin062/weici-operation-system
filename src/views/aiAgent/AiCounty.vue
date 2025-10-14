@@ -426,7 +426,6 @@
     dialogTitle.value = '编辑'
     dialogProvinceList = provinceList
     await getCityList('edit', row.province_id)
-    dialogCityList = cityList
     dialogAdd.value = true
     dialogForm.province_id = row.province_id
     dialogForm.id = row.id
