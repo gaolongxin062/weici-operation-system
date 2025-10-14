@@ -125,11 +125,11 @@
       <el-table-column prop="name" label="姓名" min-width />
       <el-table-column prop="new_province" label="省"  min-width="130px" />
       <el-table-column prop="new_city" label="市"  min-width="130px"  />
-      <el-table-column prop="new_county" label="区县"  min-width="330px" />
+      <el-table-column prop="new_county" label="区县"  min-width="230px" />
       <el-table-column prop="new_school" label="学校" min-width="330px" />
       <el-table-column prop="province" label="认证省"  min-width="130px" />
       <el-table-column prop="city" label="认证市"  min-width="130px"  />
-      <el-table-column prop="county" label="认证区县"  min-width="330px"  />
+      <el-table-column prop="county" label="认证区县"  min-width="230px"  />
       <el-table-column prop="school" label="认证学校"  min-width="330px"  />
       <el-table-column label="停用标记" min-width="100px" >
         <template #default="scope">
@@ -146,9 +146,9 @@
           <div>{{ dealUserSourceTitle(scope.row.user_source) }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="maker_name" label="创建人" min-width />
+      <el-table-column prop="maker_name" label="创建人" min-width="160px" />
       <el-table-column prop="make_date" label="创建日期" min-width="160px" />
-      <el-table-column prop="modifier_name" label="修改人" min-width />
+      <el-table-column prop="modifier_name" label="修改人" min-width="160px" />
       <el-table-column prop="modify_date" label="修改日期" min-width="160px" />
 
 
