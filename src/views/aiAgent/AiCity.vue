@@ -5,7 +5,7 @@
     </div>
 
     <el-form id="cityForms" :inline="true" :model="searchForm" size="large" label-width="60px">
-      <div style="display: flex;align-items: center;justify-content: space-between;">
+      <div style="display: flex;align-items: center;">
         <div style="margin-right: 20px;">
           <el-form-item label="省" v-if="provinceList.length">
             <el-select v-model="searchForm.province_id" placeholder="请选择内容" style="width: 240px">
@@ -26,14 +26,10 @@
               >
             </el-input>
           </el-form-item>
-        
-        </div>
-        <div>
           <el-form-item>
             <el-button @click="btnSearch">查询</el-button>
           </el-form-item>
 
-          
           <el-form-item>
             <el-button type="primary" @click="btnReset">重置</el-button>
           </el-form-item>
@@ -42,6 +38,19 @@
             <el-button type="success" @click="btnAdded">新增</el-button>
           </el-form-item>
         </div>
+        <!-- <div>
+          <el-form-item>
+            <el-button @click="btnSearch">查询</el-button>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="btnReset">重置</el-button>
+          </el-form-item>
+          
+          <el-form-item>
+            <el-button type="success" @click="btnAdded">新增</el-button>
+          </el-form-item>
+        </div> -->
       </div>
     </el-form>
     <el-table :data="cityList" class="table-info" :max-height="screenHeight" 
@@ -105,7 +114,7 @@
      <div class="add-dialog">
       <el-dialog
         v-model="dialogAdd"
-        title="新增"
+        :title="dialogTitle"
         width="500"
         :show-close="false"
         :destroy-on-close="true"
@@ -181,7 +190,7 @@
   let screenHeight = ref(0) // 表格高
   let formref = ref()
   const dialogFormDisabled = ref(false)
-
+  const dialogTitle = ref('新增')
   onMounted(async() =>{
     window.addEventListener('resize', updateScreenHeight);
     await getProvinceList()
@@ -284,6 +293,7 @@
           const res = await aiAgentService.editAiCity(params)
           if (res.result_code===200) {
             getCityList()
+            closeDialogAdd()
           }else if (res.result_code===913){
             ElMessage({
               message: '城市已存在',
@@ -300,7 +310,6 @@
               type: 'error',
             })
           }
-          closeDialogAdd()
           loading.close()
         } catch (error) {
           console.log(error)
@@ -329,10 +338,12 @@
   }
    // 新增
   const btnAdded = () => {
+    dialogTitle.value = '新增'
     dialogAdd.value = true
   }
    // 编辑
   const edit  = (row) => {
+    dialogTitle.value = '编辑'
     dialogAdd.value = true
     dialogForm.province_id = row.province_id
     dialogForm.id = row.id

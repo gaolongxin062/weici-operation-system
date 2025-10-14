@@ -5,8 +5,8 @@
     </div>
 
     <el-form id="cityForms" :inline="true" :model="searchForm" size="large" label-width="60px">
-      <div style="display: flex;align-items: center;justify-content: space-between;">
-        <div style="margin-right: 20px;">
+      <div style="display: flex;align-items: center;">
+        <div style="margin-right: 20px;display: flex;align-items: center;flex-wrap: wrap;">
           <el-form-item label="省" v-if="provinceList.length">
             <el-select v-model="searchForm.province_id" placeholder="请选择内容" style="width: 240px" @change="changeProvince">
               <el-option
@@ -47,9 +47,6 @@
             >
             </el-input>
           </el-form-item>
-        
-        </div>
-        <div>
           <el-form-item>
             <el-button @click="btnSearch">查询</el-button>
           </el-form-item>
@@ -63,6 +60,20 @@
             <el-button type="success" @click="btnAdded">新增</el-button>
           </el-form-item>
         </div>
+        <!-- <div>
+          <el-form-item>
+            <el-button @click="btnSearch">查询</el-button>
+          </el-form-item>
+
+          
+          <el-form-item>
+            <el-button type="primary" @click="btnReset">重置</el-button>
+          </el-form-item>
+          
+          <el-form-item>
+            <el-button type="success" @click="btnAdded">新增</el-button>
+          </el-form-item>
+        </div> -->
       </div>
     </el-form>
     <el-table :data="schoolList" class="table-info" :max-height="screenHeight" 
@@ -86,7 +97,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="学校" min-width="230px">
+      <el-table-column label="学校" min-width="110px">
         <template #default="scope">
           <div class="over-hidden">{{scope.row.name || '-'}}</div>
         </template>
@@ -98,7 +109,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="制单日期">
+      <el-table-column label="制单日期" min-width="110px">
         <template #default="scope">
           <div>{{scope.row.make_date || '-'}}</div>
         </template>
@@ -110,7 +121,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="修改日期">
+      <el-table-column label="修改日期" min-width="110px">
         <template #default="scope">
           <div>{{scope.row.modify_date || '-'}}</div>
         </template>
@@ -138,7 +149,7 @@
      <div class="add-dialog">
       <el-dialog
         v-model="dialogAdd"
-        title="新增"
+        :title="dialogTitle"
         width="500"
         :show-close="false"
         :destroy-on-close="true"
@@ -249,7 +260,7 @@
   let screenHeight = ref(0) // 表格高
   let formref = ref()
   const dialogFormDisabled = ref(false)
-
+  const dialogTitle = ref('新增')
   onMounted(async() =>{
     window.addEventListener('resize', updateScreenHeight);
     await getProvinceList()
@@ -458,6 +469,7 @@
           const res = await aiAgentService.editAiSchool(params)
           if (res.result_code === 200) {
             getSchoolList()
+            closeDialogAdd()
           }else if (res.result_code===913){
             ElMessage({
               message: '学校已存在',
@@ -469,7 +481,6 @@
               type: 'error'
             })
           }
-          closeDialogAdd()
           loading.close()
         } catch (error) {
           console.log(error)
@@ -502,11 +513,13 @@
   }
    // 新增
   const btnAdded = () => {
+    dialogTitle.value = '新增'
     dialogProvinceList = provinceList
     dialogAdd.value = true
   }
    // 编辑
   const edit  = async (row) => {
+    dialogTitle.value = '编辑'
     dialogProvinceList = provinceList
     await getCityList('edit', row.province_id)
     await getCountyList('edit', row.city_id)
