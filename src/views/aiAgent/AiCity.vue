@@ -265,13 +265,21 @@
     }
   }
    // 取消新增
-  const closeDialogAdd = () => {
-    dialogAdd.value = false
-    formref.value.resetFields()
-    dialogForm.province_id = ''
-    dialogForm.city = ''
-    dialogForm.id = ''
-    dialogFormDisabled.value = false
+  const closeDialogAdd = (val) => {
+    if (val==='add') {
+      // formref.value.resetFields()
+      dialogForm.id = ''
+      dialogForm.city = ''
+      dialogFormDisabled.value = false
+    } else {
+      dialogAdd.value = false
+      formref.value.resetFields()
+      dialogForm.province_id = ''
+      dialogForm.city = ''
+      dialogForm.id = ''
+      dialogFormDisabled.value = false
+    }
+
   }
    // 确定新增/编辑
   const makeSureBtn = () => {
@@ -293,7 +301,11 @@
           const res = await aiAgentService.editAiCity(params)
           if (res.result_code===200) {
             getCityList()
-            closeDialogAdd()
+            if (dialogTitle.value === '新增') {
+              closeDialogAdd('add')
+            } else {
+              closeDialogAdd()
+            }
           }else if (res.result_code===913){
             ElMessage({
               message: '城市已存在',

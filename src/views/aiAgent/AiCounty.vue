@@ -264,8 +264,6 @@
     const params = {
       session: vocabularyStore.session,
       user_name: vocabularyStore.user_name,
-      page_index: pageIndex.value,
-      page_size: pageSize.value,
       province_id: province_id,
       city: ''
     }
@@ -277,8 +275,6 @@
             dialogCityList = res.list
           } else {
             cityList = res.list
-            console.log('555555555', cityList)
-            
           }
         } else {
           ElMessage({
@@ -346,16 +342,23 @@
     }
   }
    // 取消新增
-  const closeDialogAdd = () => {
-    dialogProvinceList = []
-    dialogCityList = []
-    dialogAdd.value = false
-    formref.value.resetFields()
-    dialogForm.province_id = ''
-    dialogForm.city_id = ''
-    dialogForm.county = ''
-    dialogForm.id = ''
-    dialogFormDisabled.value = false
+  const closeDialogAdd = (val) => {
+    if (val==='add') {
+      dialogForm.county = ''
+      dialogForm.id = ''
+      dialogFormDisabled.value = false
+    } else {
+      dialogProvinceList = []
+      dialogCityList = []
+      dialogAdd.value = false
+      formref.value.resetFields()
+      dialogForm.province_id = ''
+      dialogForm.city_id = ''
+      dialogForm.county = ''
+      dialogForm.id = ''
+      dialogFormDisabled.value = false
+    }
+
   }
    // 确定新增/编辑
   const makeSureBtn = () => {
@@ -378,7 +381,12 @@
           const res = await aiAgentService.editAiCounty(params)
           if (res.result_code === 200) {
             getCountyList()
-            closeDialogAdd()
+            // closeDialogAdd()
+            if (dialogTitle.value === '新增') {
+              closeDialogAdd('add')
+            } else {
+              closeDialogAdd()
+            }
           }else if (res.result_code===913){
             ElMessage({
               message: '区县已存在',

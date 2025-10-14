@@ -8,7 +8,7 @@
       <div style="display: flex;align-items: center;">
         <div style="margin-right: 20px;display: flex;align-items: center;flex-wrap: wrap;">
           <el-form-item label="省" v-if="provinceList.length">
-            <el-select v-model="searchForm.province_id" placeholder="请选择内容" style="width: 240px" @change="changeProvince">
+            <el-select filterable v-model="searchForm.province_id" placeholder="请选择内容" style="width: 240px" @change="changeProvince">
               <el-option
                 v-for="item in provinceList"
                 :key="item.id"
@@ -18,7 +18,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="市">
-            <el-select v-model="searchForm.city_id" placeholder="请选择内容" style="width: 240px" @change="changeCity">
+            <el-select filterable v-model="searchForm.city_id" placeholder="请选择内容" style="width: 240px" @change="changeCity">
               <el-option
                 v-for="item in cityList"
                 :key="item.id"
@@ -28,7 +28,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="区县">
-            <el-select v-model="searchForm.county_id" placeholder="请选择内容" style="width: 240px">
+            <el-select filterable v-model="searchForm.county_id" placeholder="请选择内容" style="width: 240px">
               <el-option
                 v-for="item in countyList"
                 :key="item.id"
@@ -157,7 +157,7 @@
         >
         <el-form :inline="true" ref="formref" id="form" :model="dialogForm" size="large" label-width="100px" :disabled="dialogFormDisabled" :rules="rules">
           <el-form-item label="省" prop="province_id">
-            <el-select v-model="dialogForm.province_id" placeholder="请选择内容" style="width: 240px" @change="changeDialogProvince">
+            <el-select filterable v-model="dialogForm.province_id" placeholder="请选择内容" style="width: 240px" @change="changeDialogProvince">
               <el-option
                 v-for="item in dialogProvinceList"
                 :key="item.id"
@@ -167,7 +167,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="市" prop="city_id" label-width="100px">
-            <el-select v-model="dialogForm.city_id" placeholder="请选择内容" style="width: 240px"  @change="changeDialogCity">
+            <el-select filterable v-model="dialogForm.city_id" placeholder="请选择内容" style="width: 240px"  @change="changeDialogCity">
               <el-option
                 v-for="item in dialogCityList"
                 :key="item.id"
@@ -177,7 +177,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="区县" prop="county_id" label-width="100px">
-            <el-select v-model="dialogForm.county_id" placeholder="请选择内容" style="width: 240px">
+            <el-select filterable v-model="dialogForm.county_id" placeholder="请选择内容" style="width: 240px">
               <el-option
                 v-for="item in dialogCountyListt"
                 :key="item.id"
@@ -318,8 +318,6 @@
     const params = {
       session: vocabularyStore.session,
       user_name: vocabularyStore.user_name,
-      page_index: pageIndex.value,
-      page_size: pageSize.value,
       province_id: province_id,
       city: ''
     }
@@ -352,8 +350,6 @@
     const params = {
       session: vocabularyStore.session,
       user_name: vocabularyStore.user_name,
-      page_index: pageIndex.value,
-      page_size: pageSize.value,
       province_id: type === 'edit' ? dialogForm.province_id : searchForm.province_id,
       city_id: city_id,
       county: searchForm.county
@@ -434,18 +430,25 @@
     }
   }
    // 取消新增
-  const closeDialogAdd = () => {
-    dialogProvinceList = []
-    dialogCityList = []
-    dialogCountyListt = []
-    dialogAdd.value = false
-    formref.value.resetFields()
-    dialogForm.province_id = ''
-    dialogForm.city_id = ''
-    dialogForm.county_id = ''
-    dialogForm.school = ''
-    dialogForm.id = ''
-    dialogFormDisabled.value = false
+  const closeDialogAdd = (val) => {
+    if (val === 'add') {
+      dialogForm.school = ''
+      dialogForm.id = ''
+      dialogFormDisabled.value = false
+    } else {
+      dialogProvinceList = []
+      dialogCityList = []
+      dialogCountyListt = []
+      dialogAdd.value = false
+      formref.value.resetFields()
+      dialogForm.province_id = ''
+      dialogForm.city_id = ''
+      dialogForm.county_id = ''
+      dialogForm.school = ''
+      dialogForm.id = ''
+      dialogFormDisabled.value = false
+    }
+
   }
    // 确定新增/编辑
   const makeSureBtn = () => {
@@ -469,7 +472,11 @@
           const res = await aiAgentService.editAiSchool(params)
           if (res.result_code === 200) {
             getSchoolList()
-            closeDialogAdd()
+            if (dialogTitle.value === '新增') {
+              closeDialogAdd('add')
+            } else {
+              closeDialogAdd()
+            }
           }else if (res.result_code===913){
             ElMessage({
               message: '学校已存在',
