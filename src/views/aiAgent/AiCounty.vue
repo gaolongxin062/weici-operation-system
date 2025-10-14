@@ -104,9 +104,9 @@
           <el-button class="button-style" link type="primary" @click="edit(scope.row)">
             修改
           </el-button>
-          <el-button class="button-style" link type="primary" @click="detail(scope.row)">
+          <!-- <el-button class="button-style" link type="primary" @click="detail(scope.row)">
             查看
-          </el-button>
+          </el-button> -->
           <el-button class="button-style" link type="danger" @click="del(scope.row)">
             删除
           </el-button>
@@ -419,17 +419,17 @@
     
   }
    // 查看
-  const detail =  async (row) => {
-    dialogProvinceList = provinceList
-    await getCityList('edit', row.province_id)
-    dialogCityList = cityList
-    dialogAdd.value = true
-    dialogForm.province_id = row.province_id
-    dialogForm.id = row.id
-    dialogForm.city_id = row.city_id
-    dialogForm.county = row.county
-    dialogFormDisabled.value = true
-  }
+  // const detail =  async (row) => {
+  //   dialogProvinceList = provinceList
+  //   await getCityList('edit', row.province_id)
+  //   dialogCityList = cityList
+  //   dialogAdd.value = true
+  //   dialogForm.province_id = row.province_id
+  //   dialogForm.id = row.id
+  //   dialogForm.city_id = row.city_id
+  //   dialogForm.county = row.county
+  //   dialogFormDisabled.value = true
+  // }
   // 删除
   const del = (row) => {
     console.log('row222', row)
