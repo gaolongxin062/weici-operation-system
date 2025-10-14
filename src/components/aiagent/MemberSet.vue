@@ -27,7 +27,7 @@
 
 
       <div>
-        <el-form-item label="省" label-width="130px">
+        <el-form-item label="省" label-width="130px" prop="province">
           <el-select v-model="formData.province" placeholder="请选择省份"  @change="changeProvince">
             <el-option
               v-for="item in provinceList"
@@ -40,7 +40,7 @@
       </div>
 
       <div>
-        <el-form-item label="市" label-width="130px">
+        <el-form-item label="市" label-width="130px" prop="city">
           <el-select v-model="formData.city" placeholder="请选择市"  @change="changeCity">
             <el-option
                 v-for="item in cityList"
@@ -53,7 +53,7 @@
       </div>
 
       <div>
-        <el-form-item label="区/县" label-width="130px">
+        <el-form-item label="区/县" label-width="130px" prop="county">
           <el-select v-model="formData.county" placeholder="请选择区/县" @change="changeCounty">
             <el-option
                 v-for="item in countyList"
@@ -66,7 +66,7 @@
       </div>
     
       <div  style="position:relative;" >
-        <el-form-item label="学校名称" label-width="130px">
+        <el-form-item label="学校名称" label-width="130px" prop="school">
           <el-select
             v-model="formData.school"
             filterable
@@ -176,8 +176,8 @@
     city: '', // 市
     county: '', // 区县
     school:'', // 学校
-    user_type: '', // 用户类型
-    user_source: '', // 用户来源
+    user_type: 1, // 用户类型
+    user_source: 0, // 用户来源
     stop_flag: false, // 停用标记 0正常 停用
     use_info: [] // 使用次数
   })
@@ -229,18 +229,18 @@
     trial_end_time: [
       { required: true, message: '请输入体验结束时间！', trigger: 'blur' }
     ],
-    // province: [
-    //   { required: true, message: '请选择省份！', trigger: 'change' }
-    // ],
-    // city: [
-    //   { required: true, message: '请选择市！', trigger: 'change' }
-    // ],
-    // county: [
-    //   { required: true, message: '请选择区/县！', trigger: 'change' }
-    // ],
-    // school: [
-    //   { required: true, message: '请选择学校名称！', trigger: 'change' }
-    // ],
+    province: [
+      { required: true, message: '请选择省份！', trigger: 'change' }
+    ],
+    city: [
+      { required: true, message: '请选择市！', trigger: 'change' }
+    ],
+    county: [
+      { required: true, message: '请选择区/县！', trigger: 'change' }
+    ],
+    school: [
+      { required: true, message: '请选择学校名称！', trigger: 'change' }
+    ],
     user_type: [
       { required: true, message: '请选择用户类型！', trigger: 'change' }
     ],
