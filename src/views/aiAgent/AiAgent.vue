@@ -204,9 +204,10 @@ import MemberSet from '@/components/aiagent/MemberSet';
 import CertificationSet from '@/components/CertificationSet';
 import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useScreenHeight } from '@/hooks/useScreenHeight.js';
+const { screenHeight } = useScreenHeight();
 let vocabularyStore = useVocabularyStore();
 let loading = ref(false) // 加载标记
-let screenHeight = ref(0)
 let total = ref(0)
 let pageIndex = ref(1)
 let pageSize = ref(10)

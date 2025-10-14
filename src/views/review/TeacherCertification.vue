@@ -43,8 +43,7 @@
         </div>
       </div>
     </el-form>
-
-    <el-table :data="teacherList" class="table-info" :max-height="screenHeight" 
+    <el-table :data="teacherList" class="table-info" :max-height="screenHeight"
       v-loading="loading" header-cell-class-name="header_row_class" ref="multipleTable"  stripe
       element-loading-text="拼命加载中，主人请稍后...">
 
@@ -290,6 +289,8 @@
   import ReviewService from '@/service/ReviewService.js';
   import basicService from '@/service/BasicService.js';
   import { useVocabularyStore } from '@/store/vocabulary';
+  import { useScreenHeight } from '@/hooks/useScreenHeight.js';
+  const { screenHeight } = useScreenHeight();
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
   let vocabularyStore = useVocabularyStore();
   let teacherForm = reactive({
@@ -330,7 +331,6 @@
   let total = ref(0)
   let teacherList = ref([
   ]) // 表格数据
-  let screenHeight = ref(0) // 表格高
   let loading = ref(false)
   let teacherIds = ref(0)
   let formref = ref()
@@ -385,8 +385,6 @@
   let certificationPower = ref(false) // 用户是否有认证/取消认证操作权限
   onMounted(() =>{
     getUserPower() // 获取用户权限列表
-    window.addEventListener('resize', updateScreenHeight);
-    updateScreenHeight();
     getListData() // 表格数据
     getAppList() // 产品列表
   })
@@ -409,27 +407,6 @@
         loading.value = false
       })
   } // 获取用户权限
-  function updateScreenHeight () {
-    var element = document.getElementById('forms');
-    if (element) {
-      var rect = element.getBoundingClientRect();
-      var formHeight = rect.height // form表单的高
-    }
-
-    var titleElement = document.getElementById('page-title');
-    if (titleElement) {
-      var rectTitle = titleElement.getBoundingClientRect();
-      var titleHeight = rectTitle.height // 标题-页头高度
-      
-      var pageHeight = 80 // 分页高度
-
-      var menuHeight = 64 // 导航栏高度
-
-      // console.log(height)
-      screenHeight.value = window.innerHeight - formHeight - titleHeight - pageHeight - menuHeight
-      // wordSelectHeight.value = window.innerHeight - titleHeight - menuHeight - 50
-    }
-  }
   function handleCurrentChange (page) { // 切换下一页
     pageIndex.value = page
     getListData() // 表格数据
