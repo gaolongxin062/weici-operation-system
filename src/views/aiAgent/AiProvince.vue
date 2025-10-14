@@ -4,8 +4,8 @@
       <h4>省列表</h4>
     </div>
 
-    <el-form id="cityForms" :inline="true" :model="searchForm" size="large" label-width="80px">
-      <div style="display: flex;align-items: center;justify-content: flex-end;">
+    <el-form id="cityForms" :inline="true" :model="searchForm" size="large" label-width="60px">
+      <div style="display: flex;align-items: center;justify-content: space-between;">
         <div style="margin-right: 20px;">
           <el-form-item label="省">
             <el-input style="width: 240px" 
