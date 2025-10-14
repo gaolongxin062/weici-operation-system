@@ -88,9 +88,9 @@
           <el-button class="button-style" link type="primary" @click="edit(scope.row)">
             修改
           </el-button>
-          <el-button class="button-style" link type="primary" @click="detail(scope.row)">
+          <!-- <el-button class="button-style" link type="primary" @click="detail(scope.row)">
             查看
-          </el-button>
+          </el-button> -->
           <el-button class="button-style" link type="danger" @click="del(scope.row)">
             删除
           </el-button>
@@ -218,13 +218,21 @@
     }
     try {
       const res = await aiAgentService.getAiCityList(params)
-      if (res.list && res.list.length) {
-        cityList.value = res.list
-        total.value = res.total
+      if (res.result_code === 200) {
+        if (res.list && res.list.length) {
+          cityList.value = res.list
+          total.value = res.total
+        } else {
+          cityList.value = []
+          total.value = 0
+        }
       } else {
-        cityList.value = []
-        total.value = 0
+        ElMessage({
+          message: res.description,
+          type: 'error',
+        })
       }
+
     } catch (error) {
       console.error('获取列表失败', error)
     }  
@@ -274,8 +282,14 @@
         }
         try {
           const res = await aiAgentService.editAiCity(params)
-          console.log('res', res)
-          getCityList()
+          if (res.result_code===200) {
+            getCityList()
+          } else {
+            ElMessage({
+              message: res.description,
+              type: 'error',
+            })
+          }
           closeDialogAdd()
           loading.close()
         } catch (error) {
@@ -317,13 +331,13 @@
     
   }
    // 查看
-  const detail =  (row) => {
-    dialogAdd.value = true
-    dialogForm.province_id = row.province_id
-    dialogForm.id = row.id
-    dialogForm.city = row.city
-    dialogFormDisabled.value = true
-  }
+  // const detail =  (row) => {
+  //   dialogAdd.value = true
+  //   dialogForm.province_id = row.province_id
+  //   dialogForm.id = row.id
+  //   dialogForm.city = row.city
+  //   dialogFormDisabled.value = true
+  // }
   // 删除
   const del = (row) => {
     console.log('row222', row)

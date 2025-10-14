@@ -262,13 +262,19 @@
     try {
       const res = await aiAgentService.getAiCityList(params)
       if (res.list && res.list.length) {
-        if (type === 'edit') {
-          dialogCityList = res.list
+        if (res.result_code === 200) {
+          if (type === 'edit') {
+            dialogCityList = res.list
+          } else {
+            cityList = res.list
+          }
         } else {
-          cityList = res.list
+          ElMessage({
+            message: res.description,
+            type: 'error',
+          })
         }
         console.log(cityList)
-        
       } else {
         cityList.value = []
         dialogCityList = []
@@ -290,13 +296,21 @@
     }
     try {
       const res = await aiAgentService.getAiCountyList(params)
-      if (res.list && res.list.length) {
-        countyList.value = res.list
-        total.value = res.total
+      if (res.result_code === 200) {
+        if (res.list && res.list.length) {
+          countyList.value = res.list
+          total.value = res.total
+        } else {
+          countyList.value = []
+          total.value = 0
+        }
       } else {
-        countyList.value = []
-        total.value = 0
+        ElMessage({
+          message: res.description,
+          type: 'error',
+        })
       }
+
     } catch (error) {
       console.error('获取列表失败', error)
     }  
@@ -350,8 +364,14 @@
         }
         try {
           const res = await aiAgentService.editAiCounty(params)
-          console.log('res', res)
-          getCountyList()
+          if (res.result_code === 200) {
+            getCountyList()
+          } else {
+            ElMessage({
+              message: res.description,
+              type: 'error',
+            })
+          }
           closeDialogAdd()
           loading.close()
         } catch (error) {

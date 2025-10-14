@@ -265,10 +265,18 @@
     }
     try {
       const res = await aiAgentService.getProvincesList(params)
-      if (res.list && res.list.length) {
-        provinceList.value = res.list
+      if (res.result_code === 200) {
+        if (res.list && res.list.length) {
+          provinceList.value = res.list
+        } else {
+          provinceList.value = []
+        }
       } else {
-        provinceList.value = []
+        ElMessage({
+          message: res.description,
+          type: 'info',
+          duration: 3000
+        })
       }
     } catch (error) {
       console.error('获取省份列表失败', error)
@@ -306,15 +314,23 @@
     }
     try {
       const res = await aiAgentService.getAiCityList(params)
-      if (res.list && res.list.length) {
-        if(type === 'edit') {
-          dialogCityList = res.list
+      if (res.result_code === 200) {
+        if (res.list && res.list.length) {
+          if(type === 'edit') {
+            dialogCityList = res.list
+          } else {
+            cityList.value = res.list
+          }
         } else {
-          cityList.value = res.list
+          cityList.value = []
+          dialogCityList = []
         }
       } else {
-        cityList.value = []
-        dialogCityList = []
+        ElMessage({
+          message: res.description,
+          type: 'info',
+          duration: 3000
+        })
       }
     } catch (error) {
       console.error('获取列表失败', error)
@@ -333,15 +349,22 @@
     }
     try {
       const res = await aiAgentService.getAiCountyList(params)
-      if (res.list && res.list.length) {
-        if(type === 'edit') {
-          dialogCountyListt = res.list
+      if (res.result_code === 200) {
+        if (res.list && res.list.length) {
+          if(type === 'edit') {
+            dialogCountyListt = res.list
+          } else {
+            countyList.value = res.list
+          }
         } else {
-          countyList.value = res.list
+          countyList.value = []
+          dialogCountyListt = []
         }
       } else {
-        countyList.value = []
-        dialogCountyListt = []
+        ElMessage({
+          message: res.description,
+          type: 'error'
+        })
       }
     } catch (error) {
       console.error('获取列表失败', error)
@@ -362,13 +385,21 @@
     }
     try {
       const res = await aiAgentService.getAiSchoolList(params)
-      if (res.list && res.list.length) {
-        schoolList.value = res.list
-        total.value = res.total
+      if (res.result_code === 200) {
+        if (res.list && res.list.length) {
+          schoolList.value = res.list
+          total.value = res.total
+        } else {
+          schoolList.value = []
+          total.value = 0
+        }
       } else {
-        schoolList.value = []
-        total.value = 0
+        ElMessage({
+          message: res.description,
+          type: 'error'
+        })
       }
+
     } catch (error) {
       console.error('获取列表失败', error)
     }  
@@ -425,8 +456,14 @@
         }
         try {
           const res = await aiAgentService.editAiSchool(params)
-          console.log('res', res)
-          getSchoolList()
+          if (res.result_code === 200) {
+            getSchoolList()
+          } else {
+            ElMessage({
+              message: res.description,
+              type: 'error'
+            })
+          }
           closeDialogAdd()
           loading.close()
         } catch (error) {
@@ -468,15 +505,12 @@
     dialogProvinceList = provinceList
     await getCityList('edit', row.province_id)
     await getCountyList('edit', row.city_id)
-    // dialogCityList = cityList
-    // dialogCountyListt = countyList
     dialogAdd.value = true
     dialogForm.province_id = row.province_id
     dialogForm.id = row.id
     dialogForm.city_id = row.city_id
     dialogForm.county_id = row.county_id
     dialogForm.school = row.name
-    console.log('2222', row)
     
   }
    // 查看
@@ -484,8 +518,6 @@
     dialogProvinceList = provinceList
     await getCityList('edit', row.province_id)
     await getCountyList('edit', row.city_id)
-    // dialogCityList = cityList
-    // dialogCountyListt = countyList
     dialogAdd.value = true
     dialogForm.province_id = row.province_id
     dialogForm.id = row.id

@@ -71,9 +71,9 @@
           <el-button class="button-style" link type="primary" @click="edit(scope.row)">
             修改
           </el-button>
-          <el-button class="button-style" link type="primary" @click="detail(scope.row)">
+          <!-- <el-button class="button-style" link type="primary" @click="detail(scope.row)">
             查看
-          </el-button>
+          </el-button> -->
           <el-button class="button-style" link type="danger" @click="del(scope.row)">
             删除
           </el-button>
@@ -166,13 +166,21 @@
     }
     try {
       const res = await aiAgentService.getProvincesList(params)
-      if (res.list && res.list.length) {
-        provinceList.value = res.list
-        total.value = res.total
+      if (res.result_code===200) {
+        if (res.list && res.list.length) {
+          provinceList.value = res.list
+          total.value = res.total
+        } else {
+          provinceList.value = []
+          total.value = 0
+        }
       } else {
-        provinceList.value = []
-        total.value = 0
+        ElMessage({
+          message: res.description,
+          type: 'error',
+        })
       }
+
     } catch (error) {
       console.error('获取省份列表失败', error)
     }  
@@ -220,9 +228,15 @@
         }
         try {
           const res = await aiAgentService.editProvinces(params)
-          console.log('res', res)
+          if (res.result_code===200) {
+            getProvinceList()
+          } else {
+            ElMessage({
+              message: res.description,
+              type: 'error',
+            })
+          }
           loading.close()
-          getProvinceList()
           closeDialogAdd()
         } catch (error) {
           console.log(error)
@@ -259,11 +273,11 @@
     dialogForm.id = row.id
   }
    // 查看
-  const detail =  (row) => {
-    dialogAdd.value = true
-    dialogForm.province = row.province
-    dialogFormDisabled.value = true
-  }
+  // const detail =  (row) => {
+  //   dialogAdd.value = true
+  //   dialogForm.province = row.province
+  //   dialogFormDisabled.value = true
+  // }
   // 删除
   const del = (row) => {
     ElMessageBox.confirm(
