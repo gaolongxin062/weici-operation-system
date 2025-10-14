@@ -54,7 +54,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="产品">
+      <el-table-column label="产品" width="180">
         <template #default="scope">
           <div>{{scope.row.app_name}}</div>
         </template>
@@ -66,31 +66,31 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="姓名">
+      <el-table-column label="姓名" width="120">
         <template #default="scope">
           <div>{{scope.row.name}}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="省">
+      <el-table-column label="省" width="120">
         <template #default="scope">
           <div>{{scope.row.province}}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="市">
+      <el-table-column label="市" width="120">
         <template #default="scope">
           <div>{{scope.row.city}}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="区县">
+      <el-table-column label="区县" width="120">
         <template #default="scope">
           <div>{{scope.row.county}}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="学校" width="200">
+      <el-table-column label="学校" width="220">
         <template #default="scope">
           <div>{{scope.row.school}}</div>
         </template>
