@@ -157,6 +157,8 @@
 <script setup>
   import { ref, onMounted, defineProps, defineEmits} from 'vue';
   import { useVocabularyStore } from '@/store/vocabulary';
+  // import userSourceJsonData from '@/data/userSource.json'; // 用户来源
+  // import userTypeJsonData from '@/data/userType.json'; // 用户类型
   import { computed } from '@vue/reactivity';
   import { ElMessage } from 'element-plus';
   import aiAgentService from '@/service/AiAgentService.js';
@@ -207,6 +209,10 @@
     {
       id: 3,
       name: '经销商'
+    },
+    {
+      id: 4,
+      name: '维克多编辑'
     }
   ]) // 用户来源
   let provinceList = ref([
@@ -305,6 +311,8 @@
     'saveDialog',
   ])
   onMounted (() => {
+    // userSourceList.value = userSourceJsonData // 用户来源
+    // userTypeList.value = userTypeJsonData // 用户类型
     setDefaultConfig() // 设置默认设置
     getProvinceList() // 获取省份
   })

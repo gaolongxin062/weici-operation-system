@@ -653,6 +653,8 @@ function dealUserSourceTitle (user_source) {
       return '维克多发行'
     case 3:
       return '经销商'
+    case 4:
+      return '维克多编辑'
   }
 }
 // 表格选中逻辑
