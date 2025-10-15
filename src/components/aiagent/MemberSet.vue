@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" :title="dealTitle" width="1000" @close="closeDialog" append-to-body>
+  <el-dialog v-model="dialogVisible" :title="dealTitle" width="1000" @close="closeDialog" append-to-body top="7vh">
     <el-form ref="formRef" id="form" :model="formData" size="large" label-width="100px" :rules="rules">
 
       <el-form-item label="选择账号" label-width="130px" prop="user_codes">
@@ -18,15 +18,17 @@
            @change="experienceDaysChange"
          />
       </el-form-item> -->
-      <el-form-item label="开始时间" label-width="130px" prop="trial_start_time">
-        <el-date-picker v-model="formData.trial_start_time" value-format="YYYY-MM-DD" type="date" :disabled="true" placeholder="请选择开始时间" clearable />
-      </el-form-item>
-      <el-form-item label="结束时间" label-width="130px" prop="trial_end_time">
-        <el-date-picker v-model="formData.trial_end_time" value-format="YYYY-MM-DD" type="date" placeholder="请选择结束时间" clearable />
-      </el-form-item>
+      <div style="display: flex;">
+        <el-form-item label="开始时间" label-width="130px" prop="trial_start_time">
+          <el-date-picker v-model="formData.trial_start_time" value-format="YYYY-MM-DD" type="date" :disabled="true" placeholder="请选择开始时间" clearable />
+        </el-form-item>
+        <el-form-item label="结束时间" label-width="130px" prop="trial_end_time">
+          <el-date-picker v-model="formData.trial_end_time" value-format="YYYY-MM-DD" type="date" placeholder="请选择结束时间" clearable />
+        </el-form-item>
+      </div>
 
 
-      <div>
+      <div style="display: flex;" class="area">
         <el-form-item label="省" label-width="130px" prop="province">
           <el-select v-model="formData.province" placeholder="请选择省份" filterable @change="changeProvince">
             <el-option
@@ -37,9 +39,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-      </div>
 
-      <div>
         <el-form-item label="市" label-width="130px" prop="city">
           <el-select v-model="formData.city" placeholder="请选择市" filterable @change="changeCity">
             <el-option
@@ -50,9 +50,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-      </div>
 
-      <div>
         <el-form-item label="区/县" label-width="130px" prop="county">
           <el-select v-model="formData.county" placeholder="请选择区/县" filterable @change="changeCounty">
             <el-option
@@ -65,25 +63,23 @@
         </el-form-item>
       </div>
     
-      <div  style="position:relative;" >
-        <el-form-item label="学校名称" label-width="130px" prop="school">
-          <el-select
-            v-model="formData.school"
-            filterable
-            placeholder="请选择/搜索所在学校名称"
-            clearable
-          >
-            <el-option
-              v-for="item in schoolList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-      </div>
+      <el-form-item label="学校名称" label-width="130px" prop="school">
+        <el-select
+          v-model="formData.school"
+          filterable
+          placeholder="请选择/搜索所在学校名称"
+          clearable
+        >
+          <el-option
+            v-for="item in schoolList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
 
-      <div  style="position:relative;" >
+      <div  style="display: flex;" class="area">
         <el-form-item label="用户类型" prop="user_type" label-width="130px">
           <el-select
             v-model="formData.user_type"
@@ -99,9 +95,7 @@
             />
           </el-select>
         </el-form-item>
-      </div>
 
-      <div  style="position:relative;" >
         <el-form-item label="用户来源" prop="user_source" label-width="130px">
           <el-select
             v-model="formData.user_source"
@@ -117,11 +111,11 @@
             />
           </el-select>
         </el-form-item>
-      </div>
 
-      <el-form-item label="停用标记" label-width="130px">
-        <el-checkbox v-model="formData.stop_flag"/>
-      </el-form-item>
+        <el-form-item label="停用标记" label-width="130px">
+          <el-checkbox v-model="formData.stop_flag"/>
+        </el-form-item>
+      </div>
 
       <el-form-item label="限制使用次数" label-width="130px" prop="use_points" v-if="formData.use_info.length">
         <div class="user_info_box">
@@ -567,7 +561,9 @@
 #form .el-select {
   --el-select-width: 350px;
 }
-
+#form .area .el-select {
+  --el-select-width: 180px;
+}
 #form .el-input {
   --el-input-width: 350px;
 }
