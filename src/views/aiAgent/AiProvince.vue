@@ -30,7 +30,7 @@
       header-cell-class-name="header_row_class" ref="multipleTable" stripe element-loading-text="拼命加载中，主人请稍后...">
       <el-table-column label="省">
         <template #default="scope">
-          <div class="over-hidden">{{ scope.row.province || '-' }}</div>
+          <div>{{ scope.row.province || '-' }}</div>
         </template>
       </el-table-column>
 
