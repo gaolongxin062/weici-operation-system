@@ -4,7 +4,7 @@
       <h4>省列表</h4>
     </div>
 
-    <el-form id="cityForms" :inline="true" :model="searchForm" size="large" label-width="60px">
+    <el-form id="forms" :inline="true" :model="searchForm" size="large" label-width="60px">
       <div style="display: flex;align-items: center;">
         <div style="margin-right: 20px;">
           <el-form-item label="省">
@@ -134,6 +134,8 @@
 
 <script setup>
   import { ref, onMounted, reactive} from 'vue';
+  import { useScreenHeight } from '@/hooks/useScreenHeight.js';
+  const { screenHeight } = useScreenHeight();
   import basicService from '@/service/BasicService.js';
   import aiAgentService from '@/service/AiAgentService.js';
   import { useVocabularyStore } from '@/store/vocabulary';
@@ -157,7 +159,6 @@
       { required: true, message: '请输入', trigger: 'blur' }
     ]
   });
-  let screenHeight = ref(0) // 表格高
   let formref = ref()
   const dialogFormDisabled = ref(false)
   const dialogTitle = ref('新增')
@@ -167,8 +168,6 @@
   onMounted(() =>{
     getUserPower()
     getProvinceList()
-    window.addEventListener('resize', updateScreenHeight);
-    updateScreenHeight();
   })
   // 获取用户权限
   const getUserPower = () => {
@@ -218,24 +217,6 @@
     } catch (error) {
       console.error('获取省份列表失败', error)
     }  
-  }
-  const updateScreenHeight =  () => {
-    var element = document.getElementById('cityForms');
-    if (element) {
-      var rect = element.getBoundingClientRect();
-      var formHeight = rect.height // form表单的高
-    }
-
-    var titleElement = document.getElementById('page-title');
-    if (titleElement) {
-      var rectTitle = titleElement.getBoundingClientRect();
-      var titleHeight = rectTitle.height // 标题-页头高度
-      
-      var pageHeight = 80 // 分页高度
-
-      var menuHeight = 64 // 导航栏高度
-      screenHeight.value = window.innerHeight - formHeight - titleHeight - pageHeight - menuHeight
-    }
   }
    // 取消新增
   const closeDialogAdd = () => {
@@ -342,6 +323,12 @@
             message: '删除成功',
             type: 'success',
             duration: 1000
+          })
+        } else if(res.result_code === 919) {
+          ElMessage({
+            message: '正在被引用,禁止删除',
+            type: 'error',
+            duration: 3000
           })
         } else {
           ElMessage({

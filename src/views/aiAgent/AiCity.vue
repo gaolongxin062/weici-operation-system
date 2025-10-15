@@ -4,7 +4,7 @@
       <h4>市列表</h4>
     </div>
 
-    <el-form id="cityForms" :inline="true" :model="searchForm" size="large" label-width="60px">
+    <el-form id="forms" :inline="true" :model="searchForm" size="large" label-width="60px">
       <div style="display: flex;align-items: center;">
         <div style="margin-right: 20px;">
           <el-form-item label="省" v-if="provinceList.length">
@@ -161,6 +161,8 @@
   import { ref, onMounted, reactive} from 'vue';
   import basicService from '@/service/BasicService.js';
   import aiAgentService from '@/service/AiAgentService.js';
+  import { useScreenHeight } from '@/hooks/useScreenHeight.js';
+  const { screenHeight } = useScreenHeight();
   import { useVocabularyStore } from '@/store/vocabulary';
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
   let vocabularyStore = useVocabularyStore();
@@ -188,7 +190,6 @@
       { required: true, message: '请输入', trigger: 'blur' }
     ]
   });
-  let screenHeight = ref(0) // 表格高
   let formref = ref()
   const dialogFormDisabled = ref(false)
   const dialogTitle = ref('新增')
@@ -197,10 +198,8 @@
   const deletePower = ref(false)
   onMounted(async() =>{
     getUserPower()
-    window.addEventListener('resize', updateScreenHeight);
     await getProvinceList()
     await getCityList()
-    updateScreenHeight()
   })
     // 获取用户权限
     const getUserPower = () => {
@@ -269,24 +268,6 @@
     } catch (error) {
       console.error('获取列表失败', error)
     }  
-  }
-  const updateScreenHeight =  () => {
-    var element = document.getElementById('cityForms');
-    if (element) {
-      var rect = element.getBoundingClientRect();
-      var formHeight = rect.height // form表单的高
-    }
-
-    var titleElement = document.getElementById('page-title');
-    if (titleElement) {
-      var rectTitle = titleElement.getBoundingClientRect();
-      var titleHeight = rectTitle.height // 标题-页头高度
-      
-      var pageHeight = 80 // 分页高度
-
-      var menuHeight = 64 // 导航栏高度
-      screenHeight.value = window.innerHeight - formHeight - titleHeight - pageHeight - menuHeight
-    }
   }
    // 取消新增
   const closeDialogAdd = (val) => {
@@ -419,6 +400,12 @@
             message: '删除成功',
             type: 'success',
             duration: 1000
+          })
+        }else if(res.result_code === 919) {
+          ElMessage({
+            message: '正在被引用,禁止删除',
+            type: 'error',
+            duration: 3000
           })
         } else {
           ElMessage({
