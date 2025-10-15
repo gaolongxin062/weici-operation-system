@@ -25,7 +25,7 @@
           </el-form-item>
           
           <el-form-item>
-            <el-button type="success" @click="btnAdded">新增</el-button>
+            <el-button type="success" v-if="addPower" @click="btnAdded">新增</el-button>
           </el-form-item>
         </div>
         <!-- <div>
@@ -76,15 +76,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="操作"  fixed="right">
+      <el-table-column  label="操作"  fixed="right" v-if="deletePower || editPower">
         <template #default="scope">
-          <el-button class="button-style" link type="primary" @click="edit(scope.row)">
+          <el-button v-if="editPower" class="button-style" link type="primary" @click="edit(scope.row)">
             修改
           </el-button>
           <!-- <el-button class="button-style" link type="primary" @click="detail(scope.row)">
             查看
           </el-button> -->
-          <el-button class="button-style" link type="danger" @click="del(scope.row)">
+          <el-button v-if="deletePower" class="button-style" link type="danger" @click="del(scope.row)">
             删除
           </el-button>
         </template>
@@ -134,6 +134,7 @@
 
 <script setup>
   import { ref, onMounted, reactive} from 'vue';
+  import basicService from '@/service/BasicService.js';
   import aiAgentService from '@/service/AiAgentService.js';
   import { useVocabularyStore } from '@/store/vocabulary';
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
@@ -160,12 +161,34 @@
   let formref = ref()
   const dialogFormDisabled = ref(false)
   const dialogTitle = ref('新增')
-
+  const addPower = ref(false)
+  const editPower = ref(false)
+  const deletePower = ref(false)
   onMounted(() =>{
+    getUserPower()
     getProvinceList()
     window.addEventListener('resize', updateScreenHeight);
     updateScreenHeight();
   })
+  // 获取用户权限
+  const getUserPower = () => {
+    return basicService.getPower(
+      vocabularyStore.user_name,
+      vocabularyStore.session,
+    )
+      .then((res) => {
+        // console.log(res)
+        if (res.data.findIndex(item => item.menu_index == 'province_add') !== -1) addPower.value = true
+        if (res.data.findIndex(item => item.menu_index == 'province_edit') !== -1) editPower.value = true
+        if (res.data.findIndex(item => item.menu_index == 'province_del') !== -1) deletePower.value = true
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  }
   // 获取所有的省
   const getProvinceList = async () => {
     const params = {

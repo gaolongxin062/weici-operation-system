@@ -8,7 +8,7 @@
       <div style="display: flex;align-items: center;">
         <div style="margin-right: 20px;">
           <el-form-item label="省" v-if="provinceList.length">
-            <el-select filterable v-model="searchForm.province_id" placeholder="请选择内容" style="width: 240px">
+            <el-select filterable clearable v-model="searchForm.province_id" placeholder="请选择内容" style="width: 240px">
               <el-option
                 v-for="item in provinceList"
                 :key="item.id"
@@ -35,7 +35,7 @@
           </el-form-item>
           
           <el-form-item>
-            <el-button type="success" @click="btnAdded">新增</el-button>
+            <el-button type="success" v-if="addPower" @click="btnAdded">新增</el-button>
           </el-form-item>
         </div>
         <!-- <div>
@@ -92,15 +92,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="操作"  fixed="right">
+      <el-table-column  label="操作"  fixed="right" v-if="deletePower || editPower">
         <template #default="scope">
-          <el-button class="button-style" link type="primary" @click="edit(scope.row)">
+          <el-button v-if="editPower" class="button-style" link type="primary" @click="edit(scope.row)">
             修改
           </el-button>
           <!-- <el-button class="button-style" link type="primary" @click="detail(scope.row)">
             查看
           </el-button> -->
-          <el-button class="button-style" link type="danger" @click="del(scope.row)">
+          <el-button v-if="deletePower" class="button-style" link type="danger" @click="del(scope.row)">
             删除
           </el-button>
         </template>
@@ -122,7 +122,7 @@
         >
         <el-form :inline="true" ref="formref" id="form" :model="dialogForm" size="large" label-width="100px" :disabled="dialogFormDisabled" :rules="rules">
           <el-form-item label="省" prop="province_id">
-            <el-select v-model="dialogForm.province_id" placeholder="请选择内容" style="width: 240px" filterable>
+            <el-select v-model="dialogForm.province_id" placeholder="请选择内容" style="width: 240px" clearable filterable>
               <el-option
                 v-for="item in provinceList"
                 :key="item.id"
@@ -159,6 +159,7 @@
 
 <script setup>
   import { ref, onMounted, reactive} from 'vue';
+  import basicService from '@/service/BasicService.js';
   import aiAgentService from '@/service/AiAgentService.js';
   import { useVocabularyStore } from '@/store/vocabulary';
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
@@ -191,12 +192,35 @@
   let formref = ref()
   const dialogFormDisabled = ref(false)
   const dialogTitle = ref('新增')
+  const addPower = ref(false)
+  const editPower = ref(false)
+  const deletePower = ref(false)
   onMounted(async() =>{
+    getUserPower()
     window.addEventListener('resize', updateScreenHeight);
     await getProvinceList()
     await getCityList()
     updateScreenHeight()
   })
+    // 获取用户权限
+    const getUserPower = () => {
+    return basicService.getPower(
+      vocabularyStore.user_name,
+      vocabularyStore.session,
+    )
+      .then((res) => {
+        // console.log(res)
+        if (res.data.findIndex(item => item.menu_index == 'city_add') !== -1) addPower.value = true
+        if (res.data.findIndex(item => item.menu_index == 'city_edit') !== -1) editPower.value = true
+        if (res.data.findIndex(item => item.menu_index == 'city_del') !== -1) deletePower.value = true
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  }
   // 获取所有的省---作为下拉筛选数据使用
   const getProvinceList = async () => {
     const params = {
