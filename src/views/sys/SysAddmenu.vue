@@ -210,7 +210,7 @@
     menu_name: '',
     icon: '',
     path: '',
-    sort: '',
+    sort: 0,
     right_flag: false,
     stop_flag: false
   })
@@ -342,7 +342,7 @@
     formDialog.menu_name = ''
     formDialog.icon = ''
     formDialog.path = ''
-    formDialog.sort = ''
+    formDialog.sort = 0
     formDialog.right_flag = false
     formDialog.stop_flag = false
   }
