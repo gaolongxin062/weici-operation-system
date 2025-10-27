@@ -94,6 +94,16 @@ const routes = [{
         name: 'TeacherCertification',
         component: () => import('@/views/review/TeacherCertification.vue')
       },
+      {
+        path: '/dealer/job',
+        name: 'DealerJob',
+        component: () => import('@/views/dealer/JobInfo.vue')
+      },
+      {
+        path: '/dealer/info',
+        name: 'DealerInfo',
+        component: () => import('@/views/dealer/DealerInfo.vue')
+      }
     ]
   }
 ];
