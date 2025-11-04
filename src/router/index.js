@@ -103,6 +103,11 @@ const routes = [{
         path: '/dealer/info',
         name: 'DealerInfo',
         component: () => import('@/views/dealer/DealerInfo.vue')
+      },
+      {
+        path: '/dealer/notice',
+        name: 'NoticeManage',
+        component: () => import('@/views/dealer/NoticeManage.vue')
       }
     ]
   }
