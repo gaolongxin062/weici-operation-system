@@ -155,3 +155,23 @@ export let reviewApi = {
   saveTeacherCheck: '/saveTeacherCheck', // 新增与修改教师认证列表
   changeTeacherCheck: '/changeTeacherCheck', // 管理教师认证资格
 }
+
+// 经销商管理api
+export let dealerApi = {
+  getDistributorRoleList: '/distributorRoleList', // 职务列表
+  getDistributorRightTree: '/distributorRightTree', // 获取经销商的权限树
+  editDistributorRole: '/editDistributorRole', // 新增/修改权限树
+  removeDistributorRole: '/removeDistributorRole', // 删除职务
+  getDistributorRole: '/getDistributorRole', // 获取职务信息
+  getDistributorList: '/getDistributorList', // 获取经销商列表
+  getChoosableRoleList: '/getChoosableRoleList', // 获取职务及下放职务列表
+  distributorAreaTree: '/distributorAreaTree', // 获取区域范围树
+  addDistributor: '/addDistributor', // 新增经销商
+  resetDistributorPwd: '/resetDistributorPwd', // 重置经销商密码
+  disableDistributor: '/disableDistributor', // 禁用/删除经销商
+  updateDistributorInfo: '/updateDistributorInfo', // 修改经销商信息
+  getDistributorDetail: '/getDistributorDetail', // 获取经销商详情
+  getExcludeSchoolList: '/getExcludeSchoolList', // 获取可排除的学校列表
+  enableDistributor: '/enableDistributor', // 启用经销商
+  updateDistributorAuth: '/updateDistributorAuth', // 变更经销商权限
+}
