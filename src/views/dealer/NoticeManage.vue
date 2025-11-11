@@ -93,6 +93,7 @@
     </el-pagination>
     <!-- 新增/编辑弹窗 -->
     <div class="add-dialog">
+      
       <el-dialog v-model="dialogAdd" top="5vh" :title="dialogTitle" width="800" :show-close="false"
         :destroy-on-close="true" @close="closeDialogAdd">
         <el-form :inline="true" ref="formref" id="form" :model="dialogForm" size="large" label-width="100px"
@@ -106,7 +107,7 @@
             <el-cascader style="width:250px" v-model="dialogForm.receive_range" clearable :options="areaTreeList"
               :props="cascaderAreaProps" :show-all-levels="false" @change="changeArea" collapse-tags />
           </el-form-item>
-          <el-form-item v-if="dialogType !== 'edit'" label="公告内容">
+          <el-form-item label="公告内容">
             <!-- <el-input class="search-input" clearable placeholder="请输入" type="textarea" show-word-limit :maxlength="30"
               v-model="dialogForm.remark" :autosize="{ minRows: 2, maxRows: 4 }">
             </el-input> -->
@@ -436,7 +437,7 @@ const getDetail = async (id) => {
   try {
     const res = await dealerService.getNoticeDetail(params)
     if (res.result_code === 200) {
-      if (res.distributor) {
+      if (res.notice) {
         detailData.value = res.notice
       }
     }
@@ -469,11 +470,12 @@ const btnAdded = () => {
 }
 // 编辑
 const edit = async (row) => {
-  await getDetail(row.user_id)
-  dialogForm.name = detailData.value.user_name
-  dialogForm.phone = detailData.value.phone
-  dialogForm.account = detailData.value.account_name
-  dialogForm.id = row.user_id
+  await getDetail(row.id)
+  await getAreaTree()
+  dialogForm.title = detailData.value.title
+  dialogForm.receive_range = detailData.value.receive_range ? detailData.value.receive_range.split(',').map(item => Number(item.trim())) : ''
+  // dialogForm.account = detailData.value.account_name
+  dialogForm.id = row.id
   dialogType.value = 'edit'
   dialogTitle.value = '编辑'
   dialogAdd.value = true

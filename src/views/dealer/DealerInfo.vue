@@ -31,7 +31,7 @@
     <el-table row-key="user_id" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" :data="dealerList"
       class="table-info" header-cell-class-name="header_row_class" :max-height="screenHeight" v-loading="loading" ref="multipleTable" stripe
       element-loading-text="拼命加载中，主人请稍后...">
-      <el-table-column label="姓名">
+      <el-table-column label="姓名" width="200">
         <template #default="scope">
           <div>{{ scope.row.user_name || '-' }}</div>
         </template>
