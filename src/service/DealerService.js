@@ -372,7 +372,7 @@ const getDistributorNotices = (params) => {
 }
 
 /**
- * 变更经销商权限
+ * 新增/编辑公告
  * @param session session
  * @param user_name 账号
  * @param title 公告名称
@@ -383,6 +383,89 @@ const addDistributorNotice = (params) => {
   return new Promise((resolve, reject) => {
     service
       .post(dealerApi.addDistributorNotice, params)
+      .then((res) => {
+        if (res.status === 200) resolve(res.data)
+        else reject(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
+/**
+ * 删除公告
+ * @param session session
+ * @param user_name 账号
+ * @param id 公告id
+ */
+const deleteDistributorNotice = (params) => {
+  return new Promise((resolve, reject) => {
+    service
+      .post(dealerApi.deleteDistributorNotice, params)
+      .then((res) => {
+        if (res.status === 200) resolve(res.data)
+        else reject(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
+/**
+ * 发布公告
+ * @param session session
+ * @param user_name 账号
+ * @param id 公告id
+ */
+const releaseDistributorNotice = (params) => {
+  return new Promise((resolve, reject) => {
+    service
+      .post(dealerApi.releaseDistributorNotice, params)
+      .then((res) => {
+        if (res.status === 200) resolve(res.data)
+        else reject(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
+/**
+ * 获取公告详情
+ * @param session session
+ * @param user_name 账号
+ * @param id 公告id
+ */
+const getNoticeDetail = (params) => {
+  return new Promise((resolve, reject) => {
+    service
+      .get(dealerApi.getNoticeDetail, {
+        params
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          resolve(res.data)
+        } else reject(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
+/**
+ * 检查经销商权限状态
+ * @param session session
+ * @param user_name 账号
+ * @param distributor_id 经销商id
+ */
+const checkDistributorAuth = (params) => {
+  return new Promise((resolve, reject) => {
+    service
+      .post(dealerApi.checkDistributorAuth, params)
       .then((res) => {
         if (res.status === 200) resolve(res.data)
         else reject(res)
@@ -411,5 +494,9 @@ export default {
   enableDistributor,
   updateDistributorAuth,
   getDistributorNotices,
-  addDistributorNotice
+  addDistributorNotice,
+  deleteDistributorNotice,
+  releaseDistributorNotice,
+  getNoticeDetail,
+  checkDistributorAuth
 }

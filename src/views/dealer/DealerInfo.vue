@@ -3,9 +3,9 @@
     <div class="page-title" id="page-title">
       <h4>经销商管理</h4>
     </div>
-    <el-form id="forms" :inline="true" :model="searchForm" size="large" label-width="90px">
+    <el-form id="forms" :inline="true" :model="searchForm" size="large" label-width="60px">
       <div style="display: flex;align-items: center;">
-        <div style="margin-right: 20px;">
+        <div>
           <el-form-item label="姓名">
             <el-input style="width: 240px" class="search-input" clearable placeholder="请输入" v-model="searchForm.name">
             </el-input>
@@ -29,7 +29,7 @@
       </div>
     </el-form>
     <el-table row-key="user_id" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" :data="dealerList"
-      class="table-info" :max-height="screenHeight" v-loading="loading" ref="multipleTable" stripe
+      class="table-info" header-cell-class-name="header_row_class" :max-height="screenHeight" v-loading="loading" ref="multipleTable" stripe
       element-loading-text="拼命加载中，主人请稍后...">
       <el-table-column label="姓名">
         <template #default="scope">
@@ -67,7 +67,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" fixed="right" v-if="deletePower || editPower">
+      <el-table-column label="操作" fixed="right" width="180" v-if="deletePower || editPower">
         <template #default="scope">
           <el-button class="button-style" link type="primary" @click="resetPwd(scope.row)">
             重置密码
@@ -278,6 +278,7 @@ const selectSchoolShow = ref(false)  // 选择学校弹窗显示隐藏
 const selectInfo = ref({})  // 选择学校弹窗入参
 const dialogDetail = ref(false)
 const roleSelectSchoolShow = ref(false) // 普通人员选择学校弹窗显示隐藏
+const powerStatus = ref(true)
 const roleEnum = reactive(
   [
     {
@@ -574,6 +575,7 @@ const changeDealer = (val) => {
   dialogForm.area_ids = ''
   dialogForm.school_ids = ''
   dialogForm.sub_role_ids = ''
+  role_level.value = 1
   selectDevolveRoleList.value = []
 }
 
@@ -587,12 +589,16 @@ const changeRole = (val) => {
     }
   })
   getRoleList(dialogForm.parent_id, role_level.value)
-
+  dialogForm.area_ids = ''
+  dialogForm.school_ids = ''
+  dialogForm.sub_role_ids = ''
+  selectDevolveRoleList.value = []
 }
 
 // 触发负责范围改变时
 const changeArea = (val) => {
   console.log('11111111111', val)
+  dialogForm.school_ids = ''
   // getRoleList(val)
 }
 
@@ -608,7 +614,11 @@ const handlePhoneInput = () => {
 
 // 触发按钮选择下放职务
 const selectRoleBtn = () => {
-  dialogRole.value = true
+  if (dialogForm.role_id){
+    dialogRole.value = true
+  } else {
+    ElMessage.warning('请选择职务')
+  }
 }
 
 // 选择某一个职务
@@ -629,7 +639,7 @@ const addSpecialSchool = () => {
   selectInfo.value = {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
-    parent_id: dialogForm.parent_id,
+    parent_id: dialogForm.parent_id || 1,
     area_ids: dialogForm.area_ids.length ? dialogForm.area_ids.join(',') : dialogForm.area_ids || '',
   }
   selectSchoolShow.value = true
@@ -640,7 +650,7 @@ const addRoleSchool = () => {
   selectInfo.value = {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
-    parent_id: dialogForm.parent_id,
+    parent_id: dialogForm.parent_id || 1,
   }
   roleSelectSchoolShow.value = true
 }
@@ -768,7 +778,7 @@ const makeSureBtn = () => {
           remark: dialogForm.remark,
           school_ids: dialogForm.school_ids.length ? dialogForm.school_ids.join(',') : '',
           sub_role_ids: selectDevolveRoleList.value.length ? selectDevolveRoleList.value.join(',') : '',
-          role_level: detailData.value.role_level
+          role_level: role_level.value
         }
         try {
           const res = await dealerService.updateDistributorAuth(params)
@@ -880,7 +890,7 @@ const changePower = async (row) => {
   // 获取职务列表
   await getRoleList(row.parent_id)
   dialogForm.parent_id = row.parent_id || 1
-  dialogForm.role_id = detailData.value.role_id
+  dialogForm.role_id = detailData.value.role_id || ''
   // 获取负责范围
   await getAreaTree()
   dialogForm.area_ids = detailData.value.area_ids ? detailData.value.area_ids.split(',').map(item => Number(item.trim())): ''
@@ -998,9 +1008,59 @@ const editStatus = async (row, type) => {
   }).catch(() => {
   })
 }
+const editStatusDisable = async (row) => {
+  const params = {
+    user_name: vocabularyStore.user_name,
+    session: vocabularyStore.session,
+    distributor_id: row.user_id,
+  }
+  try{
+    const res = await dealerService.checkDistributorAuth(params)
+      if (res.result_code === 920) {
+        powerStatus.value = true
+        ElMessageBox.confirm(
+          '请先完善负责范围信息',
+          {
+            confirmButtonText: '确定',
+            confirmButtonClass: 'button-confirm',
+            cancelButtonText: '取消',
+            center: true,
+          }
+        ).then(() => {
+          changePower(row)
+          return false
+        }).catch(() => {
+        })
+      } else if (res.result_code === 921) {
+        powerStatus.value = true
+        ElMessageBox.confirm(
+          '请先完善职务信息',
+          {
+            confirmButtonText: '确定',
+            confirmButtonClass: 'button-confirm',
+            cancelButtonText: '取消',
+            center: true,
+          }
+        ).then(() => {
+          changePower(row)
+          return false
+        }).catch(() => {
+        })
+      } else if (res.result_code === 200) {
+        powerStatus.value = false
 
+      }
+  } catch (error) {
+    console.log(error)
+  }
+}
 // 启用
-const editStatusEnable = (row) => {
+const editStatusEnable = async (row) => {
+  await editStatusDisable (row)
+  // 启用前先判断一下权限状态是否丢失
+  if (powerStatus.value) {
+    return
+  }
   ElMessageBox.confirm(
     '启用后，其账号可正常登录，但其下级需要自行启用',
     '是否确认启用',

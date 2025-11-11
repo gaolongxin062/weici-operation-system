@@ -172,8 +172,12 @@ export let dealerApi = {
   updateDistributorInfo: '/updateDistributorInfo', // 修改经销商信息
   getDistributorDetail: '/getDistributorDetail', // 获取经销商详情
   getExcludeSchoolList: '/getExcludeSchoolList', // 获取可排除的学校列表
+  checkDistributorAuth: '/checkDistributorAuth', // 检查经销商权限状态 ---启用前调用
   enableDistributor: '/enableDistributor', // 启用经销商
   updateDistributorAuth: '/updateDistributorAuth', // 变更经销商权限
   getDistributorNotices: '/getDistributorNotices', // 获取公告列表
-  addDistributorNotice: '/addDistributorNotice', // 获取公告列表
+  addDistributorNotice: '/addDistributorNotice', // 新增/编辑公告
+  deleteDistributorNotice: '/deleteDistributorNotice', // 删除公告
+  releaseDistributorNotice: '/releaseDistributorNotice', // 发布公告
+  getNoticeDetail: '/getNoticeDetail', // 获取公告详情
 }

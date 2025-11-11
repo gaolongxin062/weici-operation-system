@@ -67,10 +67,10 @@
       </el-table-column>
     </el-table>
     <!-- 此页面不需要分页，分页功能先注释避免日后需求更改 -->
-    <!-- <el-pagination style="color: #666666;margin: 20px 0 0 20px;" v-show="total > 0"
+    <el-pagination style="color: #666666;margin: 20px 0 0 20px;" v-show="total > 0"
       @current-change="handleCurrentChange" :current-page="pageIndex" :page-size="pageSize"
       layout="total, prev, pager, next" prev-text="上一页" next-text="下一页" :total="total">
-    </el-pagination> -->
+    </el-pagination>
 
     <!-- 新增/编辑弹窗 -->
     <div class="add-dialog">
@@ -94,7 +94,7 @@
               v-model="dialogForm.role_name">
             </el-input>
           </el-form-item>
-          <el-form-item label="操作权限" prop="rights" label-width="80px">
+          <el-form-item label="操作权限" prop="rights" label-width="150px">
             <el-tree ref="treeRef" style="max-width: 600px" :data="treeList" node-key="menu_index" :props="defaultProps"
               :default-expand-all="true" @check-change="getCheckedData" show-checkbox />
           </el-form-item>
@@ -155,7 +155,7 @@ const defaultProps = ref({
   disabled: ''
 })
 let pageIndex = ref(1)
-// let pageSize = ref(10)
+let pageSize = ref(10)
 let total = ref(0)
 let dialogAdd = ref(false)
 let loading = ref(false)
@@ -229,7 +229,9 @@ const getRoleList = async () => {
   const params = {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
-    role_name: searchForm.role_name
+    role_name: searchForm.role_name,
+    page_index: pageIndex.value,
+    page_size: pageSize.value
   }
   try {
     const res = await dealerService.getDistributorRoleList(params)
@@ -405,11 +407,11 @@ const getRoleDetail = async (role_id) => {
     console.log(error)
   }
 }
-// 切换下一页---暂时注释
-// const handleCurrentChange = (page) => {
-//   pageIndex.value = page
-//   getRoleList() // 表格数据
-// }
+// 切换下一页-
+const handleCurrentChange = (page) => {
+  pageIndex.value = page
+  getRoleList() // 表格数据
+}
 // 查询
 const btnSearch = () => {
   getRoleList()
