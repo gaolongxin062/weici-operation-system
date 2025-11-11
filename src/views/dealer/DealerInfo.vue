@@ -510,7 +510,7 @@ const getRoleList = async (id, level) => {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
     user_id: id || 1,
-    role_level: level || 1
+    role_level: level || 0
   }
   try {
     const res = await dealerService.getChoosableRoleList(params)

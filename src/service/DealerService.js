@@ -371,6 +371,28 @@ const getDistributorNotices = (params) => {
   })
 }
 
+/**
+ * 变更经销商权限
+ * @param session session
+ * @param user_name 账号
+ * @param title 公告名称
+ * @param content 公告内容
+ * @param receive_range 接收范围
+ */
+const addDistributorNotice = (params) => {
+  return new Promise((resolve, reject) => {
+    service
+      .post(dealerApi.addDistributorNotice, params)
+      .then((res) => {
+        if (res.status === 200) resolve(res.data)
+        else reject(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
 export default {
   getDistributorRoleList,
   getDistributorRightTree,
@@ -388,5 +410,6 @@ export default {
   updateDistributorInfo,
   enableDistributor,
   updateDistributorAuth,
-  getDistributorNotices
+  getDistributorNotices,
+  addDistributorNotice
 }

@@ -175,4 +175,5 @@ export let dealerApi = {
   enableDistributor: '/enableDistributor', // 启用经销商
   updateDistributorAuth: '/updateDistributorAuth', // 变更经销商权限
   getDistributorNotices: '/getDistributorNotices', // 获取公告列表
+  addDistributorNotice: '/addDistributorNotice', // 获取公告列表
 }

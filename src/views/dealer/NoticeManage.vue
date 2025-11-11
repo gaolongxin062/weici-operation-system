@@ -11,8 +11,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="状态" label-width="40px">
-            <el-select v-model="searchForm.is_release" placeholder="请选择"
-              style="width: 200px" clearable filterable>
+            <el-select v-model="searchForm.is_release" placeholder="请选择" style="width: 200px" clearable filterable>
               <el-option v-for="item in releaseStatus" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
@@ -30,8 +29,8 @@
         </div>
       </div>
     </el-form>
-    <el-table :data="noticesList" class="table-info" :max-height="screenHeight" v-loading="loading" ref="multipleTable" stripe
-      element-loading-text="拼命加载中，主人请稍后...">
+    <el-table :data="noticesList" class="table-info" :max-height="screenHeight" v-loading="loading" ref="multipleTable"
+      stripe element-loading-text="拼命加载中，主人请稍后...">
       <el-table-column label="公告名称">
         <template #default="scope">
           <div>{{ scope.row.title || '-' }}</div>
@@ -40,13 +39,13 @@
 
       <el-table-column label="状态">
         <template #default="scope">
-          <div>{{ scope.row.is_release === 0 ? '已发布' : '待发布' }}</div>
+          <div>{{ scope.row.is_release === 0 ? '待发布' : '已发布' }}</div>
         </template>
       </el-table-column>
 
       <el-table-column label="接受范围">
         <template #default="scope">
-          <div>{{ scope.row.receive_range ? '部分区域' : '全部'}}</div>
+          <div>{{ scope.row.receive_range ? '部分区域' : '全部' }}</div>
         </template>
       </el-table-column>
 
@@ -94,25 +93,24 @@
     </el-pagination>
     <!-- 新增/编辑弹窗 -->
     <div class="add-dialog">
-      <el-dialog v-model="dialogAdd" top="5vh" :title="dialogTitle" width="800" :show-close="false" :destroy-on-close="true"
-        @close="closeDialogAdd">
+      <el-dialog v-model="dialogAdd" top="5vh" :title="dialogTitle" width="800" :show-close="false"
+        :destroy-on-close="true" @close="closeDialogAdd">
         <el-form :inline="true" ref="formref" id="form" :model="dialogForm" size="large" label-width="100px"
           :rules="rules" :disabled="dialogFormDisabled" style="display: flex; flex-direction: column;">
-          <div v-if="dialogType === 'power'" class="power-info"> {{  detailData.user_name }}-{{  detailData.phone }} </div>
-          <el-form-item label="公告名称" prop="name" v-if="dialogType !== 'power'">
+          <el-form-item label="公告名称" prop="title">
             <el-input class="search-input" clearable placeholder="请输入" type="textarea" show-word-limit :maxlength="100"
               v-model="dialogForm.title" :autosize="{ minRows: 4, maxRows: 6 }">
             </el-input>
           </el-form-item>
           <el-form-item label="接受范围" prop="area_ids">
-            <el-cascader style="width:250px" v-model="dialogForm.receive_range" clearable :options="areaTreeList" :props="cascaderAreaProps"
-              :show-all-levels="false" @change="changeArea" collapse-tags />
+            <el-cascader style="width:250px" v-model="dialogForm.receive_range" clearable :options="areaTreeList"
+              :props="cascaderAreaProps" :show-all-levels="false" @change="changeArea" collapse-tags />
           </el-form-item>
           <el-form-item v-if="dialogType !== 'edit'" label="公告内容">
             <!-- <el-input class="search-input" clearable placeholder="请输入" type="textarea" show-word-limit :maxlength="30"
               v-model="dialogForm.remark" :autosize="{ minRows: 2, maxRows: 4 }">
             </el-input> -->
-            <rich-text-editor ref="basicEditor"/>
+            <rich-text-editor ref="basicEditor" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -185,17 +183,15 @@ let dialogForm = reactive({
   content: '', // 内容
 })
 let rules = ref({
-  name: [
+  title: [
     {
       trigger: 'blur',
       validator: (rule, value, callback) => {
-        const reg = /^[a-zA-Z\u4e00-\u9fa5\u00C0-\u017F\s]{1,20}$/;
-        if (!value) {
-          callback(new Error('请输入'));
-        } else if (!reg.test(value)) {
-          callback(new Error('只能输入汉字、拼音，长度 1-20 字符'));
+        const trimValue = value.trim();
+        if (trimValue !== value) {
+          callback(new Error('首尾不能包含空格'));
         } else {
-          callback(); // 校验通过
+          callback()
         }
       }
     },
@@ -323,7 +319,7 @@ const getAreaTree = async () => {
   const params = {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
-    user_id: 0
+    user_id: 1
   }
   try {
     const res = await dealerService.distributorAreaTree(params)
@@ -373,8 +369,9 @@ const closeDialogAdd = () => {
 }
 // 确定新增/编辑
 const makeSureBtn = () => {
+  let html = ''
   if (basicEditor.value) {
-    const html = basicEditor.value.contentHandle();
+    html = basicEditor.value.contentHandle();
     const text = basicEditor.value.textHandle();
     console.log('基础编辑器HTML内容：', html);
     console.log('基础编辑器纯文本：', text);
@@ -389,128 +386,40 @@ const makeSureBtn = () => {
       })
 
       // 如果是新增走一下逻辑
-      if (dialogType.value === 'add') {
-        let params = {
-          session: vocabularyStore.session,
-          user_name: vocabularyStore.user_name,
-          account: dialogForm.account,
-          phone: dialogForm.phone,
-          area_ids: dialogForm.area_ids.length ? dialogForm.area_ids.join(',') : dialogForm.area_ids || '',
-          parent_id: dialogForm.parent_id || 1,
-          is_special: dialogForm.is_special,
-          name: dialogForm.name,
-          password: dialogForm.password,
-          role_id: dialogForm.role_id,
-          remark: dialogForm.remark,
-          school_ids: dialogForm.school_ids.length ? dialogForm.school_ids.join(',') : '',
-          sub_role_ids: selectDevolveRoleList.value.join(','),
-        }
-
-        try {
-          const res = await dealerService.addDistributor(params)
-          if (res.result_code === 200) {
-            ElMessage({
-              message: '操作成功',
-              type: 'success',
-            })
-            getNoticesList()
-            closeDialogAdd()
-          } else if (res.result_code === 913) {
-            ElMessage({
-              message: '经销商已存在',
-              type: 'error',
-            })
-          } else {
-            ElMessage({
-              message: res.description,
-              type: 'error',
-            })
-          }
-          loading.close()
-        } catch (error) {
-          console.log(error)
-          loading.close()
-        }
-      } else if (dialogType.value === 'edit') {
-        // 编辑逻辑
-        let params = {
-          session: vocabularyStore.session,
-          user_name: vocabularyStore.user_name,
-          account: dialogForm.account,
-          phone: dialogForm.phone,
-          distributor_id: dialogForm.id,
-          distributor_name: dialogForm.name
-        }
-        try {
-          const res = await dealerService.updateDistributorInfo(params)
-          if (res.result_code === 200) {
-            ElMessage({
-              message: '修改成功',
-              type: 'success',
-            })
-            getNoticesList()
-            closeDialogAdd()
-          } else if (res.result_code === 913) {
-            ElMessage({
-              message: '经销商已存在',
-              type: 'error',
-            })
-          } else {
-            ElMessage({
-              message: res.description,
-              type: 'error',
-            })
-          }
-          loading.close()
-        } catch (error) {
-          console.log(error)
-          loading.close()
-        } finally {
-          loading.close()
-          dialogType.value = 'add'
-        }
-      } else if (dialogType.value === 'power'){
-        // 更改权限逻辑
-        let params = {
-          session: vocabularyStore.session,
-          user_id: dialogForm.id,
-          user_name: vocabularyStore.user_name,
-          area_ids: dialogForm.area_ids.length ? dialogForm.area_ids.join(',') : dialogForm.area_ids || '',
-          role_id: dialogForm.role_id,
-          remark: dialogForm.remark,
-          school_ids: dialogForm.school_ids.length ? dialogForm.school_ids.join(',') : '',
-          sub_role_ids: selectDevolveRoleList.value.length ? selectDevolveRoleList.value.join(',') : '',
-          role_level: detailData.value.role_level
-        }
-        try {
-          const res = await dealerService.updateDistributorAuth(params)
-          if (res.result_code === 200) {
-            ElMessage({
-              message: '变更成功',
-              type: 'success',
-            })
-            getNoticesList()
-            closeDialogAdd()
-          } else if (res.result_code === 913) {
-            ElMessage({
-              message: '经销商已存在',
-              type: 'error',
-            })
-          } else {
-            ElMessage({
-              message: res.description,
-              type: 'error',
-            })
-          }
-          loading.close()
-        } catch (error) {
-          console.log(error)
-          loading.close()
-        } finally {
-          loading.close()
-          dialogType.value = 'add'
-        }
+      let params = {
+        session: vocabularyStore.session,
+        user_name: vocabularyStore.user_name,
+        title: dialogForm.title,
+        content: html,
+        receive_range: dialogForm.receive_range
       }
+
+      try {
+        const res = await dealerService.addDistributorNotice(params)
+        if (res.result_code === 200) {
+          ElMessage({
+            message: '操作成功',
+            type: 'success',
+          })
+          getNoticesList()
+          closeDialogAdd()
+        } else if (res.result_code === 913) {
+          ElMessage({
+            message: '经销商已存在',
+            type: 'error',
+          })
+        } else {
+          ElMessage({
+            message: res.description,
+            type: 'error',
+          })
+        }
+        loading.close()
+      } catch (error) {
+        console.log(error)
+        loading.close()
+      }
+
 
     } else {
       console.log('valid3', valid)
@@ -778,7 +687,8 @@ const editStatus = async (row, type) => {
   margin: 0;
   margin-bottom: 10px;
 }
-.power-info{
+
+.power-info {
   margin-left: 100px;
   margin-bottom: 20px;
   font-size: 16px;
