@@ -11,10 +11,7 @@
 						<el-button type="primary" @click="onSubmit">查询</el-button>
 					</el-form-item>
 					<el-form-item>
-						<el-button 
-							:type="onlyShowSelected ? 'success' : 'primary'" 
-							@click="toggleOnlyShowSelected"
-						>
+						<el-button :type="onlyShowSelected ? 'success' : 'primary'" @click="toggleOnlyShowSelected">
 							{{ onlyShowSelected ? '显示全部' : '只看已选' }}
 						</el-button>
 					</el-form-item>
@@ -22,8 +19,9 @@
 						<el-button type="primary" @click="onReset">重置</el-button>
 					</el-form-item>
 				</el-form>
-				<el-table :data="displayDataList" class="table-info" v-loading="loading" header-cell-class-name="header_row_class"
-					style="width: 100%;height: 300px;" stripe element-loading-text="拼命加载中，主人请稍后..." ref="multipleTable" @select="selectionChange"
+				<el-table :data="displayDataList" class="table-info" v-loading="loading"
+					header-cell-class-name="header_row_class" style="width: 100%;height: 300px;" stripe
+					element-loading-text="拼命加载中，主人请稍后..." ref="multipleTable" @select="selectionChange"
 					@select-all="selectionChange">
 					<el-table-column type="selection" width="55">
 					</el-table-column>
@@ -48,10 +46,7 @@
 </template>
 <script setup>
 import { ref, onMounted, defineEmits, defineProps, nextTick, computed } from 'vue';
-import MemberService from '@/service/MemberService';
 import dealerService from '@/service/DealerService';
-import { useVocabularyStore } from '@/store/vocabulary';
-// import { ElMessage } from 'element-plus';
 const props = defineProps({
 	selectInfo: {
 		type: Object,
@@ -66,11 +61,8 @@ const props = defineProps({
 		default: ''
 	}
 })
-console.log('33333333', props.selectInfo, props.schoolList)
 
-let vocabularyStore = useVocabularyStore();
 let loading = ref(false) // 加载标记
-// let screenHeight = ref(0)
 let pageIndex = ref(1)
 let formData = ref({
 	province_id: '', // 省份
@@ -79,7 +71,6 @@ let formData = ref({
 	school: '', // 状态
 	user_code: '', // 状态
 }) // 表单内容
-let provinceData = ref([]) // 省份
 let dataList = ref([]) // 资源列表
 let dialogVisible = ref(true) // 弹框显隐
 let multipleSelection = ref([])
@@ -95,12 +86,11 @@ const displayDataList = computed(() => {
 		return dataList.value; // 显示全部
 	}
 	// 只显示已选中的学校（匹配schoolList中的ID）
-	return dataList.value.filter(row => 
+	return dataList.value.filter(row =>
 		props.schoolList.some(id => String(id) === String(row.id))
 	);
 })
 onMounted(async () => {
-	await getProvinceList() // 获取省份
 	await initschoolList() // 获取资源列表
 })
 // 切换"只看已选/显示全部"状态
@@ -118,7 +108,8 @@ async function onSubmit() {
 	pageIndex.value = 1 // 重置页码
 	await initschoolList()
 } // 点击搜索按钮获取资源列表
-async function onReset() {
+ // 点击重置按钮获取资源列表
+const onReset = async () => {
 	// 重置所有筛选条件
 	formData.value = {
 		province_id: '', // 省份
@@ -129,7 +120,7 @@ async function onReset() {
 	}
 	pageIndex.value = 1 // 重置页码
 	await initschoolList()
-} // 点击重置按钮获取资源列表
+}
 
 const initschoolList = async () => {
 	loading.value = true
@@ -162,30 +153,17 @@ const initschoolList = async () => {
 		loading.value = false
 	}
 }
-function getProvinceList() {
-	let params = {
-		user_name: vocabularyStore.user_name,
-		session: vocabularyStore.session
-	}
-	return MemberService.getProvincesList(params)
-		.then((res) => {
-			if (res.result_code === 200) {
-				provinceData.value = res.list
-			}
-		}).catch((error) => {
-			console.log(error)
-		})
-} // 获取省份列表
-function cancelDialog() {
+ // 点击取消
+const cancelDialog = () => {
 	emit('cancelDialog')
-} // 点击取消
-function saveDialog() {
+}
+ // 点击保存
+const saveDialog = () => {
 	let userCodeList = multipleSelection.value.map(item => item.id)
 	emit('saveDialog', userCodeList)
-} // 点击保存
-function selectionChange(val) {
+}
+const selectionChange = (val) => {
 	multipleSelection.value = val
-	console.log('22222', multipleSelection.value)
 }
 </script>
 <style scoped>

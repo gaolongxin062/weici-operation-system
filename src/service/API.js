@@ -174,4 +174,5 @@ export let dealerApi = {
   getExcludeSchoolList: '/getExcludeSchoolList', // 获取可排除的学校列表
   enableDistributor: '/enableDistributor', // 启用经销商
   updateDistributorAuth: '/updateDistributorAuth', // 变更经销商权限
+  getDistributorNotices: '/getDistributorNotices', // 获取公告列表
 }

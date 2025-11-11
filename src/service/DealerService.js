@@ -345,6 +345,32 @@ const updateDistributorAuth = (params) => {
   })
 }
 
+/**
+ * 获取公告列表
+ * @param session session
+ * @param user_name 账号
+ * @param is_release 发布状态
+ * @param page_index 页码
+ * @param page_size 每页数量
+ * @param title 公告名称
+ */
+const getDistributorNotices = (params) => {
+  return new Promise((resolve, reject) => {
+    service
+      .get(dealerApi.getDistributorNotices, {
+        params
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          resolve(res.data)
+        } else reject(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
 export default {
   getDistributorRoleList,
   getDistributorRightTree,
@@ -361,5 +387,6 @@ export default {
   getExcludeSchoolList,
   updateDistributorInfo,
   enableDistributor,
-  updateDistributorAuth
+  updateDistributorAuth,
+  getDistributorNotices
 }

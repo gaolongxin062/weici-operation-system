@@ -1,11 +1,786 @@
 <template>
-  <div>公告管理</div>
+  <div class="page">
+    <div class="page-title" id="page-title">
+      <h4>公告管理</h4>
+    </div>
+    <el-form id="forms" :inline="true" :model="searchForm" size="large" label-width="90px">
+      <div style="display: flex;align-items: center;">
+        <div>
+          <el-form-item label="公告名称">
+            <el-input style="width: 200px" class="search-input" clearable placeholder="请输入" v-model="searchForm.title">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="状态" label-width="40px">
+            <el-select v-model="searchForm.is_release" placeholder="请选择"
+              style="width: 200px" clearable filterable>
+              <el-option v-for="item in releaseStatus" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="btnSearch">查询</el-button>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="btnReset">重置</el-button>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="success" v-if="addPower" @click="btnAdded">新增公告</el-button>
+          </el-form-item>
+        </div>
+      </div>
+    </el-form>
+    <el-table :data="noticesList" class="table-info" :max-height="screenHeight" v-loading="loading" ref="multipleTable" stripe
+      element-loading-text="拼命加载中，主人请稍后...">
+      <el-table-column label="公告名称">
+        <template #default="scope">
+          <div>{{ scope.row.title || '-' }}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="状态">
+        <template #default="scope">
+          <div>{{ scope.row.is_release === 0 ? '已发布' : '待发布' }}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="接受范围">
+        <template #default="scope">
+          <div>{{ scope.row.receive_range ? '部分区域' : '全部'}}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="涉及区域">
+        <template #default="scope">
+          <div>{{ scope.row.receive_range ? scope.row.receive_range : '全部' }}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="创建时间">
+        <template #default="scope">
+          <div>{{ scope.row.make_date || '-' }}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="发布时间">
+        <template #default="scope">
+          <div>{{ scope.row.release_date || '-' }}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="操作" fixed="right" v-if="deletePower || editPower">
+        <template #default="scope">
+          <el-button class="button-style" link type="primary" @click="detail(scope.row)">
+            详情
+          </el-button>
+          <el-button v-if="editPower && scope.row.stop_flag === 0" class="button-style" link type="primary"
+            @click="editStatus(scope.row, scope.row.stop_flag === 0 ? 0 : 2)">
+            发布
+          </el-button>
+          <el-button v-if="editPower && scope.row.stop_flag === 1" class="button-style" link type="primary"
+            @click="edit(scope.row)">
+            编辑
+          </el-button>
+          <el-button v-if="editPower && scope.row.stop_flag === 1" class="button-style" link type="primary"
+            @click="delay(scope.row)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination style="color: #666666;margin: 20px 0 0 20px;" v-show="total > 0"
+      @current-change="handleCurrentChange" :current-page="pageIndex" :page-size="pageSize"
+      layout="total, prev, pager, next" prev-text="上一页" next-text="下一页" :total="total">
+    </el-pagination>
+    <!-- 新增/编辑弹窗 -->
+    <div class="add-dialog">
+      <el-dialog v-model="dialogAdd" top="5vh" :title="dialogTitle" width="800" :show-close="false" :destroy-on-close="true"
+        @close="closeDialogAdd">
+        <el-form :inline="true" ref="formref" id="form" :model="dialogForm" size="large" label-width="100px"
+          :rules="rules" :disabled="dialogFormDisabled" style="display: flex; flex-direction: column;">
+          <div v-if="dialogType === 'power'" class="power-info"> {{  detailData.user_name }}-{{  detailData.phone }} </div>
+          <el-form-item label="公告名称" prop="name" v-if="dialogType !== 'power'">
+            <el-input class="search-input" clearable placeholder="请输入" type="textarea" show-word-limit :maxlength="100"
+              v-model="dialogForm.title" :autosize="{ minRows: 4, maxRows: 6 }">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="接受范围" prop="area_ids">
+            <el-cascader style="width:250px" v-model="dialogForm.receive_range" clearable :options="areaTreeList" :props="cascaderAreaProps"
+              :show-all-levels="false" @change="changeArea" collapse-tags />
+          </el-form-item>
+          <el-form-item v-if="dialogType !== 'edit'" label="公告内容">
+            <!-- <el-input class="search-input" clearable placeholder="请输入" type="textarea" show-word-limit :maxlength="30"
+              v-model="dialogForm.remark" :autosize="{ minRows: 2, maxRows: 4 }">
+            </el-input> -->
+            <rich-text-editor ref="basicEditor"/>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="closeDialogAdd">取消</el-button>
+            <el-button type="primary" @click="makeSureBtn">
+              保存
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
+    </div>
+  </div>
 </template>
 
 <script setup>
+import { ref, onMounted, reactive } from 'vue';
+import { useScreenHeight } from '@/hooks/useScreenHeight.js';
+const { screenHeight } = useScreenHeight();
+import basicService from '@/service/BasicService.js';
+import dealerService from '@/service/DealerService';
+import { useVocabularyStore } from '@/store/vocabulary';
+import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
+import RichTextEditor from '@/components/RichTextEditor.vue'
+let vocabularyStore = useVocabularyStore();
+let formref = ref()
+const dialogTitle = ref('新增')
+const addPower = ref(false)
+const editPower = ref(false)
+const deletePower = ref(false)
+const treeList = ref([])
+const dialogFormDisabled = ref(false)
+const dialogType = ref('add')
+let dialogAdd = ref(false)
+let loading = ref(false)
+let noticesList = ref([]) // 表格数据 经销商列表
+const roleList = ref([]) // 职务列表-新增/编辑时根据选择的经销商获取
+const devolveRoleList = ref([]) // 下放职务列表-新增/编辑时根据选择的经销商跟职务获取
+const selectDevolveRoleList = ref([]) // 所选择的下放职务
+const areaTreeList = ref([])  // 区域树
+const role_level = ref(0) // 职务等级
+const isPwdAutoGenerated = ref(false) // 密码是否自动生成
+const detailData = ref({}) // 详情数据
+const dialogDetail = ref(false)
+const basicEditor = ref(null)
+const total = ref(0)
+const releaseStatus = [
+  {
+    value: 0,
+    label: '未发布'
+  },
+  {
+    value: 1,
+    label: '已发布'
+  }
+]
+let searchForm = reactive({
+  title: '', // 姓名
+  is_release: '' // 发布状态 0未发布 1发布
+})
+const cascaderAreaProps = {
+  value: 'id',
+  label: 'name',
+  emitPath: false,
+  multiple: true
+}
+let dialogForm = reactive({
+  title: '', // 公告名称
+  receive_range: '', // 接受范围
+  content: '', // 内容
+})
+let rules = ref({
+  name: [
+    {
+      trigger: 'blur',
+      validator: (rule, value, callback) => {
+        const reg = /^[a-zA-Z\u4e00-\u9fa5\u00C0-\u017F\s]{1,20}$/;
+        if (!value) {
+          callback(new Error('请输入'));
+        } else if (!reg.test(value)) {
+          callback(new Error('只能输入汉字、拼音，长度 1-20 字符'));
+        } else {
+          callback(); // 校验通过
+        }
+      }
+    },
+    { required: true, message: '请输入', trigger: 'blur' }
+  ]
+});
+
+onMounted(() => {
+  getUserPower()
+  getNoticesList()
+})
+// 获取用户权限
+const getUserPower = () => {
+  return basicService.getPower(
+    vocabularyStore.user_name,
+    vocabularyStore.session,
+  )
+    .then((res) => {
+      if (res.data.findIndex(item => item.menu_index == 'dealer_job_add') !== -1) addPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer_job_edit') !== -1) editPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer_job_del') !== -1) deletePower.value = true
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+// 获取经销商列表
+const getNoticesList = async () => {
+  const params = {
+    session: vocabularyStore.session,
+    user_name: vocabularyStore.user_name,
+    is_release: searchForm.is_release,
+    page_index: 1,
+    page_size: 10,
+    title: searchForm.title
+  }
+  try {
+    const res = await dealerService.getDistributorNotices(params)
+    if (res.result_code === 200) {
+      if (res.notices && res.notices.length) {
+        noticesList.value = res.notices
+        total.value = res.total
+      } else {
+        noticesList.value = []
+        total.value = 0
+      }
+    } else {
+      ElMessage({
+        message: res.description,
+        type: 'error',
+      })
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// 获取经销商权限树
+const getRoleTree = async () => {
+  const params = {
+    session: vocabularyStore.session,
+    user_name: vocabularyStore.user_name,
+  }
+  try {
+    const res = await dealerService.getDistributorRightTree(params)
+    if (res.result_code === 200) {
+      if (res.rights && res.rights.length) {
+        treeList.value = res.rights
+      } else {
+        treeList.value = []
+      }
+    } else {
+      ElMessage({
+        message: res.description,
+        type: 'error',
+      })
+    }
+
+  } catch (error) {
+    console.error('获取经销商权限树失败', error)
+  }
+}
+
+// 获取职务及下放职务列表
+const getRoleList = async (id, level) => {
+  const params = {
+    session: vocabularyStore.session,
+    user_name: vocabularyStore.user_name,
+    user_id: id || 0,
+    role_level: level || 0
+  }
+  try {
+    const res = await dealerService.getChoosableRoleList(params)
+    if (res.result_code === 200) {
+      if (res.list && res.list) {
+        if (level) {
+          devolveRoleList.value = res.list
+        } else {
+          roleList.value = res.list
+        }
+      } else {
+        if (level) {
+          devolveRoleList.value = []
+        } else {
+          roleList.value = []
+        }
+      }
+    } else {
+      ElMessage({
+        message: res.description,
+        type: 'error',
+      })
+    }
+
+  } catch (error) {
+    console.error('获取经销商权限树失败', error)
+  }
+}
+
+// 获取区域范围树
+const getAreaTree = async () => {
+  const params = {
+    session: vocabularyStore.session,
+    user_name: vocabularyStore.user_name,
+    user_id: 0
+  }
+  try {
+    const res = await dealerService.distributorAreaTree(params)
+    if (res.result_code === 200) {
+      if (res.areas && res.areas) {
+        areaTreeList.value = res.areas
+      } else {
+        areaTreeList.value = []
+      }
+    } else {
+      ElMessage({
+        message: res.description,
+        type: 'error',
+      })
+    }
+  } catch (error) {
+    console.error('获取经销商权限树失败', error)
+  }
+}
+
+// 触发负责范围改变时
+const changeArea = (val) => {
+  console.log('11111111111', val)
+  // getRoleList(val)
+}
+
+// 取消新增
+const closeDialogAdd = () => {
+  dialogAdd.value = false
+  formref.value.resetFields()
+  dialogForm.id = ''
+  dialogForm.name = ''
+  dialogForm.phone = ''
+  dialogForm.password = ''
+  dialogForm.role_id = ''
+  dialogForm.area_ids = ''
+  dialogForm.account = ''
+  dialogForm.remark = ''
+  dialogForm.school_ids = ''
+  dialogForm.sub_role_ids = ''
+  dialogForm.parent_id = ''
+  selectDevolveRoleList.value = []
+  dialogFormDisabled.value = false
+  isPwdAutoGenerated.value = false
+  dialogType.value = 'add'
+  role_level.value = 0
+}
+// 确定新增/编辑
+const makeSureBtn = () => {
+  if (basicEditor.value) {
+    const html = basicEditor.value.contentHandle();
+    const text = basicEditor.value.textHandle();
+    console.log('基础编辑器HTML内容：', html);
+    console.log('基础编辑器纯文本：', text);
+    // previewContent.value = html; // 预览内容
+  }
+  formref.value.validate(async (valid) => {
+    if (valid) {
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
+
+      // 如果是新增走一下逻辑
+      if (dialogType.value === 'add') {
+        let params = {
+          session: vocabularyStore.session,
+          user_name: vocabularyStore.user_name,
+          account: dialogForm.account,
+          phone: dialogForm.phone,
+          area_ids: dialogForm.area_ids.length ? dialogForm.area_ids.join(',') : dialogForm.area_ids || '',
+          parent_id: dialogForm.parent_id || 1,
+          is_special: dialogForm.is_special,
+          name: dialogForm.name,
+          password: dialogForm.password,
+          role_id: dialogForm.role_id,
+          remark: dialogForm.remark,
+          school_ids: dialogForm.school_ids.length ? dialogForm.school_ids.join(',') : '',
+          sub_role_ids: selectDevolveRoleList.value.join(','),
+        }
+
+        try {
+          const res = await dealerService.addDistributor(params)
+          if (res.result_code === 200) {
+            ElMessage({
+              message: '操作成功',
+              type: 'success',
+            })
+            getNoticesList()
+            closeDialogAdd()
+          } else if (res.result_code === 913) {
+            ElMessage({
+              message: '经销商已存在',
+              type: 'error',
+            })
+          } else {
+            ElMessage({
+              message: res.description,
+              type: 'error',
+            })
+          }
+          loading.close()
+        } catch (error) {
+          console.log(error)
+          loading.close()
+        }
+      } else if (dialogType.value === 'edit') {
+        // 编辑逻辑
+        let params = {
+          session: vocabularyStore.session,
+          user_name: vocabularyStore.user_name,
+          account: dialogForm.account,
+          phone: dialogForm.phone,
+          distributor_id: dialogForm.id,
+          distributor_name: dialogForm.name
+        }
+        try {
+          const res = await dealerService.updateDistributorInfo(params)
+          if (res.result_code === 200) {
+            ElMessage({
+              message: '修改成功',
+              type: 'success',
+            })
+            getNoticesList()
+            closeDialogAdd()
+          } else if (res.result_code === 913) {
+            ElMessage({
+              message: '经销商已存在',
+              type: 'error',
+            })
+          } else {
+            ElMessage({
+              message: res.description,
+              type: 'error',
+            })
+          }
+          loading.close()
+        } catch (error) {
+          console.log(error)
+          loading.close()
+        } finally {
+          loading.close()
+          dialogType.value = 'add'
+        }
+      } else if (dialogType.value === 'power'){
+        // 更改权限逻辑
+        let params = {
+          session: vocabularyStore.session,
+          user_id: dialogForm.id,
+          user_name: vocabularyStore.user_name,
+          area_ids: dialogForm.area_ids.length ? dialogForm.area_ids.join(',') : dialogForm.area_ids || '',
+          role_id: dialogForm.role_id,
+          remark: dialogForm.remark,
+          school_ids: dialogForm.school_ids.length ? dialogForm.school_ids.join(',') : '',
+          sub_role_ids: selectDevolveRoleList.value.length ? selectDevolveRoleList.value.join(',') : '',
+          role_level: detailData.value.role_level
+        }
+        try {
+          const res = await dealerService.updateDistributorAuth(params)
+          if (res.result_code === 200) {
+            ElMessage({
+              message: '变更成功',
+              type: 'success',
+            })
+            getNoticesList()
+            closeDialogAdd()
+          } else if (res.result_code === 913) {
+            ElMessage({
+              message: '经销商已存在',
+              type: 'error',
+            })
+          } else {
+            ElMessage({
+              message: res.description,
+              type: 'error',
+            })
+          }
+          loading.close()
+        } catch (error) {
+          console.log(error)
+          loading.close()
+        } finally {
+          loading.close()
+          dialogType.value = 'add'
+        }
+      }
+
+    } else {
+      console.log('valid3', valid)
+      return false
+    }
+  })
+}
+
+// 获取经销商详情
+const getDealerDetail = async (id) => {
+  const params = {
+    session: vocabularyStore.session,
+    user_name: vocabularyStore.user_name,
+    user_id: id,
+  }
+  try {
+    const res = await dealerService.getDistributorDetail(params)
+    if (res.result_code === 200) {
+      if (res.distributor) {
+        detailData.value = res.distributor
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+// 切换下一页---暂时注释
+// const handleCurrentChange = (page) => {
+//   pageIndex.value = page
+//   getNoticesList() // 表格数据
+// }
+// 查询
+const btnSearch = () => {
+  getNoticesList()
+}
+// 重置
+const btnReset = () => {
+  searchForm.title = ''
+  searchForm.is_release = ''
+  getNoticesList()
+}
+// 新增
+const btnAdded = () => {
+  dialogTitle.value = '新增'
+  dialogAdd.value = true
+  getRoleTree()
+  getRoleList()
+  getAreaTree()
+}
+// 编辑
+const edit = async (row) => {
+  await getDealerDetail(row.user_id)
+  dialogForm.name = detailData.value.user_name
+  dialogForm.phone = detailData.value.phone
+  dialogForm.account = detailData.value.account_name
+  dialogForm.id = row.user_id
+  dialogType.value = 'edit'
+  dialogTitle.value = '编辑'
+  dialogAdd.value = true
+}
+
+// 查看
+const detail = (row) => {
+  getDealerDetail(row.user_id)
+  dialogDetail.value = true
+}
+
+// 更改经销商状态 启用、禁用、删除
+
+const editStatus = async (row, type) => {
+  let title = row.stop_flag === 0 ? '禁用' : '启用'
+  let label = ''
+  let mesTitle = ''
+  if (type === 1) {
+    label = '是否确认删除'
+    title = '确定后，将同时删除其下级账号数据'
+    mesTitle = '删除成功'
+  } else if (type === 0) {
+    label = '是否确认禁用'
+    title = '禁用后将对其账号以及其创建的下级账号全部进行禁用'
+    mesTitle = '禁用成功'
+  }
+  ElMessageBox.confirm(
+    title,
+    label,
+    {
+      confirmButtonText: '确定',
+      confirmButtonClass: 'button-confirm',
+      cancelButtonText: '取消',
+      center: true,
+    }
+  ).then(() => {
+    let params = {
+      user_name: vocabularyStore.user_name,
+      session: vocabularyStore.session,
+      distributor_id: row.user_id,
+      type: type
+    }
+    dealerService.disableDistributor(params).then((res) => {
+      if (res.result_code === 200) {
+        getNoticesList()
+        ElMessage({
+          message: `${mesTitle}成功`,
+          type: 'success',
+          duration: 1000
+        })
+      } else if (res.result_code === 919) {
+        ElMessage({
+          message: '正在被引用,禁止删除',
+          type: 'error',
+          duration: 3000
+        })
+      } else {
+        ElMessage({
+          message: res.description,
+          type: 'info',
+          duration: 3000
+        })
+      }
+    }).catch((error) => {
+      console.log(error)
+    })
+  }).catch(() => {
+  })
+}
 
 </script>
 
 <style scoped>
+.table-info {
+  width: 96% !important;
+  margin-left: 20px;
+  border: 1px solid var(--el-border-color-lighter);
+  border-right: 1px solid var(--el-border-color-lighter) !important;
+}
 
+.line {
+  margin: 30px 0;
+  border: 1px dotted #eee;
+}
+
+#form .el-select {
+  --el-select-width: 250px;
+}
+
+#form .el-input {
+  --el-input-width: 250px;
+}
+
+#form .el-textarea {
+  width: 350px;
+}
+
+.over-hidden {
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#cityForms {
+  padding: 0 20px;
+}
+
+#cityForms :deep(.el-form-item) {
+  margin-right: 10px !important;
+}
+
+.year-box {
+  display: flex;
+  margin-top: 20px;
+}
+
+.year-item {
+  margin-right: -1px;
+  padding: 0px 14px;
+  border: 1px solid #eee;
+  cursor: pointer;
+}
+
+.active-years {
+  background: rgba(64, 158, 255, 1);
+  color: #fff;
+}
+
+:deep(.el-table__cell .cell) {
+  display: flex;
+  align-items: center;
+}
+
+.role-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  height: 631px;
+  overflow: auto;
+  justify-content: start;
+  align-content: baseline;
+}
+
+.role-card-item {
+  background: #F3F5F8;
+  border-radius: 20px;
+  padding: 11px 22px;
+  height: 150px;
+  width: 310px;
+  cursor: pointer;
+}
+
+.role-card-item .label {
+  display: flex;
+  justify-content: end;
+}
+
+.role-card-item .title {
+  font-size: 22px;
+  color: #000000;
+  font-weight: bold;
+}
+
+.role-card-item .desc {
+  width: 306px;
+  margin: 10px 0;
+  height: 50px;
+  font-size: 16px;
+  color: #000000;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+}
+
+.role-card-item .select {
+  width: 20px;
+  height: 20px;
+}
+
+.role-card-item .select_icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  float: right;
+}
+
+.detail-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-box .detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-box .detail-item .detail-mes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.detail-box .detail-item h6 {
+  font-size: 18px;
+  margin: 0;
+  margin-bottom: 10px;
+}
+.power-info{
+  margin-left: 100px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
 </style>
