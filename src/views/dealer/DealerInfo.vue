@@ -545,7 +545,7 @@ const getAreaTree = async (val) => {
   const params = {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
-    user_id: val || 0
+    user_id: val || 1
   }
   try {
     const res = await dealerService.distributorAreaTree(params)
