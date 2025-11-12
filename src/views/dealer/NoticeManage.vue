@@ -78,7 +78,7 @@
           <el-button v-if="editPower" class="button-style" link type="primary" @click="edit(scope.row)">
             编辑
           </el-button>
-          <el-button v-if="deletePower" class="button-style" link type="primary" @click="del(scope.row)">
+          <el-button v-if="deletePower" class="button-style" link type="danger" @click="del(scope.row)">
             删除
           </el-button>
         </template>
