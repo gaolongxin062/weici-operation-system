@@ -72,7 +72,7 @@
           <el-button class="button-style" link type="primary" @click="detail(scope.row)">
             详情
           </el-button>
-          <el-button v-if="editPower" class="button-style" link type="primary" @click="editStatus(scope.row)">
+          <el-button v-if="editPower && scope.row.is_release === 0" class="button-style" link type="primary" @click="editStatus(scope.row)">
             发布
           </el-button>
           <el-button v-if="editPower" class="button-style" link type="primary" @click="edit(scope.row)">
@@ -138,7 +138,8 @@
           </div>
           <div class="detail-item">
             <h6>内容</h6>
-            <p style="margin: 0;" class="" v-html="detailData.content"></p>
+            <!-- <p style="margin: 0;" class="" v-html="detailData.content"></p> -->
+            <rich-text-editor :default-text="dialogForm.content || ''" :disabled="true"/>
           </div>
         </div>
       </el-dialog>
@@ -161,16 +162,15 @@ const dialogTitle = ref('新增')
 const addPower = ref(false)
 const editPower = ref(false)
 const deletePower = ref(false)
-const treeList = ref([])
 const dialogFormDisabled = ref(false)
 const dialogType = ref('add')
 let dialogAdd = ref(false)
 let loading = ref(false)
 let noticesList = ref([]) // 表格数据 经销商列表
-const roleList = ref([]) // 职务列表-新增/编辑时根据选择的经销商获取
-const devolveRoleList = ref([]) // 下放职务列表-新增/编辑时根据选择的经销商跟职务获取
 const areaTreeList = ref([])  // 区域树
 const detailData = ref({}) // 详情数据
+const pageIndex = ref(1)
+const pageSize = ref(10)
 const dialogDetail = ref(false)
 const basicEditor = ref(null)
 const total = ref(0)
@@ -238,14 +238,14 @@ const getUserPower = () => {
       loading.value = false
     })
 }
-// 获取经销商列表
+// 获取公告列表
 const getNoticesList = async () => {
   const params = {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
     is_release: searchForm.is_release,
-    page_index: 1,
-    page_size: 10,
+    page_index: pageIndex.value,
+    page_size: pageSize.value,
     title: searchForm.title
   }
   try {
@@ -266,68 +266,6 @@ const getNoticesList = async () => {
     }
   } catch (error) {
     console.log(error)
-  }
-}
-
-// 获取经销商权限树
-const getRoleTree = async () => {
-  const params = {
-    session: vocabularyStore.session,
-    user_name: vocabularyStore.user_name,
-  }
-  try {
-    const res = await dealerService.getDistributorRightTree(params)
-    if (res.result_code === 200) {
-      if (res.rights && res.rights.length) {
-        treeList.value = res.rights
-      } else {
-        treeList.value = []
-      }
-    } else {
-      ElMessage({
-        message: res.description,
-        type: 'error',
-      })
-    }
-
-  } catch (error) {
-    console.error('获取经销商权限树失败', error)
-  }
-}
-
-// 获取职务及下放职务列表
-const getRoleList = async (id, level) => {
-  const params = {
-    session: vocabularyStore.session,
-    user_name: vocabularyStore.user_name,
-    user_id: id || 0,
-    role_level: level || 0
-  }
-  try {
-    const res = await dealerService.getChoosableRoleList(params)
-    if (res.result_code === 200) {
-      if (res.list && res.list) {
-        if (level) {
-          devolveRoleList.value = res.list
-        } else {
-          roleList.value = res.list
-        }
-      } else {
-        if (level) {
-          devolveRoleList.value = []
-        } else {
-          roleList.value = []
-        }
-      }
-    } else {
-      ElMessage({
-        message: res.description,
-        type: 'error',
-      })
-    }
-
-  } catch (error) {
-    console.error('获取经销商权限树失败', error)
   }
 }
 
@@ -386,6 +324,7 @@ const closeDialogAdd = () => {
   dialogAdd.value = false
   formref.value.resetFields()
   dialogForm.receive_range = ''
+  dialogForm.id = ''
 }
 // 确定新增/编辑
 const makeSureBtn = () => {
@@ -411,7 +350,8 @@ const makeSureBtn = () => {
         user_name: vocabularyStore.user_name,
         title: dialogForm.title,
         content: html,
-        receive_range: dialogForm.receive_range.join(',')
+        receive_range: dialogForm.receive_range.join(','),
+        id: dialogForm.id || ''
       }
 
       try {
@@ -465,10 +405,10 @@ const getDetail = async (id) => {
   }
 }
 // 切换下一页---暂时注释
-// const handleCurrentChange = (page) => {
-//   pageIndex.value = page
-//   getNoticesList() // 表格数据
-// }
+const handleCurrentChange = (page) => {
+  pageIndex.value = page
+  getNoticesList() // 表格数据
+}
 // 查询
 const btnSearch = () => {
   getNoticesList()
@@ -483,8 +423,6 @@ const btnReset = () => {
 const btnAdded = () => {
   dialogTitle.value = '新增'
   dialogAdd.value = true
-  getRoleTree()
-  getRoleList()
   getAreaTree()
 }
 // 编辑

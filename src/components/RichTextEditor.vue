@@ -1,155 +1,155 @@
 <!--富文本编辑器-->
 <template>
   <div class="editor">
-
     <div>
-
       <div :id="rootElement" class="editor-box"></div>
-
-      <!-- <div type="primary" @click="contentHandle">获取HTML内容</div> -->
-
-      <!-- <div type="primary" @click="textHandle">获取TEXT内容</div> -->
-
     </div>
-
   </div>
-
 </template>
 
 <script setup>
-  import E from 'wangeditor'
-  import { ref, onMounted, defineProps, watch, defineExpose, defineEmits, nextTick } from 'vue';
-  import config from '@/config/'
-  let editor = ref(null)
-  let props = defineProps({
-    defaultText: {
-      type: String,
-      default: ''
-    }, // 编辑器中默认内容
+import E from 'wangeditor'
+import { ref, onMounted, defineProps, watch, defineExpose, defineEmits, nextTick } from 'vue';
 
-    defaultHeight: {
-      type: Number,
-      default: 200
-    }, // 编辑器的默认高度
+let editor = ref(null)
+let props = defineProps({
+  defaultText: {
+    type: String,
+    default: ''
+  },
+  defaultHeight: {
+    type: Number,
+    default: 200
+  },
+  rootElement: {
+    type: String,
+    default: 'div'
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+})
 
-    rootElement: {
-      type: String,
-      default: 'div'
-    }, // 用于在同一个页面创建多个编辑器
+let emit = defineEmits(['editorOnblur'])
 
-    disabled: {
-      type: Boolean,
-      default: false
-    } // 是否可编辑
+onMounted(() => {
+  initEditor()
+})
+
+function initEditor() {
+  editor.value = new E('#' + props.rootElement)
+  editor.value.config.zIndex = 5
+  editor.value.config.height = props.defaultHeight
+
+  // -------- 1. 移除所有本地上传配置（无用且可能干扰）--------
+  // 删掉 uploadImgServer、uploadImgMaxSize 等本地上传相关配置
+
+  // 不可编辑逻辑
+  if (editor.value && props.disabled === true) {
+    nextTick(() => {
+      editor.value.disable()
+    });
+  }
+
+  // 失焦回调
+  editor.value.config.onblur = function (newHtml) {
+    emit('editorOnblur', newHtml)
+  }
+
+  // 菜单栏配置（保留 image 菜单）
+  editor.value.config.menus = [
+    'head', 'bold', 'fontSize', 'fontName', 'italic', 'underline',
+    'strikeThrough', 'indent', 'lineHeight', 'foreColor', 'backColor',
+    'list', 'justify', 'quote', 'table', 'splitLine', 'undo', 'redo', 'image'
+  ]
+
+  // 创建编辑器
+  editor.value.create()
+
+  // -------- 2. JS 兜底隐藏（防止 CSS 没生效）--------
+  nextTick(() => {
+    // 精准定位当前编辑器的图片菜单（避免多编辑器冲突）
+    const toolbar = document.querySelector(`#${props.rootElement}`).nextElementSibling; // 编辑器工具栏
+    if (!toolbar) return;
+
+    // 找到图片菜单的下拉容器
+    const imageMenu = toolbar.querySelector('.w-e-menu-image');
+    if (imageMenu) {
+      // 触发一次点击（让下拉菜单 DOM 渲染出来，否则找不到子元素）
+      imageMenu.click();
+      nextTick(() => {
+        // 隐藏本地上传按钮
+        const localUpload = imageMenu.querySelector('.w-e-up-img');
+        if (localUpload) localUpload.style.display = 'none';
+        // 隐藏分隔线
+        const divider = imageMenu.querySelector('.w-e-dropdown-divider');
+        if (divider) divider.style.display = 'none';
+        // 再次点击关闭下拉菜单
+        imageMenu.click();
+      });
+    }
   })
-  onMounted(() => {
-    initEditor() // 初始化富文本编辑器设置
-  })
-  let emit = defineEmits([
-    'editorOnblur'
-  ])
-  function initEditor () {
-      editor.value = new E('#' + props.rootElement)
-      editor.value.config.zIndex = 5
-      editor.value.config.height = props.defaultHeight // 设置默认高度
-      editor.value.config.uploadImgServer = config.BASE_URL + '/account/upload/image'
-      editor.value.config.uploadImgMaxSize = 2 * 1024 * 1024 // 将图片大小限制为2MB
-      editor.value.config.uploadImgMaxLength = 6 // 限制一次最多上传6张图片
-      editor.value.config.uploadImgTimeout = 5 * 1000 // 设置超时时间
-      editor.value.config.uploadFileName = 'file'
 
-      // const editorContent = document.querySelector('.editor'); 
-      if (editor.value && props.disabled === true) {  // 不可编辑
-        nextTick(() => {
-          editor.value.disable()
-        });
-        // // editorContent.setAttribute('contenteditable', 'false'); // 禁止内容编辑  
-        // editorContent.style.pointerEvents = 'none'; // 禁止鼠标事件  
-        // editorContent.style.userSelect = 'none'; // 禁止编辑 
-        // editorContent.style.cursor = 'no-drop'; // 鼠标禁止按钮
+  // 上传钩子（保留网络图片插入逻辑，本地上传已禁用）
+  editor.value.config.uploadImgHooks = {
+    customInsert: function (insertImg, result) {
+      if (result.data) {
+        result.data.forEach(item => {
+          insertImg(item.url)
+        })
       }
+    },
+    fail: function (xhr, editor, resData) {
+      console.log('fail', resData)
+    },
+    error: function (xhr, editor, resData) {
+      console.log('error', xhr, resData)
+    },
+  }
 
-      //编辑区域 focus（聚焦）和 blur（失焦）时触发的回调函数。
-      editor.value.config.onblur = function (newHtml) {
-        // alert(newHtml)
-        emit('editorOnblur', newHtml)
-        editor.value.config.focus = false
-      }
-      // 配置菜单栏，删减菜单
-      editor.value.config.menus = [
-        'head',
-        'bold',
-        'fontSize',
-        'fontName',
-        'italic',
-        'underline',
-        'strikeThrough',
-        'indent',
-        'lineHeight',
-        'foreColor',
-        'backColor',
-        'list',
-        'justify',
-        'quote',
-        'table',
-        'splitLine',
-        'undo',
-        'redo',
-        'image'
-      ]
+  // 初始化默认内容
+  if (props.defaultText.length) editor.value.txt.html(props.defaultText)
+}
 
-      editor.value.create()
-      
-      editor.value.config.uploadImgHooks = {
-        customInsert: function (insertImg, result) {
-          // console.log(result)
-          // result是你的图片上传服务器返回的结果，自定义处理
-          // insertImg是一个函数，用于将图片插入到编辑器中
-          // 例如：result是{ data: { link: '图片链接' } }
-          if (result.data) {
-            result.data.forEach(item => {
-              insertImg(item.url)
-            })
-          }
-        },
-        fail: function(xhr, editor, resData) {
-           console.log('fail', resData)
-        },
-        // 上传图片出错，一般为 http 请求的错误
-        error: function(xhr, editor, resData) {
-          console.log('error', xhr, resData)
-        },
-      }
+// 获取内容方法
+function contentHandle() {
+  return editor.value?.txt.html() || ''
+}
+function textHandle() {
+  return editor.value?.txt.text() || ''
+}
 
-      // 这里为了防止defaultText已经变化了，但是editor还没有初始化导致的不能显示默认内容的问题
-      if (props.defaultText.length) editor.value.txt.html(props.defaultText)
-    } // 初始化富文本编辑器设置
-    function contentHandle () {
-      // console.log(editor)
-      return (editor.value.txt.html())
-      // alert (editor.value.txt.html())
-    } // 获取html内容
-    defineExpose({
-      contentHandle,
-      textHandle
-    })
-    function textHandle () {
-      return(editor.value.txt.text())
-    } // 获取text内容
-    watch(() => props.defaultText, (newVal) => {
-      if (newVal.length) editor.value.txt.html(props.defaultText)
-    })
+// 暴露方法
+defineExpose({
+  contentHandle,
+  textHandle
+})
+
+// 监听默认内容变化
+watch(() => props.defaultText, (newVal) => {
+  if (newVal.length && editor.value) {
+    editor.value.txt.html(newVal)
+  }
+})
 </script>
+
+<!-- -------- 3. 全局 CSS 强制隐藏本地上传（关键！）-------- -->
 <style>
-  /* .editor-box img{
-    width:200px !important;
-    height:200px !important;
-  } */
+/* 隐藏所有编辑器的本地上传按钮和分隔线 */
+.w-e-menu-image .w-e-up-img,
+.w-e-menu-image .w-e-dropdown-divider {
+  display: none !important; /* !important 确保优先级最高 */
+}
+
+/* 可选：让网络图片按钮居中显示 */
+.w-e-menu-image .w-e-dropdown-content {
+  padding: 8px 0 !important;
+}
 </style>
 
 <style scoped>
-
-  .editor {
-    margin-top: 10px;
-  }
+.editor {
+  margin-top: 10px;
+}
 </style>
