@@ -42,9 +42,6 @@ function initEditor() {
   editor.value.config.zIndex = 5
   editor.value.config.height = props.defaultHeight
 
-  // -------- 1. 移除所有本地上传配置（无用且可能干扰）--------
-  // 删掉 uploadImgServer、uploadImgMaxSize 等本地上传相关配置
-
   // 不可编辑逻辑
   if (editor.value && props.disabled === true) {
     nextTick(() => {
@@ -67,22 +64,20 @@ function initEditor() {
   // 创建编辑器
   editor.value.create()
 
-  // -------- 2. JS 兜底隐藏（防止 CSS 没生效）--------
   nextTick(() => {
-    // 精准定位当前编辑器的图片菜单（避免多编辑器冲突）
+    // 精准定位当前编辑器的图片菜单
     const toolbar = document.querySelector(`#${props.rootElement}`).nextElementSibling; // 编辑器工具栏
     if (!toolbar) return;
 
     // 找到图片菜单的下拉容器
     const imageMenu = toolbar.querySelector('.w-e-menu-image');
     if (imageMenu) {
-      // 触发一次点击（让下拉菜单 DOM 渲染出来，否则找不到子元素）
+      // 触发一次点击
       imageMenu.click();
       nextTick(() => {
         // 隐藏本地上传按钮
         const localUpload = imageMenu.querySelector('.w-e-up-img');
         if (localUpload) localUpload.style.display = 'none';
-        // 隐藏分隔线
         const divider = imageMenu.querySelector('.w-e-dropdown-divider');
         if (divider) divider.style.display = 'none';
         // 再次点击关闭下拉菜单
@@ -133,13 +128,11 @@ watch(() => props.defaultText, (newVal) => {
   }
 })
 </script>
-
-<!-- -------- 3. 全局 CSS 强制隐藏本地上传（关键！）-------- -->
 <style>
 /* 隐藏所有编辑器的本地上传按钮和分隔线 */
 .w-e-menu-image .w-e-up-img,
 .w-e-menu-image .w-e-dropdown-divider {
-  display: none !important; /* !important 确保优先级最高 */
+  display: none !important;
 }
 
 /* 可选：让网络图片按钮居中显示 */
