@@ -67,16 +67,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" fixed="right" width="180" v-if="deletePower || editPower">
+      <el-table-column label="操作" fixed="right" width="180">
         <template #default="scope">
-          <el-button class="button-style" link type="primary" @click="resetPwd(scope.row)">
+          <el-button v-if="passwordPower" class="button-style" link type="primary" @click="resetPwd(scope.row)">
             重置密码
           </el-button>
-          <el-button v-if="editPower && scope.row.stop_flag === 0" class="button-style" link type="primary"
+          <el-button v-if="statusPower && scope.row.stop_flag === 0" class="button-style" link type="primary"
             @click="editStatus(scope.row, scope.row.stop_flag === 0 ? 0 : 2)">
             禁用
           </el-button>
-          <el-button v-if="editPower && scope.row.stop_flag === 1" class="button-style" link type="primary"
+          <el-button v-if="statusPower && scope.row.stop_flag === 1" class="button-style" link type="primary"
             @click="editStatusEnable(scope.row)">
             启用
           </el-button>
@@ -87,9 +87,9 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item @click="detail(scope.row)">详情</el-dropdown-item>
-                <el-dropdown-item @click="edit(scope.row)">修改</el-dropdown-item>
-                <el-dropdown-item @click="changePower(scope.row)">变更权限</el-dropdown-item>
-                <el-dropdown-item :disabled="scope.row.stop_flag === 0"
+                <el-dropdown-item v-if="editPower" @click="edit(scope.row)">修改</el-dropdown-item>
+                <el-dropdown-item v-if="selectPower" @click="changePower(scope.row)">变更权限</el-dropdown-item>
+                <el-dropdown-item v-if="deletePower" :disabled="scope.row.stop_flag === 0"
                   @click="editStatus(scope.row, 1)">删除</el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -257,9 +257,12 @@ import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 let vocabularyStore = useVocabularyStore();
 let formref = ref()
 const dialogTitle = ref('新增')
-const addPower = ref(false)
-const editPower = ref(false)
-const deletePower = ref(false)
+const addPower = ref(false) // 新增按钮权限
+const editPower = ref(false) // 修改按钮权限
+const deletePower = ref(false) // 删除按钮权限
+const passwordPower = ref(false) // 修改密码权限
+const statusPower = ref(false) // 启用/禁用权限
+const selectPower = ref(false) // 变更权限按钮权限
 const treeList = ref([])
 const dialogFormDisabled = ref(false)
 const dialogType = ref('add')
@@ -435,9 +438,12 @@ const getUserPower = () => {
     vocabularyStore.session,
   )
     .then((res) => {
-      if (res.data.findIndex(item => item.menu_index == 'dealer_job_add') !== -1) addPower.value = true
-      if (res.data.findIndex(item => item.menu_index == 'dealer_job_edit') !== -1) editPower.value = true
-      if (res.data.findIndex(item => item.menu_index == 'dealer_job_del') !== -1) deletePower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer_list_add') !== -1) addPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer_list_edit') !== -1) editPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer_list_del') !== -1) deletePower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer_list_paw') !== -1) passwordPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer_list_status') !== -1) statusPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer_list_power') !== -1) selectPower.value = true
     })
     .catch((error) => {
       console.log(error)
@@ -715,7 +721,7 @@ const makeSureBtn = () => {
             closeDialogAdd()
           } else if (res.result_code === 913) {
             ElMessage({
-              message: '经销商已存在',
+              message: '手机号重复，经销商已存在',
               type: 'error',
             })
           } else {

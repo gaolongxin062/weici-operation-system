@@ -67,18 +67,18 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="200" fixed="right" v-if="deletePower || editPower">
+      <el-table-column label="操作" width="200" fixed="right">
         <template #default="scope">
           <el-button class="button-style" link type="primary" @click="detail(scope.row)">
             详情
           </el-button>
-          <el-button v-if="editPower && scope.row.is_release === 0" class="button-style" link type="primary" @click="editStatus(scope.row)">
+          <el-button v-if="releasePower && scope.row.is_release === 0" class="button-style" link type="primary" @click="editStatus(scope.row)">
             发布
           </el-button>
           <el-button v-if="editPower" class="button-style" link type="primary" @click="edit(scope.row)">
             编辑
           </el-button>
-          <el-button v-if="editPower" class="button-style" link type="primary" @click="del(scope.row)">
+          <el-button v-if="deletePower" class="button-style" link type="primary" @click="del(scope.row)">
             删除
           </el-button>
         </template>
@@ -122,7 +122,7 @@
       <el-dialog v-model="dialogDetail" title="详情" width="800" :show-close="true" :destroy-on-close="true">
         <div class="detail-box">
           <div class="detail-item">
-            <h6>{{detailData.title}}</h6>
+            <h6>公告名称：{{detailData.title}}</h6>
 
             <div class="detail-mes">
               <p>状态：{{ detailData.is_release === 0 ? '待发布' : '已发布' }}</p>
@@ -162,6 +162,7 @@ const dialogTitle = ref('新增')
 const addPower = ref(false)
 const editPower = ref(false)
 const deletePower = ref(false)
+const releasePower = ref(false)
 const dialogFormDisabled = ref(false)
 const dialogType = ref('add')
 let dialogAdd = ref(false)
@@ -227,9 +228,10 @@ const getUserPower = () => {
     vocabularyStore.session,
   )
     .then((res) => {
-      if (res.data.findIndex(item => item.menu_index == 'dealer_job_add') !== -1) addPower.value = true
-      if (res.data.findIndex(item => item.menu_index == 'dealer_job_edit') !== -1) editPower.value = true
-      if (res.data.findIndex(item => item.menu_index == 'dealer_job_del') !== -1) deletePower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer-notice-add') !== -1) addPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer-notice-edit') !== -1) editPower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer-notice-del') !== -1) deletePower.value = true
+      if (res.data.findIndex(item => item.menu_index == 'dealer-notice-release') !== -1) releasePower.value = true
     })
     .catch((error) => {
       console.log(error)
