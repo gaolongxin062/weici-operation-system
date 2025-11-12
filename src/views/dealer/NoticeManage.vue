@@ -29,8 +29,8 @@
         </div>
       </div>
     </el-form>
-    <el-table :data="noticesList" class="table-info" header-cell-class-name="header_row_class" :max-height="screenHeight" v-loading="loading" ref="multipleTable"
-      stripe element-loading-text="拼命加载中，主人请稍后...">
+    <el-table :data="noticesList" class="table-info" header-cell-class-name="header_row_class"
+      :max-height="screenHeight" v-loading="loading" ref="multipleTable" stripe element-loading-text="拼命加载中，主人请稍后...">
       <el-table-column label="公告名称" width="200px">
         <template #default="scope">
           <div>{{ scope.row.title || '-' }}</div>
@@ -72,16 +72,13 @@
           <el-button class="button-style" link type="primary" @click="detail(scope.row)">
             详情
           </el-button>
-          <el-button v-if="editPower" class="button-style" link type="primary"
-            @click="editStatus(scope.row)">
+          <el-button v-if="editPower" class="button-style" link type="primary" @click="editStatus(scope.row)">
             发布
           </el-button>
-          <el-button v-if="editPower" class="button-style" link type="primary"
-            @click="edit(scope.row)">
+          <el-button v-if="editPower" class="button-style" link type="primary" @click="edit(scope.row)">
             编辑
           </el-button>
-          <el-button v-if="editPower" class="button-style" link type="primary"
-            @click="del(scope.row)">
+          <el-button v-if="editPower" class="button-style" link type="primary" @click="del(scope.row)">
             删除
           </el-button>
         </template>
@@ -93,7 +90,6 @@
     </el-pagination>
     <!-- 新增/编辑弹窗 -->
     <div class="add-dialog">
-      
       <el-dialog v-model="dialogAdd" top="5vh" :title="dialogTitle" width="800" :show-close="false"
         :destroy-on-close="true" @close="closeDialogAdd">
         <el-form :inline="true" ref="formref" id="form" :model="dialogForm" size="large" label-width="100px"
@@ -108,10 +104,7 @@
               :props="cascaderAreaProps" :show-all-levels="false" @change="changeArea" collapse-tags />
           </el-form-item>
           <el-form-item label="公告内容">
-            <!-- <el-input class="search-input" clearable placeholder="请输入" type="textarea" show-word-limit :maxlength="30"
-              v-model="dialogForm.remark" :autosize="{ minRows: 2, maxRows: 4 }">
-            </el-input> -->
-            <rich-text-editor ref="basicEditor" />
+            <rich-text-editor ref="basicEditor" :default-text="dialogForm.content || ''"/>
           </el-form-item>
         </el-form>
         <template #footer>
@@ -122,6 +115,32 @@
             </el-button>
           </div>
         </template>
+      </el-dialog>
+    </div>
+    <!-- 查看详情弹窗 -->
+    <div class="detail-dialog">
+      <el-dialog v-model="dialogDetail" title="详情" width="800" :show-close="true" :destroy-on-close="true">
+        <div class="detail-box">
+          <div class="detail-item">
+            <h6>{{detailData.title}}</h6>
+
+            <div class="detail-mes">
+              <p>状态：{{ detailData.is_release === 0 ? '待发布' : '已发布' }}</p>
+              <p>创建时间：{{ detailData.make_date || '-'}}</p>
+              <p>发布时间：{{ detailData.release_date || '-' }}</p>
+              <p>接收范围：{{ detailData.receive_range ? '部分区域' : '全部' }}</p>
+            </div>
+
+          </div>
+          <div class="detail-item" v-if="detailData.receive_range_txt">
+            <h6>范围</h6>
+            <p style="margin:0;margin-bottom: 10px;" class="" v-for="(val , index) in detailData.receive_range_txt" :key="index"> {{val}} </p>
+          </div>
+          <div class="detail-item">
+            <h6>内容</h6>
+            <p style="margin: 0;" class="" v-html="detailData.content"></p>
+          </div>
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -478,13 +497,19 @@ const edit = async (row) => {
   dialogForm.id = row.id
   dialogType.value = 'edit'
   dialogTitle.value = '编辑'
+  dialogForm.content = detailData.value.content
   dialogAdd.value = true
 }
 
 // 查看
-const detail = (row) => {
-  getDetail(row.id)
+const detail = async (row) => {
+  await getDetail(row.id)
   dialogDetail.value = true
+  console.log('row', row);
+  dialogForm.content = detailData.value.content
+  detailData.value.receive_range_txt = row.receive_range ? row.receive_range.split(',') : ''
+  console.log('row', detailData.value);
+
 }
 // 删除公告
 const del = async (row) => {
