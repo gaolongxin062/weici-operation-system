@@ -908,7 +908,7 @@ const changePower = async (row) => {
   
   // 获取下放职务
   getRoleList(row.parent_id, detailData.value.role_level)
-  selectDevolveRoleList.value = detailData.value.role_ids ? detailData.value.role_ids.split(',').map(item => Number(item.trim())) : ''
+  selectDevolveRoleList.value = detailData.value.role_ids ? detailData.value.role_ids.split(',').map(item => Number(item.trim())) : []
   dialogForm.sub_role_ids = detailData.value.role_ids ? detailData.value.role_ids.split(',').map(item => Number(item.trim())) : ''
   dialogForm.account = detailData.value.account_name
   dialogForm.remark = detailData.value.remark
