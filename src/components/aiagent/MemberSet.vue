@@ -85,7 +85,7 @@
             v-model="formData.user_type"
             filterable
             placeholder="请选择用户类型"
-            clearable
+            @change="changeUseType"
           >
             <el-option
               v-for="item in userTypeList"
@@ -422,7 +422,8 @@
   function getUseInfo () {
     let params = {
       user_name: vocabularyStore.user_name,
-      session: vocabularyStore.session
+      session: vocabularyStore.session,
+      type: formData.value.user_type
     }
     return AiAgentService.getUse(params)
       .then((res) => {
@@ -554,6 +555,11 @@
     if (formData.value.use_info[index].config_value === null) {
       formData.value.use_info[index].config_value = 999
     }
+  }
+  // 切换用户类型
+  function changeUseType (e) {
+    console.log(e)
+    getUseInfo() // 重新获取用户次数
   }
 </script>
 
