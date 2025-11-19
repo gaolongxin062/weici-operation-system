@@ -425,6 +425,7 @@ const btnReset = () => {
 const btnAdded = () => {
   dialogTitle.value = '新增'
   dialogAdd.value = true
+  dialogForm.content = ''
   getAreaTree()
 }
 // 编辑
