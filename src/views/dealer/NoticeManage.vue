@@ -138,7 +138,6 @@
           </div>
           <div class="detail-item">
             <h6>内容</h6>
-            <!-- <p style="margin: 0;" class="" v-html="detailData.content"></p> -->
             <rich-text-editor :default-text="dialogForm.content || ''" :disabled="true"/>
           </div>
         </div>
@@ -327,6 +326,8 @@ const closeDialogAdd = () => {
   formref.value.resetFields()
   dialogForm.receive_range = ''
   dialogForm.id = ''
+  dialogForm.title = ''
+  dialogForm.content = ''
 }
 // 确定新增/编辑
 const makeSureBtn = () => {
@@ -336,7 +337,6 @@ const makeSureBtn = () => {
     const text = basicEditor.value.textHandle();
     console.log('基础编辑器HTML内容：', html);
     console.log('基础编辑器纯文本：', text);
-    // previewContent.value = html; // 预览内容
   }
   formref.value.validate(async (valid) => {
     if (valid) {
@@ -388,7 +388,7 @@ const makeSureBtn = () => {
   })
 }
 
-// 获取经销商详情
+// 获取公告详情
 const getDetail = async (id) => {
   const params = {
     session: vocabularyStore.session,

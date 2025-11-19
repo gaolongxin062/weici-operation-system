@@ -645,7 +645,7 @@ const addSpecialSchool = () => {
   selectInfo.value = {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
-    parent_id: dialogForm.parent_id || 1,
+    parent_id: dialogForm.parent_id || 0,
     area_ids: dialogForm.area_ids.length ? dialogForm.area_ids.join(',') : dialogForm.area_ids || '',
   }
   selectSchoolShow.value = true
@@ -656,7 +656,7 @@ const addRoleSchool = () => {
   selectInfo.value = {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
-    parent_id: dialogForm.parent_id || 1,
+    parent_id: dialogForm.parent_id || 0,
   }
   roleSelectSchoolShow.value = true
 }
@@ -699,7 +699,7 @@ const makeSureBtn = () => {
           account: dialogForm.account,
           phone: dialogForm.phone,
           area_ids: dialogForm.area_ids.length ? dialogForm.area_ids.join(',') : dialogForm.area_ids || '',
-          parent_id: dialogForm.parent_id || 1,
+          parent_id: dialogForm.parent_id || 0,
           is_special: dialogForm.is_special,
           name: dialogForm.name,
           password: dialogForm.password,
@@ -895,10 +895,10 @@ const changePower = async (row) => {
   role_level.value = detailData.value.role_level
   // 获取职务列表
   await getRoleList(row.parent_id)
-  dialogForm.parent_id = row.parent_id || 1
+  dialogForm.parent_id = row.parent_id || 0
   dialogForm.role_id = detailData.value.role_id || ''
   // 获取负责范围
-  await getAreaTree()
+  await getAreaTree(row.parent_id)
   dialogForm.area_ids = detailData.value.area_ids ? detailData.value.area_ids.split(',').map(item => Number(item.trim())): ''
   dialogForm.school_ids = detailData.value.school_ids ? detailData.value.school_ids.split(',').map(item => Number(item.trim())) : ''
   console.log(' dialogForm.school_ids', dialogForm.school_ids, detailData.value.school_ids)
@@ -1052,6 +1052,14 @@ const editStatusDisable = async (row) => {
           return false
         }).catch(() => {
         })
+      } else if (res.result_code === 922) {
+        powerStatus.value = true
+        ElMessage({
+          message: `当前上级账号已被禁用，请先启用其上级后再进行操作`,
+          type: 'warning',
+          duration: 1000
+        })
+        return false
       } else if (res.result_code === 200) {
         powerStatus.value = false
 
