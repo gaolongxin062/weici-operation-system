@@ -89,6 +89,36 @@ const routes = [{
         name: 'AiSchool',
         component: () => import('@/views/aiAgent/AiSchool.vue')
       },
+      // 作文批改学生权益开通
+      {
+        path: '/ai/agent/memebers/activation/store',
+        name: 'AiAgentMemebersActivationStore',
+        component: () => import('@/views/aiAgent/memebers/ActivationStore.vue')
+      },
+      // 作文批改用户权益
+      {
+        path: '/ai/agent/memebers/user/rights',
+        name: 'AiAgentMemebersUserRights',
+        component: () => import('@/views/aiAgent/memebers/UserRights.vue')
+      },
+      // 产品配置
+      {
+        path: '/ai/agent/memebers/products/manage',
+        name: 'AiAgentMemebersProductsManage',
+        component: () => import('@/views/aiAgent/memebers/ProductsManage.vue')
+      },
+      // 付费码管理
+      {
+        path: '/ai/agent/memebers/pay/code',
+        name: 'AiAgentMemebersPayCode',
+        component: () => import('@/views/aiAgent/memebers/payCode.vue')
+      },
+      // 订单记录
+      {
+        path: '/ai/agent/memebers/order/record',
+        name: 'AiAgentMemebersOrderRecord',
+        component: () => import('@/views/aiAgent/memebers/OrderRecord.vue.vue')
+      },
       {
         path: '/teacher/certification',
         name: 'TeacherCertification',
