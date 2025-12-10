@@ -110,7 +110,7 @@ const { screenHeight } = useScreenHeight();
 import { ElMessage } from 'element-plus';
 
 let formData = ref({
-  distributor: '', // 经销商
+  distributor: '', // 产品类型
   user: '', // 创建人
   date: '' // 创建时间
 }) // 表单内容
