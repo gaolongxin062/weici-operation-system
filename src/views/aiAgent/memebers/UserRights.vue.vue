@@ -1,7 +1,7 @@
 <template>
   <div class="page define-page">
     <div class="page-title" id="page-title">
-      <h4>作文批改学生权限开通</h4>
+      <h4>作文批改用户权益</h4>
     </div>
     <div class="content-box">
       <el-form :inline="true" id="form" :model="formData" size="large" label-width="90px" @submit.prevent>
@@ -122,7 +122,7 @@ let loading = ref(false) // 加载标记
 let total = ref(0)
 let pageIndex = ref(1)
 let pageSize = ref(10)
-let dialogVisible = ref(true) // 弹窗显隐
+let dialogVisible = ref(false) // 弹窗显隐
 let formRef = ref(null)
 let dislogFormData = ref({
   type: '1', // 产品类型
