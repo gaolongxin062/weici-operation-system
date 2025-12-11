@@ -120,8 +120,8 @@
       <div class="marginBottom">产品类型：{{ getProductTypeTitle(currentMsg.type) }}</div>
       <div class="marginBottom">付费周期：{{ getCycleTitle(currentMsg.cycle) }}</div>
       <div class="marginBottom">次数：{{ currentMsg.num }}次/人</div>
-      <div class="marginBottom">统一售价：{{ currentMsg.price }}/人</div>
-      <div class="marginBottom">最低价：{{ currentMsg.min_price }}/人</div>
+      <div class="marginBottom">统一售价：{{ currentMsg.price }}元/人</div>
+      <div class="marginBottom">最低价：{{ currentMsg.min_price }}元/人</div>
       <div class="marginBottom">上下架：{{ getEnable(currentMsg.enable) }}</div>
     </div>
   </el-dialog>
@@ -158,7 +158,7 @@
         <span style="margin-left: 10px;">元/人</span>
       </el-form-item>
       <el-form-item label="上下架：" label-width="130px" prop="status">
-        <el-radio-group v-model="dislogFormData.status">
+        <el-radio-group v-model="dislogFormData.status" :disabled="type === 0 ? false : true">
           <el-radio :label="1">启用</el-radio>
           <el-radio :label="0">禁用</el-radio>
         </el-radio-group>
@@ -456,7 +456,7 @@ const status = (option) => {
   return AiAgentMemebers.productAction(params)
     .then((res) => {
       if (res.result_code === 200) {
-        if ( option.enable === 1) {
+        if (option.enable === 1) {
           ElMessage({
             message: '产品禁用成功!',
             type: 'success',
