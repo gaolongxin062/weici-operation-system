@@ -146,6 +146,22 @@ export let aiAgentApi = {
   delAiSchool: '/delAiSchool', // 删除学校信息
 }
 
+// 班级作文批改付费
+export let aiAgentMemebersApi = {
+  getDistributors: '/pay/getDistributors', // 经销商列表
+  getSchool: '/distributor/school', // 获取经销商学校
+  getProvinceList: '/distributor/province/list', // 省列表
+  getCityList: '/distributor/city/list', // 市列表
+  getCountyList: '/distributor/county/list', // 区列表
+  getTeacher: '/distributor/teacher', // 教师列表
+  getTeacherClass: '/teacher/class', // 教师班级
+  getClassStudent: '/class/student', // 班级学生列表
+  getUnifyPaylist: '/unify/pay/list', // 学生权益列表
+  getUnifyPayDetail : '/unify/pay/detail', // 获取学生权益详情
+  unifyPayDelete: '/unify/pay/delete', // 作废学生权益
+  addUnifyPay: '/add/unify/pay' // 新增学生权益
+}
+
 // 审核管理
 export let reviewApi = {
   getTeacherCheckList: '/getTeacherCheckList', // 教师认证列表
