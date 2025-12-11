@@ -159,7 +159,8 @@ export let aiAgentMemebersApi = {
   getUnifyPaylist: '/unify/pay/list', // 学生权益列表
   getUnifyPayDetail : '/unify/pay/detail', // 获取学生权益详情
   unifyPayDelete: '/unify/pay/delete', // 作废学生权益
-  addUnifyPay: '/add/unify/pay' // 新增学生权益
+  addUnifyPay: '/add/unify/pay', // 新增学生权益
+  getProductList: '/product/search' // 产品配置查询列表
 }
 
 // 审核管理

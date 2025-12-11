@@ -3,6 +3,7 @@ import {
   aiAgentMemebersApi
 } from './API';
 
+// -----------------作文批改学生权益开通
 /**
  * 经销商列表
  * @param session 
@@ -253,9 +254,7 @@ function getUnifyPayDetail(params) {
  */
 function unifyPayDelete(params) {
   return new Promise((resolve, reject) => {
-    service.get(aiAgentMemebersApi.unifyPayDelete, {
-      params
-    }).then(res => {
+    service.post(aiAgentMemebersApi.unifyPayDelete, params).then(res => {
       if (res.status === 200) {
         resolve(res.data);
       } else reject(res);
@@ -296,6 +295,36 @@ function addUnifyPay(params) {
   });
 }
 
+// ------------------------ 产品配置
+
+/**
+ * 产品配置列表
+ * @param session 
+ * @param user_name
+ * @param cycle 付费周期
+ * @param enable 状态 0禁用 1启用 2全部
+ * @param end_time 结束日期
+ * @param name 创建人
+ * @param start_time 开始时间
+ * @param title 产品名称
+ * @param type 产品类型
+ * @param page_index 当前页
+ * @param page_index 分页大小 
+ * @returns {Promise<unknown>}
+ */
+function getProductList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getProductList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
 
 export default {
     getDistributors,
@@ -309,5 +338,6 @@ export default {
     getUnifyPaylist,
     getUnifyPayDetail,
     unifyPayDelete,
-    addUnifyPay
+    addUnifyPay,
+    getProductList
 }
