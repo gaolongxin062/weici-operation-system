@@ -160,7 +160,11 @@ export let aiAgentMemebersApi = {
   getUnifyPayDetail : '/unify/pay/detail', // 获取学生权益详情
   unifyPayDelete: '/unify/pay/delete', // 作废学生权益
   addUnifyPay: '/add/unify/pay', // 新增学生权益
-  getProductList: '/product/search' // 产品配置查询列表
+  getProductCycleList: '/product/cycle', // 付费周期
+  getProductList: '/product/search', // 产品配置查询列表
+  getProductDetail: '/product/detail', // 产品配置详情
+  productAction: '/product/action', // 删除/禁用产品配置
+  productEdit: '/product/edit' // 新增/修改产品
 }
 
 // 审核管理

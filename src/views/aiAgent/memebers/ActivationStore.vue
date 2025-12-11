@@ -63,7 +63,6 @@
         <el-table-column prop="make_date" label="创建时间"  min-width="140px" />
         <el-table-column label="操作" fixed="right"  min-width="160px">
           <template #default="scope">
-            <!-- -->
             <el-button class="button-style" link type="primary" @click="check(scope.row)">
               查看
             </el-button>
@@ -189,7 +188,7 @@
         </div>
       </template>
   </el-dialog>
-  <el-dialog v-model="checkVisible" title="查看" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
+  <el-dialog v-model="checkVisible" title="查看" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
     <div style="padding-left: 40px;">
       <div class="marginBottom">经销商：{{ studentDetails.distributor_name }}</div>
       <div class="marginBottom">选择学校：{{ studentDetails.school_name }}</div>
@@ -199,8 +198,8 @@
         <span style="color: red;display: inline-block;margin-left: 10px;margin-bottom: 10px;">共选择{{studentDetails.pay_number}}个学生</span>
         <div class="teacher" v-for="(item, index) in studentDetails.class_info" :key="index">
           <span>{{item.teacherName}}：</span>
-          <span style="color: red;display: inline-block;margin-left: 10px;">共选择{{item.student_list.student_nums ? item.student_list.student_nums : 0}}个学生</span>
-          <div style="margin-top: 10px;margin-bottom: 10px;">{{ item.student_list.student_info}}</div>
+          <span style="color: red;display: inline-block;margin-left: 10px;">共选择{{item.student_nums ? item.student_nums : 0}}个学生</span>
+          <div style="margin-top: 10px;margin-bottom: 10px;" v-for="(otem, ondex) in item.student_list" :key="ondex">{{otem.class_name}}:{{ otem.student_info}}</div>
         </div>
       </div>
       <div class="marginBottom">次数：{{ studentDetails.count }}次/人</div>
@@ -343,7 +342,7 @@ const onReset = () => {
   formData.distributor = ''
   formData.school = ''
   formData.user = ''
-  formData.user = ''
+  formData.date = []
   pageIndex.value = 1
   pageSize.value = 10
 }
@@ -797,23 +796,29 @@ const close = () => {
 
 // 获取表格数据
 const getList = () => {
-  console.log('formData.date', formData.date)
+  loading.value = true
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
     distributor_id: formData.distributor, // 经销商id
-    end_time: formData.date[1], // 创建结束时间
+    end_time: formData.date.length > 0 ? formData.date[1] : '', // 创建结束时间
     maker: formData.user, // 创建人姓名
     page_index: pageIndex.value, // 当前页
     page_size: pageSize.value, // 分页大小
     school_id: formData.school, // 学校id
-    start_time: formData.date[0], // 创建开始日期
+    start_time: formData.date.length > 0 ? formData.date[0] : '', // 创建开始日期
   }
   return AiAgentMemebers.getUnifyPaylist(params)
     .then((res) => {
       if (res.result_code === 200) {
         list.value = res.data
         total.value = res.total
+      } else {
+        ElMessage({
+          message: '获取学生权益列表失败',
+          type: 'error',
+          duration: 3000
+        })
       }
     })
     .catch((error) => {
@@ -875,7 +880,6 @@ const save = async () => {
           }
           AiAgentMemebers.addUnifyPay(params)
           .then((res) => {
-            console.log('res', res)
             if (res.result_code === 200) {
               ElMessage({
                 message: '新增成功',
@@ -942,8 +946,6 @@ const save = async () => {
           .finally(() => {
             loading.value = false
           })
-          console.log('表单验证通过，提交数据', params)
-          console.log('classList.value', classList.value)
         }
     }
   } catch (error) {
@@ -1097,5 +1099,7 @@ const check = (option) => {
 }
 .teacher {
   padding-left: 70px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 </style>

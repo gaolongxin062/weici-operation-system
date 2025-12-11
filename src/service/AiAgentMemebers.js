@@ -298,6 +298,26 @@ function addUnifyPay(params) {
 // ------------------------ 产品配置
 
 /**
+ * 付费周期
+ * @param session 
+ * @param user_name
+ * @returns {Promise<unknown>}
+ */
+function getProductCycleList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getProductCycleList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+/**
  * 产品配置列表
  * @param session 
  * @param user_name
@@ -326,6 +346,76 @@ function getProductList(params) {
   });
 }
 
+/**
+ * 产品配置详情
+ * @param session 
+ * @param user_name
+ * @param id 
+ * @returns {Promise<unknown>}
+ */
+function getProductDetail(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getProductDetail, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * 产品配置详情
+ * @param session 
+ * @param user_name
+ * @param action  0 禁用 1 启用 （删除不用传）
+ * @param id
+ * @param type 0启用/禁用   1删除
+ * @returns {Promise<unknown>}
+ */
+function productAction(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.productAction, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * 新增学生权益
+ * @param session 
+ * @param user_name
+ * @param cycle 付费周期
+ * @param enable 上下架 0禁用 1启用
+ * @param id 0新增，修改传id
+ * @param min_price 最低价
+ * @param num 次数
+ * @param price 统一售价
+ * @param title 产品名称
+ * @param type 作文类型
+ * @returns {Promise<unknown>}
+ */
+function productEdit(params) {
+  return new Promise((resolve, reject) => {
+    service.post(aiAgentMemebersApi.productEdit, params).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
 export default {
     getDistributors,
     getSchool,
@@ -339,5 +429,9 @@ export default {
     getUnifyPayDetail,
     unifyPayDelete,
     addUnifyPay,
-    getProductList
+    getProductCycleList,
+    getProductList,
+    getProductDetail,
+    productAction,
+    productEdit
 }
