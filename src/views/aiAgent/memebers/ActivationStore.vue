@@ -199,7 +199,7 @@
         <div class="teacher" v-for="(item, index) in studentDetails.class_info" :key="index">
           <span>{{item.teacherName}}：</span>
           <span style="color: red;display: inline-block;margin-left: 10px;">共选择{{item.student_nums ? item.student_nums : 0}}个学生</span>
-          <div style="margin-top: 10px;margin-bottom: 10px;" v-for="(otem, ondex) in item.student_list" :key="ondex">{{otem.class_name}}:{{ otem.student_info}}</div>
+          <div style="margin-top: 10px;margin-bottom: 10px;" v-for="(otem, ondex) in item.student_list" :key="ondex">{{otem.class_name}}：{{ otem.student_info}}</div>
         </div>
       </div>
       <div class="marginBottom">次数：{{ studentDetails.count }}次/人</div>

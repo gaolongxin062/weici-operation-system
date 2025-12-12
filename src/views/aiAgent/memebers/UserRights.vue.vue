@@ -78,20 +78,20 @@
           <div v-for="(item, index) in rightsList" :key="item.id" class="first-item">
             <span style="margin-bottom: 10px;display: inline-block;">权益{{ index + 1 }}</span>
             <el-form-item  label="名称:" label-width="50px">
-              <el-input style="width: 200px;" v-model="item.title" max="10" placeholder="请输入权益名称" :disabled="type === 0 ? true : false"  />
+              <el-input style="width: 200px;" v-model="item.title" maxlength="10" placeholder="请输入权益名称" :disabled="type === 0 ? true : false"  />
             </el-form-item>
             <el-form-item  label="简介:" label-width="50px">
-              <el-input style="width: 300px;" v-model="item.info" max="20" placeholder="请输入权益简介" :disabled="type === 0 ? true : false" />
-              <span class="del" @click="deleteRight(item, index)" v-if="type === 1">删除</span>
+              <el-input style="width: 300px;" v-model="item.info" maxlength="20" placeholder="请输入权益简介" :disabled="type === 0 ? true : false" />
+              <span class="del" @click="deleteRight(item, index)" v-if="type === 1 && rightsList.length > 1">删除</span>
             </el-form-item>
           </div>
         </div>
-        <el-form-item label="创建人：" v-if="type === 0">
+        <!-- <el-form-item label="创建人：" v-if="type === 0">
           <el-input style="width: 200px;" v-model="dislogFormData.name" :disabled="type === 0 ? true : false"></el-input>
         </el-form-item>
         <el-form-item label="创建时间：" v-if="type === 0" >
           <el-input style="width: 200px;" v-model="dislogFormData.date" :disabled="type === 0 ? true : false"></el-input>
-        </el-form-item>
+        </el-form-item> -->
     </el-form>
     <div class="add"  @click="addRight" v-if="type === 1">+点击添加权益</div>
     <template #footer>
@@ -232,48 +232,50 @@ const handleCurrentChange = async (page) => { // 切换下一页
 // 新增弹窗保存
 const save = async () => { 
   if (saveLoading.value) return; // 防止重复点击
-  
-  const hasEmptyItem = rightsList.value.some(item => { 
-    const nameIsEmpty = !item.title?.trim()
-    const valueIsEmpty = !item.info?.trim()
-    return nameIsEmpty || valueIsEmpty
-  });
-  if (hasEmptyItem) {
-    ElMessage.error('请完善所有权益名称和简介')
-    return;
-  }
-  
-  saveLoading.value = true // 开始加载
-  let params = {
-    user_name: vocabularyStore.user_name,
-    session: vocabularyStore.session,
-    type: rightsType.value,
-    data: JSON.stringify(rightsList.value)
-  }
-  AiAgentMemebers.saveRightsEdit(params)
-    .then((res) => {
-      if (res.result_code === 200) {
-        ElMessage({
-          message: '新增权益成功',
-          type: 'success',
-          duration: 1000
-        })
-        dialogVisible = false
-        getList()
-      } else {
-        ElMessage({
-          message: '新增权益失败',
-          type: 'error',
-          duration: 1000
-        })
+  if (rightsList.value.length > 0) {
+    const hasEmptyItem = rightsList.value.some(item => { 
+        const nameIsEmpty = !item.title?.trim()
+        const valueIsEmpty = !item.info?.trim()
+        return nameIsEmpty || valueIsEmpty
+      });
+      if (hasEmptyItem) {
+        ElMessage.error('请完善所有权益名称和简介')
+        return;
       }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-    .finally(() => {
-      saveLoading.value = false // 结束加载
-    })
+      saveLoading.value = true // 开始加载
+      let params = {
+        user_name: vocabularyStore.user_name,
+        session: vocabularyStore.session,
+        type: rightsType.value,
+        data: JSON.stringify(rightsList.value)
+      }
+      AiAgentMemebers.saveRightsEdit(params)
+        .then((res) => {
+          if (res.result_code === 200) {
+            ElMessage({
+              message: '新增权益成功',
+              type: 'success',
+              duration: 1000
+            })
+            dialogVisible.value = false
+            getList()
+          } else {
+            ElMessage({
+              message: '新增权益失败',
+              type: 'error',
+              duration: 1000
+            })
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+        .finally(() => {
+          saveLoading.value = false // 结束加载
+        })
+  } else {
+    ElMessage.error('请添加权益')
+  }
 } 
 
 // 查看
@@ -305,9 +307,8 @@ const getAllRightsList = (type) => {
   return AiAgentMemebers.allRightList(params)
     .then((res) => {
       if (res.result_code === 200) {
-        dialogVisible.value = true
         if (res.data.length > 0) {
-          rightsList.value = res.data
+        rightsList.value = res.data
         } else {
           rightsList.value = [
             {
@@ -322,8 +323,7 @@ const getAllRightsList = (type) => {
             },
           ]
         }
-        console.log('type', rightsType.value)
-        console.log('权益列表', rightsList.value)
+        dialogVisible.value = true
       } else {
         ElMessage({
           message: '获取权益列表失败',
