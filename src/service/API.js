@@ -164,7 +164,11 @@ export let aiAgentMemebersApi = {
   getProductList: '/product/search', // 产品配置查询列表
   getProductDetail: '/product/detail', // 产品配置详情
   productAction: '/product/action', // 删除/禁用产品配置
-  productEdit: '/product/edit' // 新增/修改产品
+  productEdit: '/product/edit', // 新增/修改产品
+  getRightsList: '/product/rights/search', // 用户权益列表
+  saveRightsEdit: '/product/rights/edit', // 保存用户权益
+  delRights: '/product/rights/del', // 删除用户权益
+  allRightList: '/product/rights/list' // 修改权益列表
 }
 
 // 审核管理

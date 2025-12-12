@@ -416,6 +416,92 @@ function productEdit(params) {
   });
 }
 
+/**
+ * 用户权益列表
+ * @param session 
+ * @param user_name
+ * @param end_time 结束时间
+ * @param name 创建人
+ * @param start_time 开始时间
+ * @param type 产品类型(没选设置为0)
+ * @param page_index 
+ * @param page_size
+ * @returns {Promise<unknown>}
+ */
+function getRightsList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getRightsList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * 修改权益列表
+ * @param session 
+ * @param user_name
+ * @param type 产品类型 1作文批改
+ * @returns {Promise<unknown>}
+ */
+function allRightList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.allRightList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * 删除权益
+ * @param session 
+ * @param user_name
+ * @param id 
+ * @returns {Promise<unknown>}
+ */
+function delRights(params) {
+  return new Promise((resolve, reject) => {
+    service.post(aiAgentMemebersApi.delRights, params).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * 保存用户权益
+ * @param session 
+ * @param user_name
+ * @param data 权益内容（json数组 [{id,title,info}]）id没值传0
+ * @param type 产品类型 1作文批改
+ * @returns {Promise<unknown>}
+ */
+function saveRightsEdit(params) {
+  return new Promise((resolve, reject) => {
+    service.post(aiAgentMemebersApi.saveRightsEdit, params).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
 export default {
     getDistributors,
     getSchool,
@@ -433,5 +519,9 @@ export default {
     getProductList,
     getProductDetail,
     productAction,
-    productEdit
+    productEdit,
+    getRightsList,
+    allRightList,
+    delRights,
+    saveRightsEdit
 }

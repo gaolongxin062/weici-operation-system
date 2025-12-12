@@ -159,7 +159,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="save">保存</el-button>
+        <el-button type="primary" @click="save" :loading="saveLoading">保存</el-button>
       </div>
     </template>
   </el-dialog>
@@ -303,6 +303,7 @@ let checkVisible = ref(false) // 查看弹窗显隐
 let totalStudent = ref(0) // 新增班级总人数
 let maxEndTime = ref('') // 限制日期
 let studentDetails = reactive(null)// 学生详情
+let saveLoading = ref(false) // 保存按钮加载状态
 
 onMounted(() => {
   // 设置页面展示高度
@@ -345,6 +346,7 @@ const onReset = () => {
   formData.date = []
   pageIndex.value = 1
   pageSize.value = 10
+  getList()
 }
 
 // 新增
@@ -837,8 +839,9 @@ const handleCurrentChange = async (page) => {
 
 // 新增弹窗保存
 const save = async () => {
-  if (!formRef.value) return
+  if (!formRef.value || saveLoading.value) return
   try {
+    saveLoading.value = true
     const valid = await formRef.value.validate()
     if (valid) {
       if (totalStudent.value === 0) {
@@ -847,6 +850,7 @@ const save = async () => {
             type: 'error',
             duration: 3000
           })
+          saveLoading.value = false
         } else {
           // 构建class_json参数
           const classJsonData = classList.value.map(teacher => ({
@@ -945,11 +949,13 @@ const save = async () => {
           })
           .finally(() => {
             loading.value = false
+            saveLoading.value = false
           })
         }
     }
   } catch (error) {
     console.log('表单验证失败', error)
+    saveLoading.value = false
   }
 }
 

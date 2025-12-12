@@ -81,8 +81,16 @@
           </template>
         </el-table-column>
         <el-table-column prop="num" label="次数(次)"  min-width="130px" />
-        <el-table-column prop="price" label="统一售价(元/人)"  min-width="140px"  />
-        <el-table-column prop="min_price" label="最低价(元/人)"  min-width="140px" />
+        <el-table-column label="统一售价(元/人)"  min-width="140px">
+          <template #default="scope">
+            <div>{{ scope.row.price  / 100  }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="最低价(元/人)"  min-width="140px">
+          <template #default="scope">
+            <div>{{ scope.row.min_price  / 100  }}</div>
+          </template>
+        </el-table-column>
         <!-- <el-table-column prop="enable" label="状态"  min-width="140px" /> -->
         <el-table-column label="状态" min-width >
           <template #default="scope">
@@ -120,8 +128,8 @@
       <div class="marginBottom">产品类型：{{ getProductTypeTitle(currentMsg.type) }}</div>
       <div class="marginBottom">付费周期：{{ getCycleTitle(currentMsg.cycle) }}</div>
       <div class="marginBottom">次数：{{ currentMsg.num }}次/人</div>
-      <div class="marginBottom">统一售价：{{ currentMsg.price }}元/人</div>
-      <div class="marginBottom">最低价：{{ currentMsg.min_price }}元/人</div>
+      <div class="marginBottom">统一售价：{{ currentMsg.price / 100 }}元/人</div>
+      <div class="marginBottom">最低价：{{ currentMsg.min_price / 100 }}元/人</div>
       <div class="marginBottom">上下架：{{ getEnable(currentMsg.enable) }}</div>
     </div>
   </el-dialog>
@@ -167,7 +175,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="visible = false">取消</el-button>
-        <el-button type="primary" @click="save">保存</el-button>
+        <el-button type="primary" @click="save" :loading="saveLoading">保存</el-button>
       </div>
     </template>
   </el-dialog>
@@ -191,6 +199,7 @@ let formData = reactive({
 }) // 表单内容
 let list = ref([]) // 表格数据
 let loading = ref(false) // 加载标记
+let saveLoading = ref(false) // 保存按钮加载标记
 let total = ref(0)
 let pageIndex = ref(1)
 let pageSize = ref(10)
@@ -352,7 +361,7 @@ const showIndex = (index) => {
 
 // 根据id获取产品类型标题
 const getProductTypeTitle = (id) => {
-  const type = productType.value.find(item => item.id === id)
+  const type = productType.value && id ? productType.value.find(item => item.id === id) : ''
   return type ? type.title : id
 }
 
@@ -380,7 +389,7 @@ const onReset = () => {
   formData.cycle = ''
   formData.status = 2
   formData.user = ''
-  formData.date = []
+  formData.date = ''
   pageIndex.value = 1
   pageSize.value = 10
   getList()
@@ -438,8 +447,8 @@ const update = (option) => {
   dislogFormData.type = option.type
   dislogFormData.cycle = option.cycle.toString()
   dislogFormData.num = option.num
-  dislogFormData.price = option.price
-  dislogFormData.lowPrice = option.min_price
+  dislogFormData.price = option.price / 100
+  dislogFormData.lowPrice = option.min_price / 100
   dislogFormData.status = option.enable
   dislogFormData.id = (type.value === 0 ? 0 : currentMsg.id)
 }
@@ -534,6 +543,7 @@ const save = async () => {
   try {
     const valid = await formRef.value.validate()
     if (valid) {
+      saveLoading.value = true // 开始加载
       visible.value = false
       console.log('表单验证通过，提交数据')
       // 这里添加实际提交逻辑
@@ -543,9 +553,9 @@ const save = async () => {
             cycle: dislogFormData.cycle,// 付费周期
             enable: dislogFormData.status,// 上下架 0禁用 1启用
             id: dislogFormData.id,
-            min_price: dislogFormData.lowPrice,// 最低价
+            min_price: dislogFormData.lowPrice * 100,// 最低价（转换为分）
             num: dislogFormData.num,// 次数
-            price: dislogFormData.price,// 统一售价
+            price: dislogFormData.price * 100,// 统一售价（转换为分）
             title: dislogFormData.product,// 产品名称
             type: dislogFormData.type// 产品类型
           }
@@ -569,7 +579,7 @@ const save = async () => {
               getList()
             } else {
               ElMessage({
-                message: '失败',
+                message: '新增失败',
                 type: 'error',
                 duration: 1000
               })
@@ -580,10 +590,12 @@ const save = async () => {
           })
           .finally(() => {
             loading.value = false
+            saveLoading.value = false // 结束加载
           })
     }
   } catch (error) {
     console.log('表单验证失败', error)
+    saveLoading.value = false // 异常情况下也结束加载
   }
 }
 
