@@ -411,6 +411,11 @@ const onAdd = () => {
   visible.value = true
 }
 
+// 查看
+const check = () => {
+  
+}
+
 // 删除权益组
 const deleteRight = (index) => {
   rightsList.value.splice(index, 1);

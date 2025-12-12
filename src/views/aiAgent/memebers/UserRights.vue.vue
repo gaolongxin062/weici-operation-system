@@ -235,8 +235,7 @@ const save = async () => {
   if (rightsList.value.length > 0) {
     const hasEmptyItem = rightsList.value.some(item => { 
         const nameIsEmpty = !item.title?.trim()
-        const valueIsEmpty = !item.info?.trim()
-        return nameIsEmpty || valueIsEmpty
+        return nameIsEmpty
       });
       if (hasEmptyItem) {
         ElMessage.error('请完善所有权益名称和简介')

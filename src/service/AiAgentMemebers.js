@@ -502,6 +502,39 @@ function saveRightsEdit(params) {
   });
 }
 
+/**
+ * 保存用户权益
+ * @param session 
+ * @param user_name
+ * @param city_id 市id
+ * @param class_json 班级id和学生id集合:[{teacher_id:1,teacher_code:15572217971,class:[1,2,3]	
+ * @param county_id 区县id
+ * @param disabled_time 失效时间
+ * @param discount_price 折扣价
+ * @param distributor_id 经销商id
+ * @param list_price 划线价
+ * @param product_id 产品id
+ * @param product_name 产品名称
+ * @param province_id 省id
+ * @param rights_json 产品权益集合:[{title:'名称1',info:'简介1'},{title:'名称2',info:'简介2'}]
+ * @param school_id 学校id
+ * @param teacher_json 教师id集合:[1,2,3]
+ * @param url_path url地址
+ * @param service_price 服务费
+ * @returns {Promise<unknown>}
+ */
+function payAdd(params) {
+  return new Promise((resolve, reject) => {
+    service.post(aiAgentMemebersApi.payAdd, params).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
 export default {
     getDistributors,
     getSchool,
@@ -523,5 +556,6 @@ export default {
     getRightsList,
     allRightList,
     delRights,
-    saveRightsEdit
+    saveRightsEdit,
+    payAdd
 }

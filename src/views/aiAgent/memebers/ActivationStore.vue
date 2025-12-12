@@ -346,6 +346,7 @@ const onReset = () => {
   formData.date = []
   pageIndex.value = 1
   pageSize.value = 10
+  schoolList.value = []
   getList()
 }
 
