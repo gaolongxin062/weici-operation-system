@@ -11,6 +11,7 @@ export const useVocabularyStore = defineStore('vocabulary', () => {
   let user_name = ref('');
   let session = ref('');
   let menuTreeLeftList = ref([]) // 左侧tree数据全局
+  let powerInfo = ref({})
   let menuItemIndex = ref(sessionStorage.getItem('defaultPath'))
   function setExpandMenu (value) {
     expandMenu.value = value
@@ -38,6 +39,7 @@ export const useVocabularyStore = defineStore('vocabulary', () => {
     session,
     menuTreeLeftList,
     expandMenu,
-    setExpandMenu
+    setExpandMenu,
+    powerInfo
   }
 });

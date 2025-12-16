@@ -503,7 +503,7 @@ function saveRightsEdit(params) {
 }
 
 /**
- * 保存用户权益
+ * 新增班级购买记录
  * @param session 
  * @param user_name
  * @param city_id 市id
@@ -535,6 +535,56 @@ function payAdd(params) {
   });
 }
 
+/**
+ * 付费码列表
+ * @param session 
+ * @param user_name
+ * @param cycle 付费周期 (1半年，2一年，3两年，4三年)
+ * @param name 创建人
+ * @param end_time 结束时间
+ * @param end_time 开始时间
+ * @param product_name 产品名称
+ * @param state 状态 全部 1未失效 2已失效
+ * @param type 产品类型 1作文批改
+ * @param page_index 
+ * @param page_size
+ * @returns {Promise<unknown>}
+ */
+function getCodePayList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getCodePayList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * 付费码详情
+ * @param session 
+ * @param user_name
+ * @param id
+ * @returns {Promise<unknown>}
+ */
+function getCodePayDetail(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getCodePayDetail, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
 export default {
     getDistributors,
     getSchool,
@@ -557,5 +607,7 @@ export default {
     allRightList,
     delRights,
     saveRightsEdit,
-    payAdd
+    payAdd,
+    getCodePayList,
+    getCodePayDetail
 }

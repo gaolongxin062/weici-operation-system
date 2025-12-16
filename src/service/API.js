@@ -55,6 +55,9 @@ export let basicApi = {
   setPoint: '/point/set', // 新增和修改考点
   getPointInfo: '/point', // 获取考点信息
   getPower: '/right/zsgc', // 获取权限
+  // getOssPower: '/aisys/distributor/aliram/token', // 获取权限
+  getOssPower: '/gz/operation//account/token', // 获取权限
+
 }
 
 export let manageApi = {
@@ -169,7 +172,9 @@ export let aiAgentMemebersApi = {
   saveRightsEdit: '/product/rights/edit', // 保存用户权益
   delRights: '/product/rights/del', // 删除用户权益
   allRightList: '/product/rights/list', // 修改权益列表
-  payAdd: '/code/pay/add' // 付费码增加
+  payAdd: '/code/pay/add', // 付费码增加
+  getCodePayList: '/getCodePayList', // 付费码列表
+  getCodePayDetail: '/getCodePayDetail' // 付费码详情
 }
 
 // 审核管理

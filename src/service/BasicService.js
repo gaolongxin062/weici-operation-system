@@ -1,4 +1,7 @@
 import service from "../utils/HttpUtil";
+import config from "@/config/index";
+import axios from 'axios';
+
 import {
   basicApi,
 } from './API';
@@ -292,6 +295,33 @@ function getPower(user_name, session) {
   });
 }
 
+const OssImg = axios.create({
+  baseURL: config.BASE_OSS_URL,
+  timeout: 60000,
+  responseType: 'json',
+  withCredentials: false, // 是否允许带cookie这些
+  headers: {
+    'Content-Type': 'multipart/form-data;'
+  }
+})
+function getOssPower(user_name, session) {
+  return new Promise((resolve, reject) => {
+    let params = {
+      user_name,
+      session,
+    }
+    OssImg.get(basicApi.getOssPower, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
 
 export default {
   getQuestionList,
@@ -307,4 +337,5 @@ export default {
   setPoint,
   delPoint,
   getPower,
+  getOssPower
 }
