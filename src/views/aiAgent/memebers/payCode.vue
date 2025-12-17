@@ -110,7 +110,7 @@
                 <el-button class="button-style" link type="primary" @click="check(scope.row)">
                   查看
                 </el-button>
-                <el-button class="button-style" link type="primary">
+                <el-button class="button-style" link type="primary" @click="download(scope.row)">
                   下载付费码
                 </el-button>
               </template>
@@ -188,11 +188,13 @@
         </el-form-item>
         <el-form-item label="付费码失效时间：" label-width="140px" prop="time">
            <el-date-picker
-            type="date"
-            style="width: 190px;"
-            v-model="dislogFormData.time"
-            placeholder="请选择失效时间">
-        </el-date-picker>
+              type="date"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
+              style="width: 190px;"
+              v-model="dislogFormData.time"
+              placeholder="请选择失效时间">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="经销商:" label-width="130px" prop="distributor">
           <el-select style="width: 200px;" v-model="dislogFormData.distributor" clearable filterable placeholder="请输入经销商姓名" :filter-method="filterMethod" @change="changeDialogDistributor">
@@ -255,12 +257,11 @@
         </el-table-column>
         <el-table-column prop="pay_link" label="班级付费链接" min-width="200px" />
         <el-table-column label="操作" fixed="right"  min-width="160px">
-          <template>
-            <!-- #default="scope" -->
-            <el-button class="button-style" link type="primary">
+          <template #default="scope">
+            <el-button class="button-style" link type="primary" @click="preview(scope.row)">
               预览宣传页
             </el-button>
-            <el-button class="button-style" link type="primary">
+            <el-button class="button-style" link type="primary" @click="download(scope.row)">
               下载
             </el-button>
           </template>
@@ -268,11 +269,77 @@
       </el-table>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="visible = false">取消</el-button>
+          <el-button @click="cancel">取消</el-button>
           <el-button type="primary" v-if="payCodeList.length > 0">批量下载付费码</el-button>
         </div>
-    </template>
-  </el-dialog>
+      </template>
+    </el-dialog>
+    <el-dialog v-model="checkDialog" title="详情" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
+      <div style="padding-left: 30px;">
+        <div class="margin">选择产品：{{ detailsMessage.title }}</div>
+        <div class="margin">产品类型：{{ detailsMessage.type }}</div>
+        <div class="margin">付费周期：{{ detailsMessage.cycle }}</div>
+        <div class="margin">次数：{{ detailsMessage.num }}次/人</div>
+        <div class="margin">统一售价：{{ detailsMessage.price / 100 }}元/人</div>
+        <div class="margin">最低价：{{ detailsMessage.min_price / 100 }}元/人</div>
+        <div class="margin">产品名称：{{ detailsMessage.product_name }}</div>
+        <div class="margin">
+          <span>产品权益：</span>
+          <div v-for="(item, index) in JSON.parse(detailsMessage.rights_json)" :key="index" style="margin-bottom: 10px;">
+            <span style="display: inline-block;margin-left: 20px;">权益{{ index + 1 }}</span>
+            <span style="display: inline-block;margin-left: 20px;">名称：{{ item.title }}</span><br>
+            <span style="display: inline-block;margin-left: 78px;">简介：{{ item.info  }}</span>
+          </div>
+        </div>
+        <div class="margin">折扣价：{{ detailsMessage.discount_price / 100 }}元/人</div>
+        <div class="margin">服务费：{{ detailsMessage.service_price / 100 }}元/人</div>
+        <div class="margin">会员价：{{ detailsMessage.vip_price / 100 }}元/人</div>
+        <div class="margin">划线价：{{ detailsMessage.list_price / 100 }}元/人</div>
+        <div class="margin">付费码失效时间：{{ detailsMessage.disabled_time }}</div>
+        <div class="margin">所属经销商：{{ detailsMessage.distributor_name }}</div>
+        <div class="margin">
+          <span>付费码可用班级：</span>
+          <span>{{ detailsMessage.province }}</span>
+          <span>{{ detailsMessage.city }}</span>
+          <span>{{ detailsMessage.county }}</span>
+          <span>{{ detailsMessage.school_name }}</span>
+        </div>
+        <div class="margin">选择老师：{{ detailsMessage.teacher_info }}</div>
+        <div class="margin">
+          <span>选择班级：</span>
+          <div style="margin-left: 20px;margin-top: 10px;" v-for="(item, index) in detailsMessage.class_list" :key="index">
+            <span>{{ item.teacher_name }}：</span>
+            <span>{{ item.class_info.length > 0 ? item.class_info.join(',') : '无' }}</span>
+          </div>
+        </div>
+        <div class="margin">URL地址：{{ detailsMessage.url_path }}</div>
+        <el-table :data="detailsMessage.pay_code_list" class="table-info" header-cell-class-name="header_row_class" style="width: 100%" stripe :max-height="screenHeight" >
+          <el-table-column prop="product_name_class" label="产品名称_班级" min-width="120px" />
+          <el-table-column label="班级付费二维码" min-width="200px">
+            <template #default="scope">
+              <img style="width: 150px;height: 150px;" :src="scope.row.qr_code" alt="">
+            </template>
+          </el-table-column>
+          <el-table-column prop="pay_link" label="班级付费链接" min-width="200px" />
+          <el-table-column label="操作" fixed="right"  min-width="160px">
+            <template #default="scope">
+              <el-button class="button-style" link type="primary" @click="preview(scope.row)">
+                预览宣传页
+              </el-button>
+              <el-button class="button-style" link type="primary" @click="download(scope.row)">
+                下载
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="checkDialog = false">关闭</el-button>
+          <el-button type="primary" v-if="detailsMessage.pay_code_list.length > 0">批量下载付费码</el-button>
+        </div>
+      </template>
+    </el-dialog>
 </template>
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
@@ -382,7 +449,8 @@ let classList = ref([]) // 新增弹窗教师下班级列表
 let distributorName = ref('') // 新增弹窗经销商输入的值
 let payCodeList = ref([]) // 弹窗表格数据列表
 let loading3 = ref(false)
-
+let checkDialog = ref(false) // 查看弹窗
+let detailsMessage = reactive(null)
 onMounted(() => {
   // 设置页面展示高度
   window.addEventListener('resize', updateScreenHeight)
@@ -395,7 +463,6 @@ onMounted(() => {
   initMemberList()
   // 列表数据
   getList()
-  dislogFormData.time = getDefaultExpiryDate()
 })
 
 // 获取默认失效日期（当前日期加30天）
@@ -485,12 +552,89 @@ const onReset = () => {
 
 // 新增
 const onAdd = () => {
+  dislogFormData.product = '', // 产品
+  dislogFormData.type = '' , // 类型
+  dislogFormData.cycle = '', // 周期
+  dislogFormData.num = 0, //次数
+  dislogFormData.price = '', // 统一售价
+  dislogFormData.lowPrice = '', // 最低价
+  dislogFormData.name = '', // 产品名称
+  dislogFormData.discountedPrice = 0, // 折扣价
+  dislogFormData.serviceFee = 0, // 服务费
+  dislogFormData.memberPrice = 0, // 会员价
+  dislogFormData.originalPrice = 0, // 划线价
+  dislogFormData.time = getDefaultExpiryDate()
+  dislogFormData.distributor = '', // 所属经销商
+  dislogFormData.province = '' , // 省
+  dislogFormData.city = '', // 市
+  dislogFormData.district = '', // 区县
+  dislogFormData.school = '', // 学校
+  dislogFormData.teacher = [], // 老师
+  dislogFormData.url = '' // url地址
+  provinceList.value = []
+  cityList.value = []
+  countyList.value = []
+  schoolList.value = []
+  payCodeList.value = []
   visible.value = true
 }
 
 // 查看
-const check = () => {
-  
+const check = (row) => {
+  let params = {
+    user_name: vocabularyStore.user_name,
+    session: vocabularyStore.session,
+    id: row.id
+  }
+  return AiAgentMemebers.getCodePayDetail(params)
+    .then(async (res) => {
+      if (res.result_code === 200) {
+        detailsMessage = res.data
+          if (res.data.pay_code_list.length > 0) {
+              const qrCodeUrls = await Promise.all(
+                res.data.pay_code_list.map(item => getOssImageUrl(item.qr_code, 'composition-pay'))
+              );
+              
+              const processedList = res.data.pay_code_list.map((item, index) => ({
+                ...item,
+                qr_code: qrCodeUrls[index]
+              }));
+              detailsMessage.pay_code_list = processedList;
+            }
+          checkDialog.value = true
+      } else {
+        ElMessage({
+          message: '获取详情数据失败',
+          type: 'error',
+          duration: 3000
+        })
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+// 预览
+const preview = (row) => {
+  console.log(row)
+}
+
+// 下载
+const download = (row) => {
+  console.log(row)
+  if (row.qr_code) {
+    const link = document.createElement('a')
+    link.href = row.qr_code
+    link.download = row.product_name_class + '.png'
+    link.style.display = 'none'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 }
 
 // 新增权益组
@@ -1012,6 +1156,13 @@ const changeTeacher = () => {
   }
 }
 
+// 新增弹窗取消
+const cancel = () => {
+  visible.value = false
+  if (payCodeList.value.length > 0) {
+    getList()
+  }
+}
 
 // 生成付费码
 const generate = async () => {
@@ -1121,5 +1272,8 @@ const generate = async () => {
   color: #0271E3;
   border: 1px solid #ccc;
   margin-bottom: 10px;
+}
+.margin { 
+  margin-bottom: 15px;
 }
 </style>
