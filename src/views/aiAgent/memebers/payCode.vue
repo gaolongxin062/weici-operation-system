@@ -122,151 +122,153 @@
           </el-pagination>
         </div>
     </div>
-    <el-dialog v-model="visible" title="新增" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
-      <el-form ref="formRef" id="form" :model="dislogFormData" size="large" label-width="150px" :rules="rules">
-        <el-form-item label="选择产品：" label-width="130px" prop="product">
-            <el-select style="width: 200px;" v-model="dislogFormData.product" placeholder="请选择产品" @change="changeProduct">
-              <el-option v-for="item in productList" :key="item.id" :label="item.title" :value="item.id"></el-option>
+    <el-dialog v-model="visible" title="新增" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" :show-close="false" top="5vh">
+      <div style="max-height: 700px;overflow-y: auto;">
+        <el-form ref="formRef" id="form" :model="dislogFormData" size="large" label-width="150px" :rules="rules">
+          <el-form-item label="选择产品：" label-width="130px" prop="product">
+              <el-select style="width: 200px;" v-model="dislogFormData.product" placeholder="请选择产品" @change="changeProduct">
+                <el-option v-for="item in productList" :key="item.id" :label="item.title" :value="item.id"></el-option>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="产品类型：" label-width="130px" v-if="dislogFormData.product">
+            <span>{{ getProductTypeTitle(dislogFormData.type) }}</span>
+          </el-form-item>
+          <el-form-item label="付费周期：" label-width="130px" v-if="dislogFormData.product">
+            <el-select
+              style="width: 200px;"
+              placeholder="请选择付费周期"
+              clearable
+              disabled
+              v-model="dislogFormData.cycle"
+            >
+              <el-option v-for="item in cycleList" :key="item.item_value" :label="item.item_name" :value="item.item_value"></el-option>
             </el-select>
-        </el-form-item>
-        <el-form-item label="产品类型：" label-width="130px" v-if="dislogFormData.product">
-          <span>{{ getProductTypeTitle(dislogFormData.type) }}</span>
-        </el-form-item>
-        <el-form-item label="付费周期：" label-width="130px" v-if="dislogFormData.product">
-           <el-select
-            style="width: 200px;"
-            placeholder="请选择付费周期"
-            clearable
-            disabled
-            v-model="dislogFormData.cycle"
-          >
-            <el-option v-for="item in cycleList" :key="item.item_value" :label="item.item_name" :value="item.item_value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="次数：" label-width="130px" v-if="dislogFormData.product">
-          <el-input-number v-model="dislogFormData.num" disabled></el-input-number>
-          <span style="margin-left: 10px;">次/人</span>
-        </el-form-item>
-        <el-form-item  label="统一售价：" label-width="130px" v-if="dislogFormData.product">
-          <el-input-number v-model="dislogFormData.price" disabled></el-input-number>
-          <span style="margin-left: 10px;">元/人</span>
-        </el-form-item>
-        <el-form-item label="最低价：" label-width="130px" v-if="dislogFormData.product">
-          <el-input-number v-model="dislogFormData.lowPrice" disabled></el-input-number>
-          <span style="margin-left: 10px;">元/人</span>
-        </el-form-item>
-        <el-form-item label="产品名称：" label-width="130px" prop="name">
-          <el-input style="width: 200px;" v-model="dislogFormData.name" maxlength="20" placeholder="请输入产品名称"></el-input>
-        </el-form-item>
-        <div  v-if="dislogFormData.product">
-          <span style="display: inline-block;margin-left: 66px;vertical-align: top;">产品权益：</span>
-          <div style="display: inline-block;vertical-align: top;margin-bottom: 20px;padding: 0 20px;">
-            <div v-for="(item, index) in rightsList" :key="item.id" class="first-item">
-              <span style="margin-bottom: 10px;display: inline-block;">权益{{ index + 1 }}</span>
-              <el-form-item  label="名称:" label-width="50px">
-                <el-input style="width: 200px;" v-model="item.title" maxlength="10" placeholder="请输入权益名称"  />
-              </el-form-item>
-              <el-form-item  label="简介:" label-width="50px">
-                <el-input style="width: 300px;" v-model="item.info" maxlength="20" placeholder="请输入权益简介"  />
-                <span class="del" @click="deleteRight(item, index)" v-if="rightsList.length > 0">删除</span>
-              </el-form-item>
-            </div>
-          </div>
-          <div class="add"  @click="addRight">+点击添加权益</div>
-        </div>
-        <el-form-item label="折扣价：" label-width="130px" prop="discountedPrice" v-if="dislogFormData.product">
-          <el-input-number style="width: 200px;" v-model="dislogFormData.discountedPrice" :min="dislogFormData.lowPrice" placeholder="请输入折扣价" @change="discountPrice"></el-input-number>
-        </el-form-item>
-        <el-form-item label="服务费：" label-width="130px">
-          <el-input-number style="width: 200px;" v-model="dislogFormData.serviceFee" :min="0" placeholder="请输入服务费" @change="serviceFeeChange"></el-input-number>
-        </el-form-item>
-        <el-form-item label="会员价：" label-width="130px">
-          <el-input-number style="width: 200px;" v-model="dislogFormData.memberPrice" placeholder="请输入会员价" disabled></el-input-number>
-        </el-form-item>
-        <el-form-item label="划线价：" label-width="130px">
-          <el-input-number style="width: 200px;" v-model="dislogFormData.originalPrice" :min="0" placeholder="请输入划线价"></el-input-number>
-        </el-form-item>
-        <el-form-item label="付费码失效时间：" label-width="140px" prop="time">
-           <el-date-picker
-              type="date"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              style="width: 190px;"
-              v-model="dislogFormData.time"
-              placeholder="请选择失效时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="经销商:" label-width="130px" prop="distributor">
-          <el-select style="width: 200px;" v-model="dislogFormData.distributor" clearable filterable placeholder="请输入经销商姓名" :filter-method="filterMethod" @change="changeDialogDistributor">
-            <el-option v-for="item in distributorsList" :key="item.distributor_id" :label="item.distributor_name" :value="item.distributor_id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="选择学校：" label-width="130px" prop="school">
-          <el-select  style="width: 180px;margin-right: 10px;" clearable  v-model="dislogFormData.province" placeholder="请选择省份" @change="changeDialogProvince">
-            <el-option v-for="item in provinceList" :key="item.province_id" :label="item.province" :value="item.province_id"></el-option>
-          </el-select>
-          <el-select  style="width: 180px;margin-right: 10px;" clearable  v-model="dislogFormData.city" placeholder="请选择市" @change="changeDialogCity">
-            <el-option v-for="item in cityList" :key="item.city_id" :label="item.city" :value="item.city_id"></el-option>
-          </el-select>
-          <el-select  style="width: 180px;margin-right: 10px;" clearable  v-model="dislogFormData.district" placeholder="请选择区县" @change="changeDialogCounty">
-            <el-option v-for="item in countyList" :key="item.county_id" :label="item.county" :value="item.county_id"></el-option>
-          </el-select>
-          <el-select  style="width: 180px;margin-top: 10px;" clearable  v-model="dislogFormData.school" placeholder="请选择学校" @change="changeDialogSchool">
-            <el-option v-for="item in schoolList" :key="item.school_id" :label="item.school_name" :value="item.school_id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="付费码可用班级：" label-width="150px" prop="teacher">
-          <el-select style="width: 300px;" v-model="dislogFormData.teacher" multiple placeholder="请选择老师" v-if="teacherList.length > 0" @change="changeTeacher">
-            <el-option
-              v-for="item in teacherList"
-              :key="item.teacher_id"
-              :label="item.name"
-              :value="item.teacher_id">
-            </el-option>
-          </el-select>
-          <span v-else>暂无老师</span>
-        </el-form-item>
-        <el-form-item label="选择班级：" label-width="130px">
-          <div v-if="dislogFormData.teacher.length > 0">
-            <div v-for="(item, index) in classList" :key="index">
-              <span>{{item.name}}：</span>
-              <div v-if="item.list.length > 0"  @click.stop>
-                <div v-for="iItem in item.list" :key="iItem.class_id" style="display: inline-block;border:1px solid #ccc;padding: 5px;margin-bottom: 10px;border-radius: 10px;margin-right: 10px;">
-                  <el-checkbox v-model="iItem.isChecked" :value="iItem.class_id" name="type" :disabled="iItem.student_nums === 0 ? true: false" @change="classChange">
-                    {{iItem.class_name}}
-                  </el-checkbox> 
-                </div>
+          </el-form-item>
+          <el-form-item label="次数：" label-width="130px" v-if="dislogFormData.product">
+            <el-input-number v-model="dislogFormData.num" disabled></el-input-number>
+            <span style="margin-left: 10px;">次/人</span>
+          </el-form-item>
+          <el-form-item  label="统一售价：" label-width="130px" v-if="dislogFormData.product">
+            <el-input-number v-model="dislogFormData.price" disabled></el-input-number>
+            <span style="margin-left: 10px;">元/人</span>
+          </el-form-item>
+          <el-form-item label="最低价：" label-width="130px" v-if="dislogFormData.product">
+            <el-input-number v-model="dislogFormData.lowPrice" disabled></el-input-number>
+            <span style="margin-left: 10px;">元/人</span>
+          </el-form-item>
+          <el-form-item label="产品名称：" label-width="130px" prop="name">
+            <el-input style="width: 200px;" v-model="dislogFormData.name" maxlength="20" placeholder="请输入产品名称"></el-input>
+          </el-form-item>
+          <div  v-if="dislogFormData.product">
+            <span style="display: inline-block;margin-left: 66px;vertical-align: top;">产品权益：</span>
+            <div style="display: inline-block;vertical-align: top;margin-bottom: 20px;padding: 0 20px;">
+              <div v-for="(item, index) in rightsList" :key="item.id" class="first-item">
+                <span style="margin-bottom: 10px;display: inline-block;">权益{{ index + 1 }}</span>
+                <el-form-item  label="名称:" label-width="50px">
+                  <el-input style="width: 200px;" v-model="item.title" maxlength="10" placeholder="请输入权益名称"  />
+                </el-form-item>
+                <el-form-item  label="简介:" label-width="50px">
+                  <el-input style="width: 300px;" v-model="item.info" maxlength="20" placeholder="请输入权益简介"  />
+                  <span class="del" @click="deleteRight(item, index)" v-if="rightsList.length > 0">删除</span>
+                </el-form-item>
               </div>
-              <span v-else>暂无班级</span>
             </div>
+            <div class="add"  @click="addRight">+点击添加权益</div>
           </div>
-          <span v-else>暂无班级</span>
-        </el-form-item>
-        <div style="height: 1px;border-bottom: 1px solid #ccc;margin-bottom: 10px;"></div>
-        <el-form-item label="URL地址：" prop="url" label-width="130px">
-          <el-input style="width: 200px;" v-model="dislogFormData.url" maxlength="20" placeholder="请输入URL地址"></el-input>
-        </el-form-item>
-      </el-form>
-      <el-button type="primary" style="margin-left: 50px;margin-bottom: 10px;" @click="generate" :loading="loading3" :disabled="loading3">生成付费码</el-button>
-      <el-table :data="payCodeList" v-loading="loading3" class="table-info" header-cell-class-name="header_row_class" style="width: 100%" stripe element-loading-text="拼命加载中，主人请稍后..." :max-height="screenHeight" ref="tableRef" >
-        <el-table-column prop="product_name_class" label="产品名称_班级" min-width="120px" />
-        <el-table-column label="班级付费二维码" min-width="200px">
-          <template #default="scope">
-            <img style="width: 150px;height: 150px;" :src="scope.row.qr_code" alt="">
-          </template>
-        </el-table-column>
-        <el-table-column prop="pay_link" label="班级付费链接" min-width="200px" />
-        <el-table-column label="操作" fixed="right"  min-width="160px">
-          <template #default="scope">
-            <el-button class="button-style" link type="primary" @click="preview(scope.row)">
-              预览宣传页
-            </el-button>
-            <el-button class="button-style" link type="primary" @click="download(scope.row)">
-              下载
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-form-item label="折扣价：" label-width="130px" prop="discountedPrice" v-if="dislogFormData.product">
+            <el-input-number style="width: 200px;" v-model="dislogFormData.discountedPrice" :min="dislogFormData.lowPrice" placeholder="请输入折扣价" @change="discountPrice"></el-input-number>
+          </el-form-item>
+          <el-form-item label="服务费：" label-width="130px">
+            <el-input-number style="width: 200px;" v-model="dislogFormData.serviceFee" :min="0" placeholder="请输入服务费" @change="serviceFeeChange"></el-input-number>
+          </el-form-item>
+          <el-form-item label="会员价：" label-width="130px">
+            <el-input-number style="width: 200px;" v-model="dislogFormData.memberPrice" placeholder="请输入会员价" disabled></el-input-number>
+          </el-form-item>
+          <el-form-item label="划线价：" label-width="130px">
+            <el-input-number style="width: 200px;" v-model="dislogFormData.originalPrice" :min="0" placeholder="请输入划线价"></el-input-number>
+          </el-form-item>
+          <el-form-item label="付费码失效时间：" label-width="140px" prop="time">
+            <el-date-picker
+                type="date"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                style="width: 190px;"
+                v-model="dislogFormData.time"
+                placeholder="请选择失效时间">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="经销商:" label-width="130px" prop="distributor">
+            <el-select style="width: 200px;" v-model="dislogFormData.distributor" clearable filterable placeholder="请输入经销商姓名" :filter-method="filterMethod" @change="changeDialogDistributor">
+              <el-option v-for="item in distributorsList" :key="item.distributor_id" :label="item.distributor_name" :value="item.distributor_id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="选择学校：" label-width="130px" prop="school">
+            <el-select  style="width: 180px;margin-right: 10px;" clearable  v-model="dislogFormData.province" placeholder="请选择省份" @change="changeDialogProvince">
+              <el-option v-for="item in provinceList" :key="item.province_id" :label="item.province" :value="item.province_id"></el-option>
+            </el-select>
+            <el-select  style="width: 180px;margin-right: 10px;" clearable  v-model="dislogFormData.city" placeholder="请选择市" @change="changeDialogCity">
+              <el-option v-for="item in cityList" :key="item.city_id" :label="item.city" :value="item.city_id"></el-option>
+            </el-select>
+            <el-select  style="width: 180px;margin-right: 10px;" clearable  v-model="dislogFormData.district" placeholder="请选择区县" @change="changeDialogCounty">
+              <el-option v-for="item in countyList" :key="item.county_id" :label="item.county" :value="item.county_id"></el-option>
+            </el-select>
+            <el-select  style="width: 180px;margin-top: 10px;" clearable  v-model="dislogFormData.school" placeholder="请选择学校" @change="changeDialogSchool">
+              <el-option v-for="item in schoolList" :key="item.school_id" :label="item.school_name" :value="item.school_id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="付费码可用班级：" label-width="150px" prop="teacher">
+            <el-select style="width: 300px;" v-model="dislogFormData.teacher" multiple placeholder="请选择老师" v-if="teacherList.length > 0" @change="changeTeacher">
+              <el-option
+                v-for="item in teacherList"
+                :key="item.teacher_id"
+                :label="item.name"
+                :value="item.teacher_id">
+              </el-option>
+            </el-select>
+            <span v-else>暂无老师</span>
+          </el-form-item>
+          <el-form-item label="选择班级：" label-width="130px">
+            <div v-if="dislogFormData.teacher.length > 0">
+              <div v-for="(item, index) in classList" :key="index">
+                <span>{{item.name}}：</span>
+                <div v-if="item.list.length > 0"  @click.stop>
+                  <div v-for="iItem in item.list" :key="iItem.class_id" style="display: inline-block;border:1px solid #ccc;padding: 5px;margin-bottom: 10px;border-radius: 10px;margin-right: 10px;">
+                    <el-checkbox v-model="iItem.isChecked" :value="iItem.class_id" name="type" :disabled="iItem.student_nums === 0 ? true: false" @change="classChange">
+                      {{iItem.class_name}}
+                    </el-checkbox> 
+                  </div>
+                </div>
+                <span v-else>暂无班级</span>
+              </div>
+            </div>
+            <span v-else>暂无班级</span>
+          </el-form-item>
+          <div style="height: 1px;border-bottom: 1px solid #ccc;margin-bottom: 10px;"></div>
+          <el-form-item label="URL地址：" prop="url" label-width="130px">
+            <el-input style="width: 200px;" v-model="dislogFormData.url" maxlength="20" placeholder="请输入URL地址"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-button type="primary" style="margin-left: 50px;margin-bottom: 10px;" @click="generate" :loading="loading3" :disabled="loading3">生成付费码</el-button>
+        <el-table :data="payCodeList" v-loading="loading3" class="table-info" header-cell-class-name="header_row_class" style="width: 100%" stripe element-loading-text="拼命加载中，主人请稍后..." :max-height="screenHeight" ref="tableRef" >
+          <el-table-column prop="product_name_class" label="产品名称_班级" min-width="120px" />
+          <el-table-column label="班级付费二维码" min-width="200px">
+            <template #default="scope">
+              <img style="width: 150px;height: 150px;" :src="scope.row.qr_code" alt="">
+            </template>
+          </el-table-column>
+          <el-table-column prop="pay_link" label="班级付费链接" min-width="200px" />
+          <el-table-column label="操作" fixed="right"  min-width="160px">
+            <template #default="scope">
+              <el-button class="button-style" link type="primary" @click="preview(scope.row)">
+                预览宣传页
+              </el-button>
+              <el-button class="button-style" link type="primary" @click="download(scope.row)">
+                下载
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="cancel">取消</el-button>
@@ -274,8 +276,8 @@
         </div>
       </template>
     </el-dialog>
-    <el-dialog v-model="checkDialog" title="详情" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
-      <div style="padding-left: 30px;">
+    <el-dialog  v-model="checkDialog" title="详情" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
+      <div style="padding-left: 30px;max-height: 700px;overflow-y: auto;">
         <div class="margin">选择产品：{{ detailsMessage.title }}</div>
         <div class="margin">产品类型：{{ detailsMessage.type }}</div>
         <div class="margin">付费周期：{{ detailsMessage.cycle }}</div>
@@ -577,6 +579,7 @@ const onAdd = () => {
   countyList.value = []
   schoolList.value = []
   payCodeList.value = []
+  teacherList.value = []
   visible.value = true
 }
 
@@ -693,7 +696,7 @@ const addRight = () => {
 const getProductList = () => {
   let params = {
     user_name: vocabularyStore.user_name,
-    session: vocabularyStore.session,
+    session: vocabularyStore.session
   }
   return AiAgentMemebers.getProductList(params)
     .then((res) => {
