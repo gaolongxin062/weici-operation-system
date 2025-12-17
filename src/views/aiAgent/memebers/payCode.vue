@@ -245,7 +245,7 @@
           </el-form-item>
           <div style="height: 1px;border-bottom: 1px solid #ccc;margin-bottom: 10px;"></div>
           <el-form-item label="URL地址：" prop="url" label-width="130px">
-            <el-input style="width: 200px;" v-model="dislogFormData.url" maxlength="20" placeholder="请输入URL地址"></el-input>
+            <el-input style="width: 200px;" v-model="dislogFormData.url" disabled placeholder="请输入URL地址"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="primary" style="margin-left: 50px;margin-bottom: 10px;" @click="generate" :loading="loading3" :disabled="loading3">生成付费码</el-button>
@@ -411,7 +411,7 @@ let dislogFormData = reactive({
   district: '', // 区县
   school: '', // 学校
   teacher: [], // 老师
-  url: '' // url地址
+  url: 'http://h5.weixuetec.com/#/writing/introduce' // url地址
 }) // 弹窗表单
 let rules = ref({
   product: [
@@ -573,7 +573,7 @@ const onAdd = () => {
   dislogFormData.district = '', // 区县
   dislogFormData.school = '', // 学校
   dislogFormData.teacher = [], // 老师
-  dislogFormData.url = '' // url地址
+  dislogFormData.url = 'http://h5.weixuetec.com/#/writing/introduce' // url地址
   provinceList.value = []
   cityList.value = []
   countyList.value = []
@@ -656,7 +656,7 @@ const allDownload = (row) => {
         if (res.data.download_url) {
           const qrCodeUrl = await getOssImageUrl(res.data.download_url, 'composition-pay');
           // 创建虚拟链接并触发下载
-          let filename = `${row.product_name}.zip` // 包的名称
+          let filename = `${row.product_name || '付费码'}.zip` // 包的名称
           const link = document.createElement('a');
           link.href = qrCodeUrl;
           link.setAttribute('download', filename);
