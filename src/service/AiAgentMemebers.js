@@ -585,6 +585,29 @@ function getCodePayDetail(params) {
   });
 }
 
+/**
+ * 付费码批量下载
+ * @param session 
+ * @param user_name
+ * @param id
+ * @returns {Promise<unknown>}
+ */
+function payDownload(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.payDownload, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+
+
 export default {
     getDistributors,
     getSchool,
@@ -609,5 +632,6 @@ export default {
     saveRightsEdit,
     payAdd,
     getCodePayList,
-    getCodePayDetail
+    getCodePayDetail,
+    payDownload
 }

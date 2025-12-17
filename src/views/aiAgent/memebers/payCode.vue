@@ -110,7 +110,7 @@
                 <el-button class="button-style" link type="primary" @click="check(scope.row)">
                   查看
                 </el-button>
-                <el-button class="button-style" link type="primary" @click="download(scope.row)">
+                <el-button class="button-style" link type="primary" @click="allDownload(scope.row)">
                   下载付费码
                 </el-button>
               </template>
@@ -270,7 +270,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="cancel">取消</el-button>
-          <el-button type="primary" v-if="payCodeList.length > 0">批量下载付费码</el-button>
+          <el-button type="primary" v-if="payCodeList.length > 0" @click="allDownload(payCodeList[0])">批量下载付费码</el-button>
         </div>
       </template>
     </el-dialog>
@@ -336,7 +336,7 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="checkDialog = false">关闭</el-button>
-          <el-button type="primary" v-if="detailsMessage.pay_code_list.length > 0">批量下载付费码</el-button>
+          <el-button type="primary" v-if="detailsMessage.pay_code_list.length > 0" @click="allDownload(currentRow)">批量下载付费码</el-button>
         </div>
       </template>
     </el-dialog>
@@ -451,6 +451,7 @@ let payCodeList = ref([]) // 弹窗表格数据列表
 let loading3 = ref(false)
 let checkDialog = ref(false) // 查看弹窗
 let detailsMessage = reactive(null)
+let currentRow = reactive(null)
 onMounted(() => {
   // 设置页面展示高度
   window.addEventListener('resize', updateScreenHeight)
@@ -586,6 +587,7 @@ const check = (row) => {
     session: vocabularyStore.session,
     id: row.id
   }
+  currentRow = row
   return AiAgentMemebers.getCodePayDetail(params)
     .then(async (res) => {
       if (res.result_code === 200) {
@@ -625,7 +627,6 @@ const preview = (row) => {
 
 // 下载
 const download = (row) => {
-  console.log(row)
   if (row.qr_code) {
     const link = document.createElement('a')
     link.href = row.qr_code
@@ -634,7 +635,49 @@ const download = (row) => {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+  } else {
+    ElMessage.warning('暂无二维码可供下载')
   }
+}
+
+// 批量下载
+const allDownload = (row) => {
+  let params = {
+    user_name: vocabularyStore.user_name,
+    session: vocabularyStore.session,
+    id: row.id || row.pay_code_id
+  }
+  return AiAgentMemebers.payDownload(params)
+    .then(async (res) => {
+      if (res.result_code === 200) {
+        if (res.data.download_url) {
+          const qrCodeUrl = await getOssImageUrl(res.data.download_url, 'composition-pay');
+          // 创建虚拟链接并触发下载
+          let filename = `${row.product_name}.zip` // 包的名称
+          const link = document.createElement('a');
+          link.href = qrCodeUrl;
+          link.setAttribute('download', filename);
+          document.body.appendChild(link);
+          link.click();
+          // 清理资源
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(qrCodeUrl);
+          console.log('批量下载付费码', qrCodeUrl)
+        }
+      } else {
+        ElMessage({
+          message: '下载付费码失败',
+          type: 'error',
+          duration: 3000
+        })
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 // 新增权益组

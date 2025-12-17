@@ -174,7 +174,8 @@ export let aiAgentMemebersApi = {
   allRightList: '/product/rights/list', // 修改权益列表
   payAdd: '/code/pay/add', // 付费码增加
   getCodePayList: '/getCodePayList', // 付费码列表
-  getCodePayDetail: '/getCodePayDetail' // 付费码详情
+  getCodePayDetail: '/getCodePayDetail', // 付费码详情
+  payDownload: '/code/pay/download' // 付费码批量下载
 }
 
 // 审核管理
