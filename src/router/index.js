@@ -109,9 +109,9 @@ const routes = [{
       },
       // 付费码管理
       {
-        path: '/ai/agent/memebers/pay/code',
-        name: 'AiAgentMemebersPayCode',
-        component: () => import('@/views/aiAgent/memebers/payCode.vue')
+        path: '/ai/agent/memebers/pay/code/manager',
+        name: 'AiAgentMemebersPayCodeManager',
+        component: () => import('@/views/aiAgent/memebers/PayCodeManager.vue')
       },
       // 订单记录
       {

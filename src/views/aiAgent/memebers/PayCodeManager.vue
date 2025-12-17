@@ -656,7 +656,9 @@ const allDownload = (row) => {
         if (res.data.download_url) {
           const qrCodeUrl = await getOssImageUrl(res.data.download_url, 'composition-pay');
           // 创建虚拟链接并触发下载
-          let filename = `${row.product_name || '付费码'}.zip` // 包的名称
+          const now = new Date();
+          const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+          let filename = `${dateStr}_${row.product_name || '付费码'}.zip` // 包的名称
           const link = document.createElement('a');
           link.href = qrCodeUrl;
           // link.setAttribute('download', filename);
@@ -666,7 +668,6 @@ const allDownload = (row) => {
           // 清理资源
           document.body.removeChild(link);
           window.URL.revokeObjectURL(qrCodeUrl);
-          console.log('批量下载付费码', qrCodeUrl)
         }
       } else {
         ElMessage({
