@@ -123,7 +123,7 @@
         </div>
     </div>
     <el-dialog v-model="visible" title="新增" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" :show-close="false" top="5vh">
-      <div style="max-height: 700px;overflow-y: auto;">
+      <div style="max-height: 650px;overflow-y: auto;">
         <el-form ref="formRef" id="form" :model="dislogFormData" size="large" label-width="150px" :rules="rules">
           <el-form-item label="选择产品：" label-width="130px" prop="product">
               <el-select style="width: 200px;" v-model="dislogFormData.product" placeholder="请选择产品" @change="changeProduct">
@@ -277,7 +277,7 @@
       </template>
     </el-dialog>
     <el-dialog  v-model="checkDialog" title="详情" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
-      <div style="padding-left: 30px;max-height: 700px;overflow-y: auto;">
+      <div style="padding-left: 30px;max-height: 650px;overflow-y: auto;">
         <div class="margin">选择产品：{{ detailsMessage.title }}</div>
         <div class="margin">产品类型：{{ detailsMessage.type }}</div>
         <div class="margin">付费周期：{{ detailsMessage.cycle }}</div>
