@@ -659,7 +659,8 @@ const allDownload = (row) => {
           let filename = `${row.product_name || '付费码'}.zip` // 包的名称
           const link = document.createElement('a');
           link.href = qrCodeUrl;
-          link.setAttribute('download', filename);
+          // link.setAttribute('download', filename);
+          link.download = filename
           document.body.appendChild(link);
           link.click();
           // 清理资源
