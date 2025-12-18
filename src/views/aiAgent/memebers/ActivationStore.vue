@@ -112,7 +112,7 @@
           <span v-else>暂无老师</span>
         </el-form-item>
         <el-form-item label="选择班级：" label-width="130px">
-          <div style="max-height: 400px;overflow-y: auto;" v-if="dislogFormData.teacher.length > 0">
+          <div v-if="dislogFormData.teacher.length > 0">
             <div style="color: red;">共选择{{totalStudent}}个学生</div>
             <div v-for="(item, index) in classList" :key="index">
               <span>{{item.name}}：</span>
