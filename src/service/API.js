@@ -56,7 +56,7 @@ export let basicApi = {
   getPointInfo: '/point', // 获取考点信息
   getPower: '/right/zsgc', // 获取权限
   // getOssPower: '/aisys/distributor/aliram/token', // 获取权限
-  getOssPower: '/gz/operation//account/token', // 获取权限
+  getOssPower: '/token', // 获取权限
 
 }
 

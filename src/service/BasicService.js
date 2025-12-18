@@ -296,7 +296,7 @@ function getPower(user_name, session) {
 }
 
 const OssImg = axios.create({
-  baseURL: config.BASE_OSS_URL,
+  baseURL: config.BASE_URL,
   timeout: 60000,
   responseType: 'json',
   withCredentials: false, // 是否允许带cookie这些
