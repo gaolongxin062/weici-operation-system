@@ -194,7 +194,7 @@
       </template>
   </el-dialog>
   <el-dialog v-model="checkVisible" title="查看" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
-    <div style="padding-left: 40px;max-height: 650px;overflow-y: auto;">
+    <div style="padding-left: 40px;max-height: 650px;overflow-y: auto;padding-right: 15px;">
       <div class="marginBottom">
         <span style="font-weight: bold;">经销商：</span>
         {{ studentDetails.distributor_name }}
@@ -220,21 +220,25 @@
         <span style="font-weight: bold;">次数：</span>
         {{ studentDetails.count }}次/人
       </div>
-      <div class="marginBottom" v-for="(item, index) in info" :key="index">
-        <span style="font-weight: bold;">{{ item.type_name + '：' }}</span>
-        <span>{{ item.config_value }}</span>
+      <div style="display: flex;justify-content: space-between;flex-wrap:wrap">
+        <div class="marginBottom" v-for="(item, index) in info" :key="index">
+          <span style="font-weight: bold;">{{ item.type_name + '：' }}</span>
+          <span>{{ item.config_value }}</span>
+        </div>
       </div>
-      <div class="marginBottom">
-        <span style="font-weight: bold;">开始时间：</span>
-        {{ studentDetails.start_time }}
-      </div>
-      <div class="marginBottom">
-        <span style="font-weight: bold;">结束时间：</span>
-        {{ studentDetails.end_time }}
-      </div>
-      <div class="marginBottom">
-        <span style="font-weight: bold;">收款金额：</span>
-        {{ studentDetails.pay_money }}元
+      <div style="display: flex;justify-content: space-between;">
+        <div class="marginBottom">
+          <span style="font-weight: bold;">开始时间：</span>
+          {{ studentDetails.start_time }}
+        </div>
+        <div class="marginBottom">
+          <span style="font-weight: bold;">结束时间：</span>
+          {{ studentDetails.end_time }}
+        </div>
+        <div class="marginBottom">
+          <span style="font-weight: bold;">收款金额：</span>
+          {{ studentDetails.pay_money }}元
+        </div>
       </div>
     </div>
   </el-dialog>
