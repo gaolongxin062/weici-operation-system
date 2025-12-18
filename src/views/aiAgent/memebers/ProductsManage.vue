@@ -175,15 +175,15 @@
           </el-select>
       </el-form-item>
       <el-form-item label="次数：" label-width="130px" prop="num">
-        <el-input-number v-model="dislogFormData.num" :precision="0" min="1"></el-input-number>
+        <el-input-number v-model="dislogFormData.num" :precision="0" :min="1"></el-input-number>
         <span style="margin-left: 10px;">次/人</span>
       </el-form-item>
       <el-form-item  label="统一售价：" label-width="130px" prop="price" >
-       <el-input-number v-model="dislogFormData.price" :precision="2"  min="1"></el-input-number>
+       <el-input-number v-model="dislogFormData.price" :precision="2"  :min="0"></el-input-number>
         <span style="margin-left: 10px;">元/人</span>
       </el-form-item>
       <el-form-item label="最低价：" label-width="130px" prop="lowPrice" >
-       <el-input-number v-model="dislogFormData.lowPrice" :precision="2"  min="1"></el-input-number>
+       <el-input-number v-model="dislogFormData.lowPrice" :precision="2"  :min="0"></el-input-number>
         <span style="margin-left: 10px;">元/人</span>
       </el-form-item>
       <el-form-item label="上下架：" label-width="130px" prop="status">

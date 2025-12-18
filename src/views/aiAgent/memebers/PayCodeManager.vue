@@ -1308,7 +1308,7 @@ const generate = async () => {
         class_json: JSON.stringify(classData), // 班级id和学生id
         county_id: dislogFormData.district,
         disabled_time: dislogFormData.time,
-        discount_price: dislogFormData.discountedPrice * 100,
+        discount_price: Math.round(dislogFormData.discountedPrice * 100),
         distributor_id: dislogFormData.distributor,
         list_price: dislogFormData.originalPrice * 100,
         product_id: dislogFormData.product,
