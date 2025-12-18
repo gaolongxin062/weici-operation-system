@@ -59,7 +59,7 @@
         <el-table-column prop="count" label="次数"  min-width="130px" />
         <el-table-column prop="start_time" label="开始时间"  min-width="140px"  />
         <el-table-column prop="end_time" label="结束时间"  min-width="140px" />
-        <el-table-column prop="maker" label="创建人" min-width="120" />
+        <el-table-column prop="maker_name" label="创建人" min-width="120" />
         <el-table-column prop="make_date" label="创建时间"  min-width="140px" />
         <el-table-column label="操作" fixed="right"  min-width="160px">
           <template #default="scope">
@@ -190,11 +190,20 @@
   </el-dialog>
   <el-dialog v-model="checkVisible" title="查看" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
     <div style="padding-left: 40px;">
-      <div class="marginBottom">经销商：{{ studentDetails.distributor_name }}</div>
-      <div class="marginBottom">选择学校：{{ studentDetails.school_name }}</div>
-      <div class="marginBottom">选择老师：{{ studentDetails.teacher_info }}</div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">经销商：</span>
+        {{ studentDetails.distributor_name }}
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">选择学校：</span>
+        {{ studentDetails.school_name }}
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">选择老师：</span>
+        {{ studentDetails.teacher_info }}
+      </div>
       <div class="marginBottom" style="max-width: 400px;overflow-y: auto;">
-        <span>选择班级：</span>
+        <span style="font-weight: bold;">选择班级：</span>
         <span style="color: red;display: inline-block;margin-left: 10px;margin-bottom: 10px;">共选择{{studentDetails.pay_number}}个学生</span>
         <div class="teacher" v-for="(item, index) in studentDetails.class_info" :key="index">
           <span>{{item.teacherName}}：</span>
@@ -202,10 +211,22 @@
           <div style="margin-top: 10px;margin-bottom: 10px;" v-for="(otem, ondex) in item.student_list" :key="ondex">{{otem.class_name}}：{{ otem.student_info}}</div>
         </div>
       </div>
-      <div class="marginBottom">次数：{{ studentDetails.count }}次/人</div>
-      <div class="marginBottom">开始时间：{{ studentDetails.start_time }}</div>
-      <div class="marginBottom">结束时间：{{ studentDetails.end_time }}</div>
-      <div class="marginBottom">收款金额：{{ studentDetails.pay_money }}元</div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">次数：</span>
+        {{ studentDetails.count }}次/人
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">开始时间：</span>
+        {{ studentDetails.start_time }}
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">结束时间：</span>
+        {{ studentDetails.end_time }}
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">收款金额：</span>
+        {{ studentDetails.pay_money }}元
+      </div>
     </div>
   </el-dialog>
 </template>

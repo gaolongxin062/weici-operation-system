@@ -606,7 +606,83 @@ function payDownload(params) {
   });
 }
 
+/**
+ * 查看订单记录
+ * @param session 
+ * @param user_name
+ * @param class_id 班级id
+ * @param distributor_id 经销商id
+ * @param end_time 支付结束时间
+ * @param order_code 订单号
+ * @param school_id 学校d
+ * @param start_time 支付开始时间
+ * @param student_name 学生姓名
+ * @param page_index 
+ * @param page_size
+ * @returns {Promise<unknown>}
+ */
+function getOrderList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getOrderList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
 
+/**
+ * 获取学校下的班级
+ * @param session 
+ * @param user_name
+ * @param class_id 班级id
+ * @param distributor_id 经销商id
+ * @param school_id 学校id
+ * @returns {Promise<unknown>}
+ */
+function getSchoolClass(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getSchoolClass, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+/**
+ * 作文批改学生权益记录
+ * @param session 
+ * @param user_name
+ * @param class_id 班级id
+ * @param distributor_id 经销商id
+ * @param school_id 学校d
+ * @param student_name 学生姓名
+ * @param page_index 
+ * @param page_size
+ * @returns {Promise<unknown>}
+ */
+function getStudentPayList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getStudentPayList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
 
 export default {
     getDistributors,
@@ -633,5 +709,8 @@ export default {
     payAdd,
     getCodePayList,
     getCodePayDetail,
-    payDownload
+    payDownload,
+    getSchoolClass,
+    getOrderList,
+    getStudentPayList
 }

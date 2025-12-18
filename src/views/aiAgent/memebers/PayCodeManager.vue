@@ -103,7 +103,7 @@
             </el-table-column>
             <el-table-column prop="distributor_name" label="所属经销商"  min-width="140px" />
             <el-table-column prop="disabled_time" label="付费码失效时间"  min-width="140px" />
-            <el-table-column prop="maker" label="创建人" min-width="120" />
+            <el-table-column prop="maker_name" label="创建人" min-width="120" />
             <el-table-column prop="make_date" label="创建时间"  min-width="180px" />
             <el-table-column label="操作" fixed="right"  min-width="160px">
               <template #default="scope">
@@ -277,44 +277,93 @@
       </template>
     </el-dialog>
     <el-dialog  v-model="checkDialog" title="详情" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
-      <div style="padding-left: 30px;max-height: 650px;overflow-y: auto;">
-        <div class="margin">选择产品：{{ detailsMessage.title }}</div>
-        <div class="margin">产品类型：{{ detailsMessage.type }}</div>
-        <div class="margin">付费周期：{{ detailsMessage.cycle }}</div>
-        <div class="margin">次数：{{ detailsMessage.num }}次/人</div>
-        <div class="margin">统一售价：{{ detailsMessage.price / 100 }}元/人</div>
-        <div class="margin">最低价：{{ detailsMessage.min_price / 100 }}元/人</div>
-        <div class="margin">产品名称：{{ detailsMessage.product_name }}</div>
+      <div style="padding-left: 30px;max-height: 650px;overflow-y: auto;padding-right: 15px;">
+        <div style="display: flex;justify-content: space-between;">
+          <div class="margin">
+          <span style="font-weight: bold;">选择产品：</span>
+          {{ detailsMessage.title }}
+        </div>
         <div class="margin">
-          <span>产品权益：</span>
-          <div v-for="(item, index) in JSON.parse(detailsMessage.rights_json)" :key="index" style="margin-bottom: 10px;">
-            <span style="display: inline-block;margin-left: 20px;">权益{{ index + 1 }}</span>
-            <span style="display: inline-block;margin-left: 20px;">名称：{{ item.title }}</span><br>
-            <span style="display: inline-block;margin-left: 78px;">简介：{{ item.info  }}</span>
+          <span style="font-weight: bold;">产品类型：</span>
+          {{ getProductTypeTitle(detailsMessage.type) }}
+        </div>
+        <div class="margin">
+          <span style="font-weight: bold;">付费周期：</span>
+          {{ getCycleTitle(detailsMessage.cycle) }}
+        </div>
+        </div>
+        <div style="display: flex;justify-content: space-between;">
+          <div class="margin">
+            <span style="font-weight: bold;">次数：</span>
+            {{ detailsMessage.num }}次/人
+          </div>
+          <div class="margin">
+            <span style="font-weight: bold;">统一售价：</span>
+            {{ detailsMessage.price / 100 }}元/人
+          </div>
+          <div class="margin">
+            <span style="font-weight: bold;">最低价：</span>
+            {{ detailsMessage.min_price / 100 }}元/人
           </div>
         </div>
-        <div class="margin">折扣价：{{ detailsMessage.discount_price / 100 }}元/人</div>
-        <div class="margin">服务费：{{ detailsMessage.service_price / 100 }}元/人</div>
-        <div class="margin">会员价：{{ detailsMessage.vip_price / 100 }}元/人</div>
-        <div class="margin">划线价：{{ detailsMessage.list_price / 100 }}元/人</div>
-        <div class="margin">付费码失效时间：{{ detailsMessage.disabled_time }}</div>
-        <div class="margin">所属经销商：{{ detailsMessage.distributor_name }}</div>
+        <div style="display: flex;justify-content: space-between;margin-bottom: 15px;">
+          <div class="margin">
+            <span style="font-weight: bold;">产品名称：</span>
+            {{ detailsMessage.product_name }}
+          </div>
+          <div class="margin">
+            <span style="font-weight: bold;">折扣价：</span>
+            {{ detailsMessage.discount_price / 100 }}元/人
+          </div>
+          <div class="margin">
+            <span style="font-weight: bold;">服务费：</span>
+            {{ detailsMessage.service_price / 100 }}元/人
+          </div>
+        </div>
+        <el-table :data=" JSON.parse(detailsMessage.rights_json)" class="table-info" header-cell-class-name="header_row_class" style="width: 100%" stripe :max-height="screenHeight" >
+          <el-table-column prop="title" label="产品权益名称" />
+          <el-table-column prop="info" label="产品权益简介"/>
+        </el-table>
+        <div style="display: flex;justify-content: space-between;margin-top: 15px;">
+          <div class="margin">
+            <span style="font-weight: bold;">会员价：</span>
+            {{ detailsMessage.vip_price / 100 }}元/人
+          </div>
+          <div class="margin">
+            <span style="font-weight: bold;">划线价：</span>
+            {{ detailsMessage.list_price / 100 }}元/人
+          </div>
+          <div class="margin">
+            <span style="font-weight: bold;">付费码失效时间：</span>
+            {{ detailsMessage.disabled_time }}
+          </div>
+        </div>
         <div class="margin">
-          <span>付费码可用班级：</span>
+          <span style="font-weight: bold;">所属经销商：</span>
+          {{ detailsMessage.distributor_name }}
+        </div>
+        <div class="margin">
+          <span style="font-weight: bold;">付费码可用班级：</span>
           <span>{{ detailsMessage.province }}</span>
           <span>{{ detailsMessage.city }}</span>
           <span>{{ detailsMessage.county }}</span>
           <span>{{ detailsMessage.school_name }}</span>
         </div>
-        <div class="margin">选择老师：{{ detailsMessage.teacher_info }}</div>
         <div class="margin">
-          <span>选择班级：</span>
+          <span style="font-weight: bold;">选择老师：</span>
+          {{ detailsMessage.teacher_info }}
+        </div>
+        <div class="margin">
+          <span style="font-weight: bold;">选择班级：</span>
           <div style="margin-left: 20px;margin-top: 10px;" v-for="(item, index) in detailsMessage.class_list" :key="index">
             <span>{{ item.teacher_name }}：</span>
             <span>{{ item.class_info.length > 0 ? item.class_info.join(',') : '无' }}</span>
           </div>
         </div>
-        <div class="margin">URL地址：{{ detailsMessage.url_path }}</div>
+        <div class="margin">
+          <span style="font-weight: bold;">URL地址：</span>
+          {{ detailsMessage.url_path }}
+        </div>
         <el-table :data="detailsMessage.pay_code_list" class="table-info" header-cell-class-name="header_row_class" style="width: 100%" stripe :max-height="screenHeight" >
           <el-table-column prop="product_name_class" label="产品名称_班级" min-width="120px" />
           <el-table-column label="班级付费二维码" min-width="200px">
@@ -497,8 +546,8 @@ const getList = () => {
     session: vocabularyStore.session,
     cycle: formData.cycle, // 付费周期
     end_time: formData.date.length > 0 ? formData.date[1] : '', // 结束时间
-    name: formData.user, // 创建人
-    enable: formData.status ? formData.status : 2, // 状态
+    maker: formData.user, // 创建人
+    state: formData.status, // 状态
     title: formData.product, // 产品名称
     start_time: formData.date.length > 0 ? formData.date[0] : '', // 开始时间
     type: formData.distributor ? formData.distributor : 1, // 产品类型
@@ -919,7 +968,8 @@ const getCityList = () => {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    distributor_id: dislogFormData.distributor
+    distributor_id: dislogFormData.distributor,
+    province_ids: dislogFormData.province
   }
   cityList.value = []
   return AiAgentMemebers.getCityList(params)
@@ -946,7 +996,9 @@ const getCountyList = () => {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    distributor_id: dislogFormData.distributor
+    distributor_id: dislogFormData.distributor,
+    city_ids: dislogFormData.city,
+    province_ids: dislogFormData.province
   }
   countyList.value = []
   return AiAgentMemebers.getCountyList(params)
@@ -1105,6 +1157,10 @@ const changeDialogDistributor = () => {
     getProvinceList()
     teacherList.value = [] // 教师
     dislogFormData.teacher = [] // 已选教师数据
+    provinceList.value = [] // 省
+    cityList.value = [] // 市
+    countyList.value = [] // 区县
+    schoolList.value = [] // 学校
   } else {
     provinceList.value = [] // 省
     cityList.value = [] // 市

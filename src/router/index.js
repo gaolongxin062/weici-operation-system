@@ -117,7 +117,13 @@ const routes = [{
       {
         path: '/ai/agent/memebers/order/record',
         name: 'AiAgentMemebersOrderRecord',
-        component: () => import('@/views/aiAgent/memebers/OrderRecord.vue.vue')
+        component: () => import('@/views/aiAgent/memebers/OrderRecord.vue')
+      },
+      // 作文批改学生权益记录
+      {
+        path: '/ai/agent/memebers/student/rights/record',
+        name: 'AiAgentMemebersStudentRightsRecord',
+        component: () => import('@/views/aiAgent/memebers/StudentRightsRecord.vue')
       },
       {
         path: '/teacher/certification',

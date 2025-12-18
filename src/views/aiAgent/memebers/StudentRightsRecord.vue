@@ -1,7 +1,7 @@
 <template>
   <div class="page define-page">
     <div class="page-title" id="page-title">
-      <h4>订单记录</h4>
+      <h4>作文批改权限开通管理</h4>
     </div>
     <div class="content-box">
       <el-form :inline="true" id="form" :model="formData" size="large" label-width="90px" @submit.prevent>
@@ -40,20 +40,6 @@
         <el-form-item label="学生姓名：" label-width="130px">
           <el-input class="search-input" clearable placeholder="请输入学生姓名" v-model="formData.student_name"></el-input>
         </el-form-item>
-        <el-form-item label="订单号：" label-width="130px">
-          <el-input class="search-input" clearable placeholder="请输入订单号" v-model="formData.order"></el-input>
-        </el-form-item>
-        <el-form-item label="创建时间：" label-width="130px">
-          <el-date-picker
-            v-model="formData.date"
-            type="daterange"
-            format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期">
-          </el-date-picker>
-        </el-form-item>
       </el-form>
       <div style="margin: 10px 20px;">
         <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -66,33 +52,19 @@
             <div>{{ showIndex(scope.$index) }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="order_code" label="订单号" min-width="180px" />
-        <el-table-column label="支付金额" min-width="100px">
+        <el-table-column prop="student_name" label="学生姓名" min-width="180px" />
+        <el-table-column prop="class_name" label="班级" min-width="100px"/>
+        <el-table-column prop="school_name" label="学校" min-width="180px" />
+        <el-table-column prop="distributor_name" label="经销商" min-width />
+        <el-table-column label="购买类型"  min-width="130px" >
           <template #default="scope">
-            <div>{{ scope.row.money * 100 }}</div>
+            <div>{{ scope.row.pay_type === 1 ? '统一购买' : '自愿购买' }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="order_date" label="支付时间" min-width="180px" />
-        <el-table-column prop="student_name" label="学生姓名" min-width />
-        <el-table-column prop="class_name" label="班级"  min-width="130px" />
-        <el-table-column prop="school_name" label="学校"  min-width="140px"  />
-        <el-table-column prop="distributor_name" label="经销商"  min-width="140px" />
-        <el-table-column prop="product_name" label="产品名称" min-width="120" />
-        <el-table-column label="付费周期"  min-width="140px" >
-          <template #default="scope">
-            <div>{{ getCycleTitle(scope.row.cycle) }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="最低价"  min-width="140px" >
-          <template #default="scope">
-            <div>{{ scope.row.min_price / 100 }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="服务费"  min-width="140px" >
-          <template #default="scope">
-            <div>{{ scope.row.service_price / 100 }}</div>
-          </template>
-        </el-table-column>
+        <el-table-column prop="use_number" label="作文批改次数"  min-width="140px"  />
+        <el-table-column prop="remaining_count" label="剩余次数"  min-width="140px" />
+        <el-table-column prop="start_time" label="权益开始时间" min-width="180" />
+        <el-table-column prop="end_time" label="权益结束时间" min-width="180" />
         <el-table-column label="操作" fixed="right"  min-width="160px">
           <template #default="scope">
             <el-button class="button-style" link type="primary" @click="check(scope.row)">
@@ -108,18 +80,6 @@
   </div>
   <el-dialog v-model="checkVisible" title="查看" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
     <div style="padding-left: 40px;">
-      <div class="marginBottom">
-        <span style="font-weight: bold;">订单号：</span>
-        {{ currentRowMsg.order_code }}
-      </div>
-      <div class="marginBottom">
-        <span style="font-weight: bold;">支付金额：</span>
-        {{ currentRowMsg.money * 100 }}
-      </div>
-      <div class="marginBottom">
-        <span style="font-weight: bold;">支付时间：</span>
-        {{ currentRowMsg.order_date }}
-      </div>
       <div class="marginBottom">
         <span style="font-weight: bold;">学生姓名：</span>
         {{ currentRowMsg.student_name }}
@@ -137,20 +97,24 @@
         {{ currentRowMsg.distributor_name }}
       </div>
       <div class="marginBottom">
-        <span style="font-weight: bold;"> 产品名称：</span>
-        {{ currentRowMsg.product_name }}
+        <span style="font-weight: bold;">购买类型：</span>
+        {{ currentRowMsg.pay_type === 1 ? '统一购买' : '自愿购买' }}
       </div>
       <div class="marginBottom">
-        <span style="font-weight: bold;">付费周期：</span>
-        {{ getCycleTitle(currentRowMsg.cycle) }}
+        <span style="font-weight: bold;">作文批改次数：</span>
+        {{ currentRowMsg.use_number }}
       </div>
       <div class="marginBottom">
-        <span style="font-weight: bold;">折扣价：</span>
-        {{ currentRowMsg.discount_price / 100 }}
+        <span style="font-weight: bold;">剩余次数：</span>
+        {{ currentRowMsg.remaining_count }}
       </div>
       <div class="marginBottom">
-        <span style="font-weight: bold;">服务费：</span>
-        {{ currentRowMsg.service_price / 100 }}
+        <span style="font-weight: bold;"> 权益开始时间：</span>
+        {{ currentRowMsg.start_time }}
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;"> 权益结束时间：</span>
+        {{ currentRowMsg.end_time }}
       </div>
     </div>
   </el-dialog>
@@ -170,8 +134,6 @@ let formData = reactive({
   school: '', // 学校
   classroom: '', // 班级
   student_name: '', // 学生姓名
-  order: '', // 订单号
-  date: '' // 创建时间
 }) // 表单内容
 let tableRef = ref(null)
 let list = ref([]) // 表格数据
@@ -183,7 +145,6 @@ let checkVisible = ref(false)
 let distributorsList = ref([]) // 经销商列表
 let schoolList = ref([]) // 学校列表
 let classList = ref([]) // 班级列表
-let cycleList = ref([]) // 周期列表
 let currentRowMsg = reactive(null)
 
 onMounted(() => {
@@ -194,8 +155,6 @@ onMounted(() => {
   initMemberList()
   // 列表数据
   getList()
-  // 周期
-  getProductCycleList()
 })
 
 // 动态设置表格高度
@@ -223,8 +182,6 @@ const onReset = () => {
   formData.distributor = ''
   formData.classroom = '', 
   formData.distributo = '', 
-  formData.date = '',
-  formData.order = ''
   formData.school = ''
   formData.student_name = ''
   pageIndex.value = 1
@@ -240,15 +197,12 @@ const getList = () => {
     session: vocabularyStore.session,
     class_id: formData.classroom, 
     distributor_id: formData.distributor, 
-    end_time: formData.date.length > 0 ? formData.date[1] : '',
-    order_code: formData.order,
     school_id: formData.school, 
-    start_time: formData.date.length > 0 ? formData.date[0] : '',
     student_name: formData.student_name, 
     page_index: pageIndex.value, // 当前页
     page_size: pageSize.value, // 分页大小
   }
-  return AiAgentMemebers.getOrderList(params)
+  return AiAgentMemebers.getStudentPayList(params)
     .then((res) => {
       if (res.result_code === 200) {
         list.value = res.data
@@ -379,36 +333,6 @@ const getSchoolClass = () => {
     })
 }
 
-// 根据cycle值获取付费周期标题
-const getCycleTitle = (cycleValue) => {
-  const cycle = cycleList.value.find(item => item.item_value === cycleValue.toString())
-  return cycle ? cycle.item_name : cycleValue
-}
-
-// 付费周期
-const getProductCycleList = () => {
-  let params = {
-    user_name: vocabularyStore.user_name,
-    session: vocabularyStore.session
-  }
-  return AiAgentMemebers.getProductCycleList(params)
-    .then((res) => {
-      if (res.result_code === 200) {
-        cycleList.value = res.data
-      } else {
-        ElMessage({
-          message: '获取付费周期失败',
-          type: 'error',
-          duration: 3000
-        })
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-    .finally(() => {
-    })
-}
 // 序号
 const showIndex = (index) => {
   return index + 1 + (pageIndex.value - 1) * pageSize.value

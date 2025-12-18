@@ -97,8 +97,8 @@
             <div>{{ getEnable(scope.row.enable) }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="maker" label="创建人" min-width="120" />
-        <el-table-column prop="maker_date" label="创建时间"  min-width="140px" />
+        <el-table-column prop="maker_name" label="创建人" min-width="120" />
+        <el-table-column prop="make_date" label="创建时间"  min-width="140px" />
         <el-table-column label="操作" fixed="right"  min-width="180px">
           <template #default="scope">
             <el-button class="button-style" link type="primary" @click="check(scope.row)">
@@ -124,13 +124,34 @@
   </div>
   <el-dialog v-model="checkVisible" title="查看" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
     <div style="padding-left: 40px;">
-      <div class="marginBottom">产品：{{ currentMsg.title }}</div>
-      <div class="marginBottom">产品类型：{{ getProductTypeTitle(currentMsg.type) }}</div>
-      <div class="marginBottom">付费周期：{{ getCycleTitle(currentMsg.cycle) }}</div>
-      <div class="marginBottom">次数：{{ currentMsg.num }}次/人</div>
-      <div class="marginBottom">统一售价：{{ currentMsg.price / 100 }}元/人</div>
-      <div class="marginBottom">最低价：{{ currentMsg.min_price / 100 }}元/人</div>
-      <div class="marginBottom">上下架：{{ getEnable(currentMsg.enable) }}</div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">产品：</span>
+        {{ currentMsg.title }}
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">产品类型：</span>
+        {{ getProductTypeTitle(currentMsg.type) }}
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">付费周期：</span>
+        {{ getCycleTitle(currentMsg.cycle) }}
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">次数：</span>
+        {{ currentMsg.num }}次/人
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">统一售价：</span>
+        {{ currentMsg.price / 100 }}元/人
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">最低价：</span>
+        {{ currentMsg.min_price / 100 }}元/人
+      </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">上下架：</span>
+        {{ getEnable(currentMsg.enable) }}
+      </div>
     </div>
   </el-dialog>
   <el-dialog v-model="visible" :title="type === 0 ? '新增' : '修改'" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
@@ -319,7 +340,7 @@ const getList = () => {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
     cycle: formData.cycle, // 付费周期
-    enable: formData.status ? formData.status : 2, // 状态
+    enable: formData.status, // 状态
     end_time: formData.date.length > 0 ? formData.date[1] : '', // 结束时间
     name: formData.user, // 创建人
     start_time: formData.date.length > 0 ? formData.date[0] : '', // 开始时间

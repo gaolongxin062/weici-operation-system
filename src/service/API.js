@@ -175,7 +175,10 @@ export let aiAgentMemebersApi = {
   payAdd: '/code/pay/add', // 付费码增加
   getCodePayList: '/getCodePayList', // 付费码列表
   getCodePayDetail: '/getCodePayDetail', // 付费码详情
-  payDownload: '/code/pay/download' // 付费码批量下载
+  payDownload: '/code/pay/download', // 付费码批量下载
+  getOrderList: 'getOrderList',// 订单记录列表
+  getStudentPayList: '/getStudentPayList',// 获取学生购买记录列表
+  getSchoolClass: '/school/class' // 根据学校获取对应所有班级
 }
 
 // 审核管理

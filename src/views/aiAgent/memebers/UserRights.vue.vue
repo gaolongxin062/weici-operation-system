@@ -49,8 +49,8 @@
         </el-table-column>
         <el-table-column prop="title" label="权益名称" min-width="100px" />
         <el-table-column prop="info" label="权益简介" min-width="100px" />
-        <el-table-column prop="maker" label="创建人" min-width="120" />
-        <el-table-column prop="maker_date" label="创建时间"  min-width="140px" />
+        <el-table-column prop="maker_name" label="创建人" min-width="120" />
+        <el-table-column prop="make_date" label="创建时间"  min-width="140px" />
         <el-table-column label="操作" fixed="right"  min-width="160px">
           <template #default="scope">
             <el-button class="button-style" link type="primary" @click="check(scope.row)">
@@ -70,10 +70,10 @@
   </div>
   <el-dialog v-model="dialogVisible" :title="type === 0 ? '查看' : '修改' " width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
     <el-form ref="formRef" id="form" :model="dislogFormData" size="large" label-width="150px">
-        <el-form-item label="产品类型：">
+        <el-form-item label="产品类型：" style="font-weight: bold;">
           <el-input style="width: 200px;" v-model="dislogFormData.type" :disabled="true"></el-input>
         </el-form-item>
-        <span style="display: inline-block;margin-left: 66px;vertical-align: top;">产品权益：</span>
+        <span style="display: inline-block;margin-left: 66px;vertical-align: top;font-weight: bold;">产品权益：</span>
         <div style="height: 200px;display: inline-block;vertical-align: top;overflow-y: auto;margin-bottom: 20px;padding: 0 20px;">
           <div v-for="(item, index) in rightsList" :key="item.id" class="first-item">
             <span style="margin-bottom: 10px;display: inline-block;">权益{{ index + 1 }}</span>
