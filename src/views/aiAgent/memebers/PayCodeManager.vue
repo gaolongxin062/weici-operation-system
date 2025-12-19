@@ -752,7 +752,8 @@ const getProductList = () => {
   return AiAgentMemebers.getProductList(params)
     .then((res) => {
       if (res.result_code === 200) {
-        productList.value = res.data
+        // enable // 0 禁用  1启用
+        productList.value = res.data.filter(item => item.enable !== 0)
       } else {
         ElMessage({
           message: '获取产品配置数据失败',
