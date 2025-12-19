@@ -169,9 +169,8 @@ export let aiAgentMemebersApi = {
   productAction: '/product/action', // 删除/禁用产品配置
   productEdit: '/product/edit', // 新增/修改产品
   getRightsList: '/product/rights/search', // 用户权益列表
-  saveRightsEdit: '/product/rights/edit', // 保存用户权益
+  saveRightsEdit: '/product/rights/edit', // 新增/修改保存用户权益
   delRights: '/product/rights/del', // 删除用户权益
-  allRightList: '/product/rights/list', // 修改权益列表
   payAdd: '/code/pay/add', // 付费码增加
   getCodePayList: '/getCodePayList', // 付费码列表
   getCodePayDetail: '/getCodePayDetail', // 付费码详情

@@ -35,6 +35,9 @@
         <el-form-item>
           <el-button type="primary" @click="onReset">重置</el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button type="success" @click="add">新增</el-button>
+        </el-form-item>
       </el-form>
       <el-table :data="list" class="table-info" v-loading="loading" header-cell-class-name="header_row_class" style="width: 100%" stripe element-loading-text="拼命加载中，主人请稍后..." :max-height="screenHeight" ref="tableRef" >
         <el-table-column width="80" align="center" label="序号">
@@ -53,11 +56,11 @@
         <el-table-column prop="make_date" label="创建时间"  min-width="140px" />
         <el-table-column label="操作" fixed="right"  min-width="160px">
           <template #default="scope">
-            <el-button class="button-style" link type="primary" @click="check(scope.row)">
-              查看
-            </el-button>
             <el-button class="button-style" link type="primary" @click="update(scope.row)">
               修改
+            </el-button>
+            <el-button class="button-style" link type="primary" @click="deleteRight(scope.row)">
+              删除
             </el-button>
           </template>
         </el-table-column>
@@ -68,36 +71,26 @@
     </el-pagination>
     </div>
   </div>
-  <el-dialog v-model="dialogVisible" :title="type === 0 ? '查看' : '修改' " width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
-    <el-form ref="formRef" id="form" :model="dislogFormData" size="large" label-width="150px">
-        <el-form-item label="产品类型：" style="font-weight: bold;">
-          <el-input style="width: 200px;" v-model="dislogFormData.type" :disabled="true"></el-input>
+  <el-dialog v-model="dialogVisible" :title="type === 0 ? '新增' : '修改' " width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
+    <el-form ref="formRef" id="form" :model="dislogFormData" size="large" label-width="150px" :rules="rules">
+        <el-form-item label="产品类型：" label-width="120px" style="font-weight: bold;" prop="type">
+          <el-select style="width: 200px;" v-model="dislogFormData.type" clearable filterable placeholder="请输入产品类型" :disabled="true">
+            <el-option v-for="item in productType" :key="item.id" :label="item.title" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
-        <span style="display: inline-block;margin-left: 66px;vertical-align: top;font-weight: bold;">产品权益：</span>
-        <div style="height: 200px;display: inline-block;vertical-align: top;overflow-y: auto;margin-bottom: 20px;padding: 0 20px;">
-          <div v-for="(item, index) in rightsList" :key="item.id" class="first-item">
-            <span style="margin-bottom: 10px;display: inline-block;">权益{{ index + 1 }}</span>
-            <el-form-item  label="名称:" label-width="50px">
-              <el-input style="width: 200px;" v-model="item.title" maxlength="10" placeholder="请输入权益名称" :disabled="type === 0 ? true : false"  />
+          <div class="first-item">
+            <el-form-item  label="产品权益名称:" label-width="120px" style="font-weight: bold;" prop="title">
+              <el-input style="width: 200px;" v-model="dislogFormData.title" maxlength="10" placeholder="请输入权益名称"/>
             </el-form-item>
-            <el-form-item  label="简介:" label-width="50px">
-              <el-input style="width: 300px;" v-model="item.info" maxlength="20" placeholder="请输入权益简介" :disabled="type === 0 ? true : false" />
-              <span class="del" @click="deleteRight(item, index)" v-if="type === 1 && rightsList.length > 1">删除</span>
+            <el-form-item  label="产品权益简介:" label-width="120px" style="font-weight: bold;" prop="info">
+              <el-input style="width: 300px;" v-model="dislogFormData.info" maxlength="20" placeholder="请输入权益简介"/>
             </el-form-item>
-          </div>
         </div>
-        <!-- <el-form-item label="创建人：" v-if="type === 0">
-          <el-input style="width: 200px;" v-model="dislogFormData.name" :disabled="type === 0 ? true : false"></el-input>
-        </el-form-item>
-        <el-form-item label="创建时间：" v-if="type === 0" >
-          <el-input style="width: 200px;" v-model="dislogFormData.date" :disabled="type === 0 ? true : false"></el-input>
-        </el-form-item> -->
     </el-form>
-    <div class="add"  @click="addRight" v-if="type === 1">+点击添加权益</div>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="dialogVisible = false">{{ type === 0 ? '关闭':'取消' }}</el-button>
-        <el-button type="primary" @click="save" v-if="type === 1" :loading="saveLoading">保存</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="save" :loading="saveLoading">保存</el-button>
       </div>
     </template>
   </el-dialog>
@@ -109,7 +102,7 @@ import AiAgentMemebers from '@/service/AiAgentMemebers.js';
 import { useVocabularyStore } from '@/store/vocabulary';
 const { screenHeight } = useScreenHeight();
 const vocabularyStore = useVocabularyStore();
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 let formData = reactive({
   distributor: '', // 产品类型
@@ -127,13 +120,23 @@ let pageSize = ref(10)
 let dialogVisible = ref(false) // 弹窗显隐
 let formRef = ref(null)
 let dislogFormData = reactive({
-  type: '', // 产品类型
-  name: '', // 创建人
-  date: '' // 创建时间
+  type: '',
+  id: '',
+  title: '',
+  info: '',
 }) // 弹窗表单
-// 动态权益组数据（响应式数组）
-let rightsList = ref();
-let type = ref(0) // 0查看 1修改
+let rules = ref({
+  type: [
+    { required: true, message: '请输入产品类型', trigger: 'blur' }
+  ],
+  title: [
+    { required: true, message: '请输入权益名称', trigger: 'blur' }
+  ],
+  info: [
+    { required: true, message: '请输入权益简介', trigger: 'blur' }
+  ]
+});
+let type = ref(0) // 0新增 1修改
 let saveLoading = ref(false) // 保存按钮加载状态
 let productType = ref([ // 产品类型
   {
@@ -141,7 +144,6 @@ let productType = ref([ // 产品类型
     title: '作文批改'
   }
 ])
-let rightsType = ref('')
 
 
 onMounted(() => {
@@ -182,6 +184,16 @@ const onReset = () => {
   formData.date = '' // 创建时间
   getList()
 } 
+
+// 新增
+const add = () => {
+  type.value = 0
+  dislogFormData.type = productType.value[0].id
+  dislogFormData.id = ''
+  dislogFormData.title = ''
+  dislogFormData.info = ''
+  dialogVisible.value = true
+}
 
 // 获取表格数据
 const getList = () => {
@@ -231,132 +243,74 @@ const handleCurrentChange = async (page) => { // 切换下一页
 
 // 新增弹窗保存
 const save = async () => { 
-  if (saveLoading.value) return; // 防止重复点击
-  if (rightsList.value.length > 0) {
-    const hasEmptyItem = rightsList.value.some(item => { 
-        const nameIsEmpty = !item.title?.trim()
-        return nameIsEmpty
-      });
-      if (hasEmptyItem) {
-        ElMessage.error('请完善所有权益名称和简介')
-        return;
-      }
+  if (!formRef.value || saveLoading.value) return; // 防止重复点击
+     try {
       saveLoading.value = true // 开始加载
-      let params = {
-        user_name: vocabularyStore.user_name,
-        session: vocabularyStore.session,
-        type: rightsType.value,
-        data: JSON.stringify(rightsList.value)
-      }
-      AiAgentMemebers.saveRightsEdit(params)
-        .then((res) => {
-          if (res.result_code === 200) {
-            ElMessage({
-              message: '新增权益成功',
-              type: 'success',
-              duration: 1000
-            })
-            dialogVisible.value = false
-            getList()
-          } else {
-            ElMessage({
-              message: '新增权益失败',
-              type: 'error',
-              duration: 1000
-            })
+      const valid = await formRef.value.validate()
+       if (valid) {
+        let params = {
+          user_name: vocabularyStore.user_name,
+          session: vocabularyStore.session,
+          type: dislogFormData.type,
+          id: dislogFormData.id,
+          title: dislogFormData.title,
+          info: dislogFormData.info
+        }
+        AiAgentMemebers.saveRightsEdit(params)
+          .then((res) => {
+            if (res.result_code === 200) {
+              ElMessage({
+                message: type.value === 1 ? '修改权益成功':'新增权益成功',
+                type: 'success',
+                duration: 1000
+              })
+              dialogVisible.value = false
+              getList()
+            } else {
+              ElMessage({
+                message: type.value === 1 ? '修改权益失败':'新增权益失败',
+                type: 'error',
+                duration: 1000
+              })
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+          .finally(() => {
+            saveLoading.value = false // 结束加载
+          })
           }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-        .finally(() => {
-          saveLoading.value = false // 结束加载
-        })
-  } else {
-    ElMessage.error('请添加权益')
-  }
-} 
-
-// 查看
-const check = (option) => {
-  console.log('option', option)
-  type.value = 0
-  dislogFormData.type = getProductTypeTitle(option.type)
-  dislogFormData.name = option.maker
-  dislogFormData.date = option.maker_date
-  rightsType.value = option.type
-  getAllRightsList(option.type)
+     } catch (error) {
+      saveLoading.value = false // 开始加载
+     }
 }
 
 // 修改事件
 const update = (option) => {
   type.value = 1
-  dislogFormData.type = getProductTypeTitle(option.type)
-  rightsType.value = option.type
-  getAllRightsList(option.type)
+  dislogFormData.type = option.type
+  dislogFormData.id = option.id
+  dislogFormData.title = option.title
+  dislogFormData.info = option.info
+  dialogVisible.value = true
 } 
 
-// 获取权益列表
-const getAllRightsList = (type) => {
+
+// 删除权益组
+const deleteRight = (item) => {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    type: type // 产品类型
+    id: item.id // 产品类型
   }
-  return AiAgentMemebers.allRightList(params)
-    .then((res) => {
-      if (res.result_code === 200) {
-        if (res.data.length > 0) {
-        rightsList.value = res.data
-        } else {
-          rightsList.value = [
-            {
-              id: 0,
-              info: '',
-              title: ''
-            },
-            {
-              id: 0,
-              info: '',
-              title: ''
-            },
-          ]
-        }
-        dialogVisible.value = true
-      } else {
-        ElMessage({
-          message: '获取权益列表失败',
-          type: 'error',
-          duration: 3000
-        })
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-    .finally(() => {
-      loading.value = false
-    })
-}
-
-// 新增权益组
-const addRight = () => {
-  rightsList.value.push({
-    title: '',
-    info: '',
-    id: 0
-  });
-} 
-
-// 删除权益组
-const deleteRight = (item, index) => {
-  if (item.id) {
-    let params = {
-      user_name: vocabularyStore.user_name,
-      session: vocabularyStore.session,
-      id: item.id // 产品类型
-    }
-    AiAgentMemebers.delRights(params)
+  ElMessageBox.confirm('确定将该条数据删除吗？', '提示信息', {
+    confirmButtonText: '确定',
+    confirmButtonClass: 'button-confirm',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    return AiAgentMemebers.delRights(params)
     .then((res) => {
       if (res.result_code === 200) {
         ElMessage({
@@ -364,7 +318,7 @@ const deleteRight = (item, index) => {
           type: 'success',
           duration: 3000
         })
-        getAllRightsList(rightsType.value)
+        getList()
       } else {
         ElMessage({
           message: '删除产品配置失败',
@@ -379,9 +333,8 @@ const deleteRight = (item, index) => {
     .finally(() => {
       loading.value = false
     })
-  } else {
-    rightsList.value.splice(index, 1);
-  }
+  }).catch(() => {
+  })
 } 
 </script>
 <style scoped>

@@ -443,27 +443,6 @@ function getRightsList(params) {
 }
 
 /**
- * 修改权益列表
- * @param session 
- * @param user_name
- * @param type 产品类型 1作文批改
- * @returns {Promise<unknown>}
- */
-function allRightList(params) {
-  return new Promise((resolve, reject) => {
-    service.get(aiAgentMemebersApi.allRightList, {
-      params
-    }).then(res => {
-      if (res.status === 200) {
-        resolve(res.data);
-      } else reject(res);
-    }).catch(err => {
-      reject(err);
-    });
-  });
-}
-
-/**
  * 删除权益
  * @param session 
  * @param user_name
@@ -486,8 +465,10 @@ function delRights(params) {
  * 保存用户权益
  * @param session 
  * @param user_name
- * @param data 权益内容（json数组 [{id,title,info}]）id没值传0
  * @param type 产品类型 1作文批改
+ * @param id 权益ID，修改id=权益ID
+ * @param info 	权益内容
+ * @param info 	权益名称
  * @returns {Promise<unknown>}
  */
 function saveRightsEdit(params) {
@@ -703,7 +684,6 @@ export default {
     productAction,
     productEdit,
     getRightsList,
-    allRightList,
     delRights,
     saveRightsEdit,
     payAdd,

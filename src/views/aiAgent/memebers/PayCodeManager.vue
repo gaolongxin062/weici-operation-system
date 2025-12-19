@@ -813,11 +813,11 @@ const getAllRightsList = (type) => {
     session: vocabularyStore.session,
     type: type // 产品类型
   }
-  return AiAgentMemebers.allRightList(params)
+  return AiAgentMemebers.getRightsList(params)
     .then((res) => {
       if (res.result_code === 200) {
         if (res.data.length > 0) {
-        rightsList.value = res.data
+          rightsList.value = res.data
         } else {
           rightsList.value = [
             {
