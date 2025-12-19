@@ -54,11 +54,11 @@
             end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
+        <div style="margin: 10px 20px;">
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="onReset">重置</el-button>
+        </div>
       </el-form>
-      <div style="margin: 10px 20px;">
-        <el-button type="primary" @click="onSubmit">查询</el-button>
-        <el-button type="primary" @click="onReset">重置</el-button>
-      </div>
     </div>
     <el-table :data="list" class="table-info" v-loading="loading" header-cell-class-name="header_row_class" style="width: 100%" stripe element-loading-text="拼命加载中，主人请稍后..." :max-height="screenHeight" ref="tableRef" >
         <el-table-column width="80" align="center" label="序号">
