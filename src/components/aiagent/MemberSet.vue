@@ -101,6 +101,7 @@
             v-model="formData.user_source"
             filterable
             placeholder="请选择用户来源"
+            @change="changeUseSource"
             clearable
           >
             <el-option
@@ -423,7 +424,8 @@
     let params = {
       user_name: vocabularyStore.user_name,
       session: vocabularyStore.session,
-      type: formData.value.user_type
+      type: formData.value.user_type,
+      user_source: formData.value.user_source
     }
     return AiAgentService.getUse(params)
       .then((res) => {
@@ -557,8 +559,12 @@
     }
   }
   // 切换用户类型
-  function changeUseType (e) {
-    console.log(e)
+  function changeUseType () {
+    // console.log(e)
+    getUseInfo() // 重新获取用户次数
+  }
+  function changeUseSource () {
+    // console.log(e)
     getUseInfo() // 重新获取用户次数
   }
 </script>
