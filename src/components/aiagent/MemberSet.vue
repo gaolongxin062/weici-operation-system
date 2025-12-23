@@ -4,7 +4,7 @@
 
       <el-form-item label="选择账号" label-width="130px" prop="user_codes">
         <el-input class="search-input" clearable placeholder="请输入账号（只能输入数字，多账号用英文逗号分隔）" :disabled="userCodeDisabled"
-          v-model="formData.user_codes" @input="handleInput">
+          v-model="formData.user_codes"  :rows="4" type="textarea" @input="handleInput">
         </el-input>
         <el-button type="primary" :disabled="selectBtnDisabled" class="select-btn" @click="showSelectAccountNumber">选择账号</el-button>
       </el-form-item>
@@ -581,7 +581,8 @@
 }
 
 .select-btn {
-  margin-left: 15px;
+  /* margin-left: 15px; */
+  margin-top: 15px;
 }
 
 .user_info_box {
