@@ -817,7 +817,11 @@ const getAllRightsList = (type) => {
     .then((res) => {
       if (res.result_code === 200) {
         if (res.data.length > 0) {
-          rightsList.value = res.data
+          rightsList.value = res.data.map(item => ({
+            id: item.id,
+            info: item.info,
+            title: item.title
+          }))
         } else {
           rightsList.value = [
             {
