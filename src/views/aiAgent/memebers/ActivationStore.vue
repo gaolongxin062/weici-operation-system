@@ -118,11 +118,11 @@
               <span>{{item.name}}：</span>
               <span style="color: red;">共选择{{item.totalStudents}}个学生</span><br>
               <div v-if="item.list.length > 0"  @click.stop>
-                <div v-for="iItem in item.list" :key="iItem.class_id" style="display: inline-block;border:1px solid #ccc;padding: 5px;margin-bottom: 10px;border-radius: 10px;margin-right: 10px;">
+                <div v-for="iItem in item.list" :key="iItem.class_id" :style="{ display: 'inline-block', border: '1px solid', padding: '5px', marginBottom: '10px', borderRadius: '10px', marginRight: '10px', borderColor: iItem.studentList.length === 0 && !iItem.isChecked ? '#ccc' : 'rgb(2, 113, 227)' }">
                   <el-checkbox v-model="iItem.isChecked" :value="iItem.class_id" name="type" :disabled="iItem.student_nums === 0 ? true: false" @change="classChange">
                     {{iItem.class_name}}
                   </el-checkbox> 
-                <span :style="{ display: 'inline-block', marginLeft: '15px', color: iItem.student_nums !== 0 ? '#0271E3' : '#999', cursor: iItem.student_nums !== 0 ? 'pointer' : 'not-allowed' }" @click.stop="iItem.student_nums !== 0 ? checkStudent(iItem, item.name) : null">筛选学生</span>
+                  <span :style="{ display: 'inline-block', marginLeft: '15px', color: iItem.student_nums !== 0 ? '#0271E3' : '#999', cursor: iItem.student_nums !== 0 ? 'pointer' : 'not-allowed' }" @click.stop="iItem.student_nums !== 0 ? checkStudent(iItem, item.name) : null">筛选学生</span>
                 </div>
               </div>
               <span v-else>暂无班级</span>
@@ -164,7 +164,7 @@
     </div>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button @click="cancel">取消</el-button>
         <el-button type="primary" @click="save" :loading="saveLoading">保存</el-button>
       </div>
     </template>
@@ -912,6 +912,15 @@ const getList = () => {
 const handleCurrentChange = async (page) => {
   pageIndex.value = page
   await getList()
+}
+
+// 取消
+const cancel = () => {
+  dialogVisible.value = false
+  provinceList.value = []
+  cityList.value = []
+  countyList.value = []
+  schoolList.value = []
 }
 
 // 新增弹窗保存
