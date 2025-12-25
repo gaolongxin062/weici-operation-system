@@ -54,7 +54,11 @@
         </el-table-column>
         <el-table-column prop="distributor_name" label="经销商" min-width="120px" />
         <el-table-column prop="pay_number" label="收款人数" min-width="100px" />
-        <el-table-column prop="pay_money" label="收款金额" min-width="100px" />
+        <el-table-column label="收款金额" min-width="100px">
+          <template #default="scope">
+            <div>{{ scope.row.pay_money / 100 }}</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="school_name" label="学校" min-width="200px" />
         <el-table-column prop="count" label="次数"  min-width="130px" />
         <el-table-column prop="start_time" label="开始时间"  min-width="140px"  />
@@ -244,7 +248,7 @@
         </div>
         <div class="marginBottom">
           <span style="font-weight: bold;">收款金额：</span>
-          {{ studentDetails.pay_money }}元
+          {{ studentDetails.pay_money / 100 }}元
         </div>
       </div>
     </div>
@@ -959,7 +963,7 @@ const save = async () => {
             county_id: dislogFormData.district, // 区县id
             distributor_id: dislogFormData.distributor, // 经销商id
             end_time: dislogFormData.endTime, // 结束时间
-            pay_money: dislogFormData.amount, // 收款金额
+            pay_money: dislogFormData.amount * 100, // 收款金额
             pay_number: totalStudent.value, // 付费人数
             province_id: dislogFormData.province, // 省id
             school_id: dislogFormData.school, // 学校id
