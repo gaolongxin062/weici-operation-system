@@ -94,7 +94,7 @@
               v-model="dialogForm.role_name">
             </el-input>
           </el-form-item>
-          <el-form-item label="操作权限" prop="rights" label-width="150px">
+          <el-form-item label="操作权限" prop="rights" label-width="80px">
             <el-tree ref="treeRef" style="max-width: 600px" :data="treeList" node-key="menu_index" :props="defaultProps"
               :default-expand-all="true" @check-change="getCheckedData" show-checkbox />
           </el-form-item>

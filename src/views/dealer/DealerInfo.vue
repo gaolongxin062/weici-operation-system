@@ -641,6 +641,7 @@ const selectRole = (val) => {
 }
 
 const addSpecialSchool = () => {
+  selectSchoolShow.value = false
   // 拼一下子组件接口需要的参数 此参数不会变化，变化的在子组件中定义
   selectInfo.value = {
     session: vocabularyStore.session,

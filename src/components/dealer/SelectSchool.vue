@@ -37,7 +37,7 @@
 		<template #footer>
 			<div class="dialog-footer">
 				<el-button @click="cancelDialog">取消</el-button>
-				<el-button type="primary" :disabled="!multipleSelection.length" @click="saveDialog">
+				<el-button type="primary" @click="saveDialog">
 					保存
 				</el-button>
 			</div>
@@ -92,6 +92,7 @@ const displayDataList = computed(() => {
 })
 onMounted(async () => {
 	await initschoolList() // 获取资源列表
+	multipleSelection.value = props.schoolList
 })
 // 切换"只看已选/显示全部"状态
 function toggleOnlyShowSelected() {
