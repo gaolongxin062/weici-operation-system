@@ -73,22 +73,22 @@
           </template>
         </el-table-column>
         <el-table-column prop="order_date" label="支付时间" min-width="180px" />
-        <el-table-column prop="student_name" label="学生姓名" min-width />
-        <el-table-column prop="class_name" label="班级"  min-width="130px" />
-        <el-table-column prop="school_name" label="学校"  min-width="140px"  />
-        <el-table-column prop="distributor_name" label="经销商"  min-width="140px" />
-        <el-table-column prop="product_name" label="产品名称" min-width="120" />
+        <el-table-column prop="student_name" label="学生姓名" min-width="200px" />
+        <el-table-column prop="class_name" label="班级"  min-width="160px" />
+        <el-table-column prop="school_name" label="学校"  min-width="200px"  />
+        <el-table-column prop="distributor_name" label="经销商"  min-width="180px" />
+        <el-table-column prop="product_name" label="产品名称" min-width="180" />
         <el-table-column label="付费周期"  min-width="140px" >
           <template #default="scope">
             <div>{{ getCycleTitle(scope.row.cycle) }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="最低价"  min-width="140px" >
+        <el-table-column label="最低价"  min-width="120px" >
           <template #default="scope">
             <div>{{ scope.row.min_price / 100 }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="服务费"  min-width="140px" >
+        <el-table-column label="服务费"  min-width="120px" >
           <template #default="scope">
             <div>{{ scope.row.service_price / 100 }}</div>
           </template>

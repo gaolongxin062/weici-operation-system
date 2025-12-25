@@ -50,8 +50,8 @@
             <div>{{ getProductTypeTitle(scope.row.type) }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="title" label="权益名称" min-width="100px" />
-        <el-table-column prop="info" label="权益简介" min-width="100px" />
+        <el-table-column prop="title" label="权益名称" min-width="180px" />
+        <el-table-column prop="info" label="权益简介" min-width="250px" />
         <el-table-column prop="maker_name" label="创建人" min-width="120" />
         <el-table-column prop="make_date" label="创建时间"  min-width="140px" />
         <el-table-column label="操作" fixed="right"  min-width="160px">

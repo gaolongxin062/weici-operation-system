@@ -55,7 +55,7 @@
         <el-table-column prop="distributor_name" label="经销商" min-width="120px" />
         <el-table-column prop="pay_number" label="收款人数" min-width="100px" />
         <el-table-column prop="pay_money" label="收款金额" min-width="100px" />
-        <el-table-column prop="school_name" label="学校" min-width />
+        <el-table-column prop="school_name" label="学校" min-width="200px" />
         <el-table-column prop="count" label="次数"  min-width="130px" />
         <el-table-column prop="start_time" label="开始时间"  min-width="140px"  />
         <el-table-column prop="end_time" label="结束时间"  min-width="140px" />
@@ -143,6 +143,7 @@
             v-model="dislogFormData.startTime"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
+            :disabled-date="disabledStartDate"
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
@@ -168,13 +169,15 @@
       </div>
     </template>
   </el-dialog>
-  <el-dialog v-model="studentVisible" title="筛选学生" width="600" :show-close="false" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
+  <el-dialog v-model="studentVisible" title="筛选学生" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
     <div>{{ currentClass.name }}:</div>
      <el-table
         center
         max-height="250"
         ref="studentTableRef"
         :data="studentList"
+        class="table-info"
+        header-cell-class-name="header_row_class"
         tooltip-effect="dark"
         style="width: 100%"
         @selection-change="handleSelectionChange">
@@ -185,6 +188,10 @@
         <el-table-column
           label="学生姓名"
           prop="student_name">
+        </el-table-column>
+        <el-table-column
+          label="电话"
+          prop="phone">
         </el-table-column>
       </el-table>
       <template #footer>
@@ -340,6 +347,15 @@ let maxEndTime = ref('') // 限制日期
 let studentDetails = reactive(null)// 学生详情
 let saveLoading = ref(false) // 保存按钮加载状态
 let info = ref([])
+
+// 禁用开始时间小于maxEndTime的日期
+const disabledStartDate = (time) => {
+  if (maxEndTime.value) {
+    return time.getTime() < new Date(maxEndTime.value).getTime()
+  }
+  return false
+}
+
 onMounted(() => {
   // 设置页面展示高度
   window.addEventListener('resize', updateScreenHeight)
@@ -396,7 +412,8 @@ function getUseInfo () {
     let params = {
       user_name: vocabularyStore.user_name,
       session: vocabularyStore.session,
-      type: 2
+      type: 2,
+      user_source: 0
     }
     return AiAgentService.getUse(params)
       .then((res) => {
@@ -500,7 +517,8 @@ const getCityList = () => {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    distributor_id: dislogFormData.distributor
+    distributor_id: dislogFormData.distributor,
+    province_ids: dislogFormData.province
   }
   cityList.value = []
   return AiAgentMemebers.getCityList(params)
@@ -528,7 +546,9 @@ const getCountyList = () => {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    distributor_id: dislogFormData.distributor
+    distributor_id: dislogFormData.distributor,
+    city_ids: dislogFormData.city,
+    province_ids: dislogFormData.province
   }
   countyList.value = []
   return AiAgentMemebers.getCountyList(params)
@@ -802,6 +822,7 @@ const changeDialogSchool = () => {
   if (dislogFormData.school) {
     const matchedSchool = schoolList.value.find(item => item?.school_id === dislogFormData.school);
     maxEndTime.value = matchedSchool ? matchedSchool.max_end_time : '';
+    dislogFormData.startTime = matchedSchool ? matchedSchool.max_end_time : '';
     // 获取教师
     getTeacher()
   } else {
@@ -810,8 +831,10 @@ const changeDialogSchool = () => {
     teacherList.value = [] 
     // 已选教师数据
     dislogFormData.teacher = [] 
+    maxEndTime.value = '';
+    dislogFormData.startTime = '';
+    dislogFormData.endTime = '';
   }
-  
 }
 
 // 新增老师change事件
@@ -1016,10 +1039,10 @@ const save = async () => {
 // 新增弹窗选择班级勾选事件
 const classChange = (classItem) => {
   if (!classItem.isChecked && typeof classItem === 'object') {
-    // 当取消勾选班级时，清除该班级的学生选择
-    classItem.studentList = [];
-    classItem.total = 0;
-    classItem.status = false;
+      // 当取消勾选班级时，清除该班级的学生选择
+      classItem.studentList = [];
+      classItem.total = 0;
+      classItem.status = false;
     classItem.total = 0;
     classItem.status = false;
   }

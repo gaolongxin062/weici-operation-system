@@ -68,31 +68,31 @@
             <div>{{ showIndex(scope.$index) }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="id" label="产品ID" min-width="120px" />
+        <!-- <el-table-column prop="id" label="产品ID" min-width="120px" /> -->
         <el-table-column prop="title" label="产品" min-width="100px" />
-        <el-table-column label="产品类型" min-width="100px" >
+        <el-table-column label="产品类型" min-width="180px" >
           <template #default="scope">
             <div>{{ getProductTypeTitle(scope.row.type) }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="付费周期" min-width >
+        <el-table-column label="付费周期" min-width="100px" >
           <template #default="scope">
             <div>{{ getCycleTitle(scope.row.cycle) }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="num" label="次数(次)"  min-width="130px" />
-        <el-table-column label="统一售价(元/人)"  min-width="140px">
+        <el-table-column prop="num" label="次数(次)"  min-width="120px" />
+        <el-table-column label="统一售价(元/人)"  min-width="120px">
           <template #default="scope">
             <div>{{ scope.row.price  / 100  }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="最低价(元/人)"  min-width="140px">
+        <el-table-column label="最低价(元/人)"  min-width="120px">
           <template #default="scope">
             <div>{{ scope.row.min_price  / 100  }}</div>
           </template>
         </el-table-column>
         <!-- <el-table-column prop="enable" label="状态"  min-width="140px" /> -->
-        <el-table-column label="状态" min-width >
+        <el-table-column label="状态" min-width="100px" >
           <template #default="scope">
             <div>{{ getEnable(scope.row.enable) }}</div>
           </template>

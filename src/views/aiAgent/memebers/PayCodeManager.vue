@@ -68,40 +68,40 @@
                 <div>{{ showIndex(scope.$index) }}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="product_id" label="产品ID" min-width="120px" />
-            <el-table-column prop="product_name" label="产品" min-width="100px" />
+            <!-- <el-table-column prop="product_id" label="产品ID" min-width="120px" /> -->
+            <el-table-column prop="product_name" label="产品" min-width="230px" />
               <el-table-column label="产品类型" min-width="100px" >
                 <template #default="scope">
                   <div>{{ getProductTypeTitle(scope.row.type) }}</div>
                 </template>
               </el-table-column>
-              <el-table-column label="付费周期" min-width >
+              <el-table-column label="付费周期" min-width="100px" >
                 <template #default="scope">
                   <div>{{ getCycleTitle(scope.row.cycle) }}</div>
                 </template>
               </el-table-column>
-            <el-table-column prop="num" label="次数(次)"  min-width="130px" />
-            <el-table-column label="折扣价(元/人)"  min-width="140px">
+            <el-table-column prop="num" label="次数(次)"  min-width="120px" />
+            <el-table-column label="折扣价(元/人)"  min-width="120px">
               <template #default="scope">
                 <div>{{ scope.row.discount_price  / 100  }}</div>
               </template>
             </el-table-column>
-            <el-table-column  label="服务费"  min-width="140px">
+            <el-table-column  label="服务费"  min-width="120px">
               <template #default="scope">
                 <div>{{ scope.row.service_price  / 100  }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="会员价(元/人)"  min-width="140px">
+            <el-table-column label="会员价(元/人)"  min-width="120px">
               <template #default="scope">
                 <div>{{ scope.row.vip_price  / 100  }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="划线价(元/人)"  min-width="140px">
+            <el-table-column label="划线价(元/人)"  min-width="120px">
               <template #default="scope">
                 <div>{{ scope.row.list_price  / 100  }}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="distributor_name" label="所属经销商"  min-width="140px" />
+            <el-table-column prop="distributor_name" label="所属经销商"  min-width="180px" />
             <el-table-column prop="disabled_time" label="付费码失效时间"  min-width="140px" />
             <el-table-column prop="maker_name" label="创建人" min-width="120" />
             <el-table-column prop="make_date" label="创建时间"  min-width="180px" />

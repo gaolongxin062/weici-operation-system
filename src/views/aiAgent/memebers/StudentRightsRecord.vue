@@ -52,19 +52,19 @@
             <div>{{ showIndex(scope.$index) }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="student_name" label="学生姓名" min-width="180px" />
-        <el-table-column prop="class_name" label="班级" min-width="100px"/>
-        <el-table-column prop="school_name" label="学校" min-width="180px" />
-        <el-table-column prop="distributor_name" label="经销商" min-width />
+        <el-table-column prop="student_name" label="学生姓名" min-width="200px" />
+        <el-table-column prop="class_name" label="班级" min-width="150px"/>
+        <el-table-column prop="school_name" label="学校" min-width="200px" />
+        <el-table-column prop="distributor_name" label="经销商" min-width="200px" />
         <el-table-column label="购买类型"  min-width="130px" >
           <template #default="scope">
             <div>{{ scope.row.pay_type === 1 ? '统一购买' : '自愿购买' }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="use_number" label="作文批改次数"  min-width="140px"  />
-        <el-table-column prop="remaining_count" label="剩余次数"  min-width="140px" />
-        <el-table-column prop="start_time" label="权益开始时间" min-width="180" />
-        <el-table-column prop="end_time" label="权益结束时间" min-width="180" />
+        <el-table-column prop="use_number" label="作文批改次数"  min-width="120px"  />
+        <el-table-column prop="remaining_count" label="剩余次数"  min-width="120px" />
+        <el-table-column prop="start_time" label="权益开始时间" min-width="140" />
+        <el-table-column prop="end_time" label="权益结束时间" min-width="140" />
         <el-table-column label="操作" fixed="right"  min-width="160px">
           <template #default="scope">
             <el-button class="button-style" link type="primary" @click="check(scope.row)">
