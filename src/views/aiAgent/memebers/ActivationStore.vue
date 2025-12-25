@@ -101,7 +101,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择老师：" label-width="130px" prop="teacher">
-          <el-select style="width: 300px;" v-model="dislogFormData.teacher" multiple placeholder="请选择老师" v-if="teacherList.length > 0" @change="changeTeacher">
+          <el-select style="width: 300px;" filterable v-model="dislogFormData.teacher" multiple placeholder="请选择老师" v-if="teacherList.length > 0" @change="changeTeacher">
             <el-option
               v-for="item in teacherList"
               :key="item.teacher_id"
@@ -131,7 +131,7 @@
           <span v-else>暂无班级</span>
         </el-form-item>
         <el-form-item label="次数：" label-width="130px" prop="num">
-          <el-input-number v-model="dislogFormData.num"></el-input-number>
+          <el-input-number v-model="dislogFormData.num" :min="0" :step="1"></el-input-number>
           <span style="margin-left: 10px;">次/人</span>
         </el-form-item>
         <el-form-item :label="item.type_name + '：'" label-width="130px" v-for="(item, index) in info" :key="index">
