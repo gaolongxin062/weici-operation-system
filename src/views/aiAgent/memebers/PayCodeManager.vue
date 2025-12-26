@@ -217,7 +217,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="付费码可用班级：" label-width="150px" prop="teacher">
-            <el-select style="width: 300px;" v-model="dislogFormData.teacher" multiple placeholder="请选择老师" v-if="teacherList.length > 0" @change="changeTeacher">
+            <el-select style="width: 300px;" filterable v-model="dislogFormData.teacher" multiple placeholder="请选择老师" v-if="teacherList.length > 0" @change="changeTeacher">
               <el-option
                 v-for="item in teacherList"
                 :key="item.teacher_id"
