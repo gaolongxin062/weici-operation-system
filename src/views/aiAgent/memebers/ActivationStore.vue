@@ -422,7 +422,7 @@ function getUseInfo () {
     return AiAgentService.getUse(params)
       .then((res) => {
         if (res.result_code === 200) {
-          info.value = res.data
+          info.value = res.data.filter(item => item.type_name !== 'AI班级作文批改')
         }
     }).catch((error) => {
       console.log(error)
