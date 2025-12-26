@@ -548,7 +548,7 @@ const getList = () => {
     end_time: formData.date.length > 0 ? formData.date[1] : '', // 结束时间
     maker: formData.user, // 创建人
     state: formData.status, // 状态
-    title: formData.product, // 产品名称
+    product_name: formData.product, // 产品名称
     start_time: formData.date.length > 0 ? formData.date[0] : '', // 开始时间
     type: formData.distributor ? formData.distributor : 1, // 产品类型
     page_index: pageIndex.value, // 当前页
