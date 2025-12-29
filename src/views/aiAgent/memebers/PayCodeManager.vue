@@ -853,37 +853,7 @@ const getAllRightsList = (type) => {
 
 // 删除权益组
 const deleteRight = (item, index) => {
-  if (item.id) {
-    let params = {
-      user_name: vocabularyStore.user_name,
-      session: vocabularyStore.session,
-      id: item.id // 产品类型
-    }
-    AiAgentMemebers.delRights(params)
-    .then((res) => {
-      if (res.result_code === 200) {
-        ElMessage({
-          message: '删除成功',
-          type: 'success',
-          duration: 3000
-        })
-        getAllRightsList(dislogFormData.type)
-      } else {
-        ElMessage({
-          message: '删除产品配置失败',
-          type: 'error',
-          duration: 3000
-        })
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-    .finally(() => {
-    })
-  } else {
-    rightsList.value.splice(index, 1);
-  }
+  rightsList.value.splice(index, 1);
 } 
 
 // 新增选择产品下拉框change事件
