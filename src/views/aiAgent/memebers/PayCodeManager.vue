@@ -1160,6 +1160,18 @@ const changeDialogDistributor = () => {
 const changeDialogProvince = () => {
   if (dislogFormData.province) {
     dislogFormData.city = ''
+    cityList.value = []
+    // 区县
+    countyList.value = []
+    dislogFormData.district = ''
+    // 学校
+    dislogFormData.school = ''
+    // 学校列表
+    schoolList.value = []
+    // 教师
+    teacherList.value = [] 
+    // 已选教师数据
+    dislogFormData.teacher = [] 
     // 查询市
     getCityList()
   } else {
@@ -1183,6 +1195,10 @@ const changeDialogProvince = () => {
 // 新增弹窗市change事件
 const changeDialogCity = () => {
   if (dislogFormData.city) {
+    // 教师
+    teacherList.value = [] 
+    // 已选教师数据
+    dislogFormData.teacher = [] 
     // 查询市区
     getCountyList()
   } else {
@@ -1203,6 +1219,11 @@ const changeDialogCounty = () => {
     dislogFormData.school = ''
     // 查询学校
     getSchool()
+    schoolList.value = []
+    // 教师
+    teacherList.value = [] 
+    // 已选教师数据
+    dislogFormData.teacher = [] 
   } else {
     dislogFormData.school = ''
     schoolList.value = []
