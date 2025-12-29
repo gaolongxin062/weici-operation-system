@@ -107,7 +107,7 @@
             <el-table-column prop="make_date" label="创建时间"  min-width="180px" />
             <el-table-column label="操作" fixed="right"  min-width="160px">
               <template #default="scope">
-                <el-button class="button-style" link type="primary" @click="check(scope.row)">
+                <el-button class="button-style" link type="primary" @click="check(scope.row)" :loading="scope.row.checkLoading">
                   查看
                 </el-button>
                 <el-button class="button-style" link type="primary" @click="allDownload(scope.row)">
@@ -640,9 +640,11 @@ const check = (row) => {
     id: row.id
   }
   currentRow = row
+  row.checkLoading = true;
   return AiAgentMemebers.getCodePayDetail(params)
     .then(async (res) => {
       if (res.result_code === 200) {
+        row.checkLoading = false;
         detailsMessage = res.data
           if (res.data.pay_code_list.length > 0) {
               const qrCodeUrls = await Promise.all(
@@ -666,9 +668,11 @@ const check = (row) => {
     })
     .catch((error) => {
       console.log(error)
+      row.checkLoading = false;
     })
     .finally(() => {
       loading.value = false
+      row.checkLoading = false;
     })
 }
 
