@@ -231,12 +231,12 @@ let formRef = ref(null)
 let dislogFormData = reactive({
   id: 0,
   product: '', // 产品
-  type: '' , // 类型
+  type: 1, // 类型
   cycle: '', // 周期
   num: 0, //次数
   price: '', // 统一售价
   lowPrice: '', // 最低价
-  status: '' // 上下架
+  status: 1 // 上下架
 }) // 弹窗表单
 let rules = ref({
   product: [
@@ -422,12 +422,12 @@ const onAdd = () => {
   visible.value = true
   currentMsg = null
   dislogFormData.product = ''
-  dislogFormData.type = ''
+  dislogFormData.type = 1
   dislogFormData.cycle = ''
   dislogFormData.num = ''
   dislogFormData.price = ''
   dislogFormData.lowPrice = ''
-  dislogFormData.status = ''
+  dislogFormData.status = 1
   dislogFormData.id = 0
 }
 
