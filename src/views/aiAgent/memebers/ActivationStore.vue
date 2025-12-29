@@ -767,6 +767,8 @@ const changeDialogDistributor = () => {
 const changeDialogProvince = () => {
   if (dislogFormData.province) {
     dislogFormData.city = ''
+    teacherList.value = [] // 教师
+    dislogFormData.teacher = [] // 已选教师数据
     // 查询市
     getCityList()
   } else {
@@ -790,6 +792,8 @@ const changeDialogProvince = () => {
 // 新增弹窗市change事件
 const changeDialogCity = () => {
   if (dislogFormData.city) {
+    teacherList.value = [] // 教师
+    dislogFormData.teacher = [] // 已选教师数据
     // 查询市区
     getCountyList()
   } else {
@@ -810,6 +814,8 @@ const changeDialogCounty = () => {
     dislogFormData.school = ''
     // 查询学校
     getSchool()
+    teacherList.value = [] // 教师
+    dislogFormData.teacher = [] // 已选教师数据
   } else {
     dislogFormData.school = ''
     schoolList.value = []
@@ -827,6 +833,8 @@ const changeDialogSchool = () => {
     const matchedSchool = schoolList.value.find(item => item?.school_id === dislogFormData.school);
     maxEndTime.value = matchedSchool ? matchedSchool.max_end_time : '';
     dislogFormData.startTime = matchedSchool ? matchedSchool.max_end_time : '';
+    teacherList.value = [] // 教师
+    dislogFormData.teacher = [] // 已选教师数据
     // 获取教师
     getTeacher()
   } else {
