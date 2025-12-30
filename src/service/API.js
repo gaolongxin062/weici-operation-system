@@ -215,3 +215,12 @@ export let dealerApi = {
   releaseDistributorNotice: '/releaseDistributorNotice', // 发布公告
   getNoticeDetail: '/getNoticeDetail', // 获取公告详情
 }
+
+// 经销商管理api
+export let teacherPowerApi = {
+  getAiUserList: '/getAiUserList', // 获取ai教师用户列表
+  stopAiUser: '/stopAiUser', // 停用或启用ai教师用户
+  aiUserRightTree: '/aiUserRightTree', // 停用或启用ai教师用户
+  addAiUser: '/addAiUser', // 新增或编辑ai教师用户
+  getAiUserDetail: '/getAiUserDetail', // 获取ai教师用户详情
+}

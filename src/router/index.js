@@ -65,6 +65,11 @@ const routes = [{
         component: () => import('@/views/wordrace/members/MemberTrial.vue')
       },
       {
+        path: '/ai/teacher/manage',
+        name: 'AiTeacher',
+        component: () => import('@/views/aiAgent/AiTeacher.vue')
+      },
+      {
         path: '/ai/agent/manage',
         name: 'AiAgent',
         component: () => import('@/views/aiAgent/AiAgent.vue')
