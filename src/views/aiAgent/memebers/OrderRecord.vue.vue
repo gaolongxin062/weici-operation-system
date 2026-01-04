@@ -67,9 +67,14 @@
           </template>
         </el-table-column>
         <el-table-column prop="order_code" label="订单号" min-width="180px" />
+        <el-table-column label="支付状态"  min-width="120px">
+            <template #default="scope">
+              <div>{{ scope.row.pay_finish === 1 ? '已支付' : '未支付'  }}</div>
+            </template>
+        </el-table-column>
         <el-table-column label="支付金额" min-width="100px">
           <template #default="scope">
-            <div>{{ scope.row.money * 100 }}</div>
+            <div>{{ scope.row.money / 100 }}</div>
           </template>
         </el-table-column>
         <el-table-column prop="order_date" label="支付时间" min-width="180px" />
@@ -113,8 +118,13 @@
         {{ currentRowMsg.order_code }}
       </div>
       <div class="marginBottom">
+        <span style="font-weight: bold;">支付状态：</span>
+        {{ currentRowMsg.pay_finish === 1 ? '已支付' : '未支付' }}
+      </div>
+      
+      <div class="marginBottom">
         <span style="font-weight: bold;">支付金额：</span>
-        {{ currentRowMsg.money * 100 }}
+        {{ currentRowMsg.money / 100 }}
       </div>
       <div class="marginBottom">
         <span style="font-weight: bold;">支付时间：</span>
