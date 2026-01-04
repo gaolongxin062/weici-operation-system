@@ -50,9 +50,9 @@
           <div>{{ scope.row.make_date || '-' }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="200px">
+      <el-table-column label="描述" min-width="180px" show-overflow-tooltip>
         <template #default="scope">
-          <div>{{ scope.row.role_desc || '-' }}</div>
+          <div class="ellipsis-text">{{ scope.row.role_desc || '-' }}</div>
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" v-if="deletePower || editPower">
@@ -70,8 +70,8 @@
       </el-table-column>
     </el-table>
 
-    <!-- 分页组件（预留，当前需求不需要） -->
-    <!-- <el-pagination 
+    <!-- 分页组件 -->
+    <el-pagination 
       style="color: #666666;margin: 20px 0 0 20px;" 
       v-show="total > 0"
       @current-change="handleCurrentChange" 
@@ -82,17 +82,18 @@
       next-text="下一页" 
       :total="total"
     >
-    </el-pagination> -->
+    </el-pagination>
 
     <!-- 新增/编辑/详情弹窗 -->
     <div class="add-dialog">
       <el-dialog 
         v-model="dialogAdd" 
-        title="新增职务" 
+        :title="dialogTitle" 
         width="500" 
         :show-close="false" 
         :destroy-on-close="true"
         @close="closeDialogAdd"
+        top="5vh"
       >
         <el-form 
           :inline="true" 
@@ -104,7 +105,7 @@
           :rules="rules" 
           :disabled="dialogFormDisabled"
         >
-          <el-form-item label="职务级别" prop="role_level" label-width="80px">
+          <el-form-item v-if="!dialogForm.role_id" label="职务级别" prop="role_level" label-width="80px">
             <el-select 
               :disabled="dialogFormDisabled" 
               v-model="dialogForm.role_level" 
@@ -474,11 +475,11 @@ const getRoleDetail = async (role_id) => {
   }
 };
 
-// 分页切换（预留）
-// const handleCurrentChange = (page) => {
-//   pageIndex.value = page;
-//   getRoleList();
-// };
+// 分页切换
+const handleCurrentChange = (page) => {
+  pageIndex.value = page;
+  getRoleList();
+}
 
 // 点击查询按钮
 const btnSearch = () => {
@@ -494,7 +495,7 @@ const btnReset = () => {
 
 // 打开新增职务弹窗
 const btnAdded = () => {
-  dialogTitle.value = '新增';
+  dialogTitle.value = '新增职务';
   dialogAdd.value = true;
   getRoleTree(); // 加载权限树
 };
@@ -503,7 +504,7 @@ const btnAdded = () => {
 const edit = (row) => {
   getRoleDetail(row.role_id); // 获取职务详情
   getRoleTree(); // 加载权限树
-  dialogTitle.value = '编辑';
+  dialogTitle.value = '编辑职务';
   dialogAdd.value = true;
 };
 
@@ -546,7 +547,7 @@ const del = (row) => {
         });
       } else if (res.result_code === 919) {
         ElMessage({
-          message: '正在被引用,禁止删除',
+          message: '当前职务已被引用  禁止删除',
           type: 'error',
           duration: 3000
         });
@@ -628,5 +629,11 @@ const del = (row) => {
 .add-dialog .el-form-item{
   max-height: 300px;
   overflow-y: auto;
+}
+.ellipsis-text {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

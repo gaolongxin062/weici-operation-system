@@ -31,27 +31,27 @@
     </el-form>
     <el-table :data="noticesList" class="table-info" header-cell-class-name="header_row_class"
       :max-height="screenHeight" v-loading="loading" ref="multipleTable" stripe element-loading-text="拼命加载中，主人请稍后...">
-      <el-table-column label="公告名称" width="200px">
+      <el-table-column label="公告名称">
         <template #default="scope">
           <div>{{ scope.row.title || '-' }}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="状态">
+      <el-table-column label="状态" width="80px">
         <template #default="scope">
           <div>{{ scope.row.is_release === 0 ? '待发布' : '已发布' }}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="接受范围">
+      <el-table-column label="接受范围" width="80px">
         <template #default="scope">
           <div>{{ scope.row.receive_range ? '部分区域' : '全部' }}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="涉及区域" width="200px" show-overflow-tooltip>
+      <el-table-column label="涉及区域" width="280px" show-overflow-tooltip>
         <template #default="scope">
-          <div>{{ scope.row.receive_range ? scope.row.receive_range : '全部' }}</div>
+          <div class="ellipsis-text">{{ scope.row.receive_range ? scope.row.receive_range : '全部' }}</div>
         </template>
       </el-table-column>
 
@@ -67,7 +67,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="200" fixed="right">
+      <el-table-column label="操作"  width="200px" fixed="right">
         <template #default="scope">
           <el-button class="button-style" link type="primary" @click="detail(scope.row)">
             详情
@@ -679,5 +679,11 @@ const editStatus = async (row) => {
   margin-left: 100px;
   margin-bottom: 20px;
   font-size: 16px;
+}
+.ellipsis-text {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
