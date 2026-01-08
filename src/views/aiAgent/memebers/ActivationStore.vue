@@ -933,6 +933,22 @@ const cancel = () => {
   cityList.value = []
   countyList.value = []
   schoolList.value = []
+  teacherList.value = []
+  classList.value = []
+  studentList.value = []
+  totalStudent.value = 0
+  
+  // 重置表单数据
+  dislogFormData.distributor = ''
+  dislogFormData.province = ''
+  dislogFormData.city = ''
+  dislogFormData.district = ''
+  dislogFormData.school = ''
+  dislogFormData.teacher = []
+  dislogFormData.num = 0
+  dislogFormData.amount = 0
+  dislogFormData.startTime = ''
+  dislogFormData.endTime = ''
 }
 
 // 新增弹窗保存
