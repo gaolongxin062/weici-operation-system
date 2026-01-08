@@ -409,6 +409,10 @@ const onReset = () => {
 
 // 新增
 const newlyAdded = () => {
+  teacherList.value = []
+  classList.value = []
+  studentList.value = []
+  totalStudent.value = 0
   dialogVisible.value = true
 }
 
