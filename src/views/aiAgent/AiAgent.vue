@@ -88,10 +88,10 @@
       </el-form-item> -->
     </el-form>
 
-    <MemberSet v-if="addDialog" @cancelDialog="closeAddDialog" @saveDialog="addMember"></MemberSet>
-    <MemberSet v-if="editDialog" :isEdit="true" :row="rowInfo" @cancelDialog="closeEditDialog"
+    <MemberSet v-if="addDialog" @cancelDialog="closeAddDialog" @saveDialog="addMember" pageFrom="Ai"></MemberSet>
+    <MemberSet v-if="editDialog" :isEdit="true" :row="rowInfo" pageFrom="Ai" @cancelDialog="closeEditDialog"
       @saveDialog="editMemberInfo"></MemberSet>
-    <MemberSet v-if="renewalDialog" :isRenewal="true" :row="selectUsers" @cancelDialog="closeRenewalDialog"
+    <MemberSet v-if="renewalDialog" :isRenewal="true" pageFrom="Ai" :row="selectUsers" @cancelDialog="closeRenewalDialog"
       @saveDialog="editRenewalInfo"></MemberSet>
 
     <el-table :data="dataList" class="table-info" v-loading="loading" header-cell-class-name="header_row_class" style="width: 100%" stripe

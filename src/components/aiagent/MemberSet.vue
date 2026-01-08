@@ -145,7 +145,7 @@
         </el-button>
       </div>
     </template>
-    <SelectAccountNumber v-if="isShowSelectAccountNumber" @cancelDialog="cancelSelectAccountNumber" @saveDialog="confirmSelectAccountNumber"></SelectAccountNumber>
+    <SelectAccountNumber v-if="isShowSelectAccountNumber" :pageFrom="pageFrom" @cancelDialog="cancelSelectAccountNumber" @saveDialog="confirmSelectAccountNumber"></SelectAccountNumber>
   </el-dialog>
 </template>
 
@@ -283,6 +283,10 @@
         return null
       }
     }, // 用户点击当前行的内容
+    pageFrom: {
+      type: String,
+      default: ''  // Ai-作文批改权限开通页面
+    }
   })
 
   let dealTitle = computed(() => {
