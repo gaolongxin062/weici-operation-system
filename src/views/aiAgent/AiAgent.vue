@@ -161,6 +161,7 @@
            <el-button class="button-style" link type="primary" v-else style="color: transparent;">
             编辑
           </el-button>
+          <!-- 只有体验用户才显示 -->
           <el-button class="button-style" link type="danger" @click="delCurrentMember(scope.row)" v-if="deletePower && scope.row.user_type === 1">
             删除
           </el-button>
