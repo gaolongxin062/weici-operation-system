@@ -110,11 +110,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="user_code" label="账号" min-width="120px" />
-      <el-table-column width="80" align="center" label="体验天数">
+      <!-- <el-table-column width="80" align="center" label="体验天数">
         <template #default="scope">
           <div>{{ scope.row.trial_date }}天</div>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column width="100" align="center" label="状态">
         <template #default="scope">
           <div>{{ dealStateTitle(scope.row.state) }}</div>
