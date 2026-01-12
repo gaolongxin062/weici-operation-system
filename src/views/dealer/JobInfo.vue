@@ -392,7 +392,8 @@ const getRoleLabel = (value) => {
 const closeDialogAdd = () => {
   dialogAdd.value = false;
   formref.value?.resetFields();
-  dialogForm.id = '';
+  dialogForm.role_id = '';
+  dialogForm.role_level = '';
   dialogFormDisabled.value = false;
 };
 
@@ -622,13 +623,6 @@ const del = (row) => {
 .active-years {
   background: rgba(64, 158, 255, 1);
   color: #fff;
-}
-.add-dialog :deep(.el-dialog){
-  height: 700px;
-}
-.add-dialog .el-form-item{
-  max-height: 300px;
-  overflow-y: auto;
 }
 .ellipsis-text {
   width: 100%;
