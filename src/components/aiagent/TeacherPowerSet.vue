@@ -141,8 +141,8 @@ const formData = ref({
 	county_id: '', // 区县ID
 	school_id: '', // 学校ID
 	user_source: 0, // 用户来源
-	rights: ref([]), // 权限JSON（含父节点）
-	right_end: ref([]), // 权限末级节点
+	rights: [], // 权限JSON（含父节点）
+	right_end: [], // 权限末级节点
 });
 
 // 树结构配置
@@ -193,16 +193,12 @@ const rules = ref({
 	school_id: [
 		{ required: true, message: '请选择学校名称！', trigger: 'change' }
 	],
-	user_type: [
-		{ required: true, message: '请选择用户类型！', trigger: 'change' }
-	],
 	user_source: [
 		{ required: true, message: '请选择用户来源！', trigger: 'change' }
 	],
-	trial_date: [
-		{ required: true, message: '请输入体验天数', trigger: 'change' }
-	],
-	use_points: [{}]
+	rights: [
+		{required: true, message: '请选择教师权限！', trigger: 'change'}
+	]
 });
 
 // 组件接收参数
@@ -450,8 +446,8 @@ const getConfig = () => {
 		county_id: formData.value.county_id,
 		school_id: formData.value.school_id,
 		user_source: formData.value.user_source,
-		rights: JSON.stringify(formData.value.rights.value),
-		right_end: JSON.stringify(formData.value.right_end.value),
+		rights: JSON.stringify(formData.value.rights),
+		right_end: JSON.stringify(formData.value.right_end),
 	};
 	// 编辑场景追加ID
 	if (props.isEdit) {
@@ -516,12 +512,14 @@ const getCheckedData = () => {
 	selectedNodeArr.value = [...new Set(allCheckedAndParentNodes)];
 	
 	// 组装权限数据（含父节点）
-	formData.value.rights.value = selectedNodeArr.value.map(item => ({
+	formData.value.rights = selectedNodeArr.value.map(item => ({
 		menu_index: item.menu_index
 	}));
 	
 	// 组装末级权限数据
 	formData.value.right_end.value = treeRef.value.getCheckedNodes(true, false).map(item => item.menu_index);
+	console.log('2222222222222222222', formData.value.rights);
+	
 };
 
 // 递归获取节点所有父节点数据
@@ -570,3 +568,5 @@ const getParentNodeData = (node, parentNodes = []) => {
 	grid-template-columns: 130px 1fr;
 }
 </style>
+
+给权限加上必填校验
