@@ -111,6 +111,7 @@ export let memberApi = {
   removePackage: '/removePackage', // 会员套餐删除
   renewalMember: '/renewalMember', // 批量续期
   aiGetTeacherList: '/ai/teacher/list', // 教师列表(作文批改)
+  aiUserSchool: '/getAiUserSchool', // 学校列表(作文批改)
 }
 
 export let wordRaceMemberApi = {

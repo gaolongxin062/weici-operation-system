@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="选择账号" width="1000" :show-close="false" append-to-body>
+  <el-dialog v-model="dialogVisible" title="选择账号" width="1000" @close="cancelDialog" :show-close="false" append-to-body>
   <div class="page define-page">
     <div class="content-box">
       <el-form :inline="true" id="form" :model="formData" size="large" label-width="60px" @submit.prevent>
@@ -51,10 +51,28 @@
         />
         </el-select>
       </el-form-item>
-      <el-form-item label="学校">
+      <el-form-item label="学校" v-if="pageFrom !== 'Ai'">
         <el-input class="search-input" clearable placeholder="请输入学校" v-model="formData.school">
         </el-input>
       </el-form-item>
+
+      <el-form-item label="学校" v-else>
+        <el-select
+          v-model="formData.school"
+          filterable
+          placeholder="请选择/搜索所在学校名称"
+          clearable
+          @change="changeSchool"
+        >
+          <el-option
+            v-for="item in schooleList"
+            :key="item.school_id"
+            :label="item.name"
+            :value="item.name"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="账号">
         <el-input class="search-input" clearable placeholder="请输入账号" v-model="formData.user_code">
         </el-input>
@@ -78,6 +96,7 @@
       ref="multipleTable"
       @select="selectionChange"
       @select-all="selectionChange"
+      :empty-text="pageFrom === 'Ai' ? '请选择学校筛查教师列表' : '暂无数据'"
       >
       <el-table-column
               type="selection"
@@ -141,7 +160,7 @@ let multipleSelection = ref([])
 let selectStudent = ref([])
 let dataIdKey = ref('id')
 let multipleTable = ref(null)
-
+const schooleList = ref([])
 let emit = defineEmits([
     'cancelDialog',
     'saveDialog',
@@ -154,10 +173,15 @@ let props = defineProps({
 })
 onMounted(async () => {
   await getProvinceList() // 获取省份
-  await initMemberList() // 获取资源列表
   nextTick(() => {
     setSelectRow()
   })
+
+  if(props.pageFrom === 'Ai') {
+    getSchoole()
+  } else {
+    await initMemberList() // 获取资源列表
+  }
 })
 async function onSubmit() {
   pageIndex.value = 1 // 重置页码
@@ -166,6 +190,14 @@ async function onSubmit() {
     setSelectRow()
   })
 } // 点击搜索按钮获取资源列表
+const changeSchool = () => { 
+  if (formData.value.school){
+    initMemberList()
+  } else {
+    dataList.value = []
+    total.value = 0
+  }
+}
 async function onReset() {
   // 重置所有筛选条件
   formData.value = {
@@ -271,19 +303,53 @@ function changeProvince(val) {
   if (val === undefined) { 
     cityData.value = []
     areaData.value = []
+    if(props.pageFrom === 'Ai'){
+      formData.value.school = ''
+      getSchoole()
+      changeSchool()
+    }
   } else { // 如果选择了某个具体的省，则获取该省下面的市数据
     getCityList()
+    if(props.pageFrom === 'Ai'){
+      getSchoole()
+    }
   }
+
+
 } // 切换省份
 function changeCity (val) {
   console.log(val)
   formData.value.county_id = '' // 清空县的id
   if (val === undefined) { 
     areaData.value = []
+    if(props.pageFrom === 'Ai'){
+      formData.value.school = ''
+      getSchoole()
+      changeSchool()
+    }
   } else { // 如果选择了某个具体的市，则获取该市下面的县区数据
     getAreaList()
+    if(props.pageFrom === 'Ai'){
+      getSchoole()
+    }
   }
 }  // 切换城市
+
+function changeArea (val) {
+  if (val === undefined) { 
+    if(props.pageFrom === 'Ai'){
+      formData.value.school = ''
+      getSchoole()
+      changeSchool()
+    }
+  } else { // 如果选择了某个具体的市，则获取该市下面的县区数据
+    if(props.pageFrom === 'Ai'){
+      getSchoole()
+    }
+  }
+} 
+
+
 function getAreaList () {
   let params = {
     user_name: vocabularyStore.user_name,
@@ -302,6 +368,25 @@ function getAreaList () {
 // function showIndex(index) {
 //   return index + 1 + (pageIndex.value - 1) * pageSize.value
 // } // 序号
+
+// 获取学校列表---只有作文批改调用此组件才调用此接口  pageFrom==='Ai'
+const getSchoole = async () => {
+  const params = {
+    user_name: vocabularyStore.user_name,
+    session: vocabularyStore.session,
+    province_id: formData.value.province_id,
+    city_id: formData.value.city_id,
+    county_id: formData.value.county_id,
+  }
+
+  const res = await MemberService.apiAiUserSchool(params)
+  console.log('xxxxxxxxxxxxxxxx',res);
+  if(res.result_code === 200){
+    schooleList.value = res.data
+  } else {
+    schooleList.value = []
+  }
+}
 function cancelDialog () {
   emit('cancelDialog')
 } // 点击取消
