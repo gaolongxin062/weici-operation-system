@@ -115,7 +115,7 @@
 </el-dialog>
 </template>
 <script setup>
-import { ref, onMounted, defineEmits, nextTick } from 'vue';
+import { ref, onMounted, defineEmits, nextTick, defineProps } from 'vue';
 import MemberService from '@/service/MemberService';
 import { useVocabularyStore } from '@/store/vocabulary';
 // import { ElMessage } from 'element-plus';
@@ -146,7 +146,12 @@ let emit = defineEmits([
     'cancelDialog',
     'saveDialog',
   ])
-
+let props = defineProps({
+  pageFrom: {
+    type: String,
+    default: ''  // Ai-作文批改权限开通页面
+  }
+})
 onMounted(async () => {
   await getProvinceList() // 获取省份
   await initMemberList() // 获取资源列表
@@ -187,7 +192,7 @@ async function handleCurrentChange(page) { // 切换下一页
 function initMemberList() {
   loading.value = true
   let params = dealSearchParams()
-  return MemberService.getTeacherList(params)
+  return (props.pageFrom === 'Ai' ? MemberService.aiGetTeacherList(params) : MemberService.getTeacherList(params))
     .then((res) => {
       console.log(res.data)
       dataList.value = res.list

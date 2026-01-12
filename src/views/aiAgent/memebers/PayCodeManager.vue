@@ -105,7 +105,7 @@
             <el-table-column prop="disabled_time" label="付费码失效时间"  min-width="140px" />
             <el-table-column prop="maker_name" label="创建人" min-width="120" />
             <el-table-column prop="make_date" label="创建时间"  min-width="180px" />
-            <el-table-column label="操作" fixed="right"  min-width="160px">
+            <el-table-column label="操作" fixed="right"  min-width="190px">
               <template #default="scope">
                 <el-button class="button-style" link type="primary" @click="check(scope.row)" :loading="scope.row.checkLoading">
                   查看

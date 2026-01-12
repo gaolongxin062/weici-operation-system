@@ -409,6 +409,10 @@ const onReset = () => {
 
 // 新增
 const newlyAdded = () => {
+  teacherList.value = []
+  classList.value = []
+  studentList.value = []
+  totalStudent.value = 0
   dialogVisible.value = true
 }
 
@@ -832,7 +836,7 @@ const changeDialogSchool = () => {
   if (dislogFormData.school) {
     const matchedSchool = schoolList.value.find(item => item?.school_id === dislogFormData.school);
     maxEndTime.value = matchedSchool ? matchedSchool.max_end_time : '';
-    dislogFormData.startTime = matchedSchool ? matchedSchool.max_end_time : '';
+    dislogFormData.startTime = matchedSchool ? new Date(new Date(matchedSchool.max_end_time).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0] : '';
     teacherList.value = [] // 教师
     dislogFormData.teacher = [] // 已选教师数据
     // 获取教师
@@ -933,6 +937,22 @@ const cancel = () => {
   cityList.value = []
   countyList.value = []
   schoolList.value = []
+  teacherList.value = []
+  classList.value = []
+  studentList.value = []
+  totalStudent.value = 0
+  
+  // 重置表单数据
+  dislogFormData.distributor = ''
+  dislogFormData.province = ''
+  dislogFormData.city = ''
+  dislogFormData.district = ''
+  dislogFormData.school = ''
+  dislogFormData.teacher = []
+  dislogFormData.num = 0
+  dislogFormData.amount = 0
+  dislogFormData.startTime = ''
+  dislogFormData.endTime = ''
 }
 
 // 新增弹窗保存

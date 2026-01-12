@@ -88,10 +88,10 @@
       </el-form-item> -->
     </el-form>
 
-    <MemberSet v-if="addDialog" @cancelDialog="closeAddDialog" @saveDialog="addMember"></MemberSet>
-    <MemberSet v-if="editDialog" :isEdit="true" :row="rowInfo" @cancelDialog="closeEditDialog"
+    <MemberSet v-if="addDialog" @cancelDialog="closeAddDialog" @saveDialog="addMember" pageFrom="Ai"></MemberSet>
+    <MemberSet v-if="editDialog" :isEdit="true" :row="rowInfo" pageFrom="Ai" @cancelDialog="closeEditDialog"
       @saveDialog="editMemberInfo"></MemberSet>
-    <MemberSet v-if="renewalDialog" :isRenewal="true" :row="selectUsers" @cancelDialog="closeRenewalDialog"
+    <MemberSet v-if="renewalDialog" :isRenewal="true" pageFrom="Ai" :row="selectUsers" @cancelDialog="closeRenewalDialog"
       @saveDialog="editRenewalInfo"></MemberSet>
 
     <el-table :data="dataList" class="table-info" v-loading="loading" header-cell-class-name="header_row_class" style="width: 100%" stripe
@@ -110,11 +110,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="user_code" label="账号" min-width="120px" />
-      <el-table-column width="80" align="center" label="体验天数">
+      <!-- <el-table-column width="80" align="center" label="体验天数">
         <template #default="scope">
           <div>{{ scope.row.trial_date }}天</div>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column width="100" align="center" label="状态">
         <template #default="scope">
           <div>{{ dealStateTitle(scope.row.state) }}</div>
@@ -161,7 +161,8 @@
            <el-button class="button-style" link type="primary" v-else style="color: transparent;">
             编辑
           </el-button>
-          <el-button class="button-style" link type="danger" @click="delCurrentMember(scope.row)" v-if="deletePower">
+          <!-- 只有体验用户才显示 -->
+          <el-button class="button-style" link type="danger" @click="delCurrentMember(scope.row)" v-if="deletePower && scope.row.user_type === 1">
             删除
           </el-button>
           <el-button class="button-style" link type="primary" v-if="scope.row.is_power === 0" @click="certification(scope.row)">
