@@ -185,7 +185,11 @@
     },
     {
       id: 2,
-      name: '付费用户'
+      name: '统一购买'
+    },
+    {
+      id: 3,
+      name: '自愿购买'
     }
   ]) // 用户类型
   let userSourceList = ref([
