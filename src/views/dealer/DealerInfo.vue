@@ -167,8 +167,7 @@
     </div>
     <!-- 选择下方职务弹窗 -->
     <div class="add-dialog">
-      <el-dialog v-model="dialogRole" top="5vh" title="选择下放职务" width="800" :show-close="false" :destroy-on-close="true"
-        @close="closeDialogselect">
+      <el-dialog v-model="dialogRole" top="5vh" title="选择下放职务" width="800" :close-on-click-modal="false" :show-close="false">
         <div class="role-card">
           <div class="role-card-item" v-for="(item, index) in devolveRoleList" :key="index" @click="selectRole(item)">
             <div class="label"> {{ getRoleLabel(item.role_level) }} </div>
@@ -202,6 +201,7 @@
               <p>状态：{{ detailData.stop_flag === 0 ? '启用中' : '禁用中' }}</p>
               <p>职务：{{ detailData.role_name }}</p>
               <p>创建时间：{{ detailData.make_date }}</p>
+              <p v-if="detailData.role_ids">下放职务：{{ detailData.role_names }}</p>
             </div>
           </div>
           <div class="detail-item">
@@ -240,7 +240,7 @@
     </div>
   </div>
   <!-- 普通人员选择学校弹窗 -->
-  <select-school v-if="roleSelectSchoolShow" type="roleSelece" :selectInfo="selectInfo" @saveDialog="roleSaveDialog" @cancelDialog="roleCancelDialog" :schoolList="dialogForm.area_ids"></select-school>
+  <select-school v-if="roleSelectSchoolShow" :roleLevel="role_level" type="roleSelece" :selectInfo="selectInfo" @saveDialog="roleSaveDialog" @cancelDialog="roleCancelDialog" :schoolList="dialogForm.area_ids"></select-school>
   <!-- 选择特例学校弹窗 -->
   <select-school v-if="selectSchoolShow" type="caseSelect" :selectInfo="selectInfo" @saveDialog="saveDialog" @cancelDialog="cancelDialog" :schoolList="dialogForm.school_ids"></select-school>
 </template>
@@ -832,7 +832,7 @@ const selectSureBtn = () => {
 // 取消选择下放职务
 const closeDialogselect = () => {
   dialogRole.value = false
-  // selectDevolveRoleList.value = []
+  selectDevolveRoleList.value = []
 }
 
 // 获取经销商详情
@@ -1270,7 +1270,12 @@ const roleCancelDialog = () => {
 .detail-box .detail-item .detail-mes {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 20px;
+  margin: 10px 0;
+}
+
+.detail-box .detail-item .detail-mes p {
+  margin: 0;
 }
 
 .detail-box .detail-item h6 {

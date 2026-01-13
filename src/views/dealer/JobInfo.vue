@@ -111,8 +111,7 @@
               v-model="dialogForm.role_level" 
               placeholder="请选择内容"
               style="width: 240px" 
-              clearable 
-              filterable
+              clearable
             >
               <el-option v-for="item in roleEnum" :key="item.id" :label="item.label" :value="item.value" />
             </el-select>
@@ -151,6 +150,9 @@
               :default-expand-all="true" 
               @check-change="getCheckedData" 
               show-checkbox
+              :disabled="dialogFormDisabled"
+              :expand-on-click-node="!dialogFormDisabled"
+              :class="{ 'tree-complete-disabled': dialogFormDisabled }"
             />
           </el-form-item>
         </el-form>
@@ -338,10 +340,12 @@ const getRoleTree = async () => {
     console.error('获取权限树失败：', error);
   }
 };
-
 // 权限树勾选事件 - 收集选中节点（含父节点）和末级节点
 const getCheckedData = () => {
-  if (!treeRef.value) return;
+  
+  if (!treeRef.value || dialogFormDisabled.value) return;
+  console.log('treeRef:', treeRef.value);
+  
 
   // 获取所有勾选的节点
   const nodeList = treeRef.value.getCheckedNodes(true, false);
@@ -514,6 +518,7 @@ const detail = (row) => {
   getRoleDetail(row.role_id); // 获取职务详情
   getRoleTree(); // 加载权限树
   dialogAdd.value = true;
+  dialogTitle.value = '详情';
   dialogFormDisabled.value = true; // 禁用表单
   // 禁用权限树勾选
   nextTick(() => {
@@ -629,5 +634,8 @@ const del = (row) => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+:deep(.tree-complete-disabled) {
+  pointer-events: none;
 }
 </style>

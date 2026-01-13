@@ -4,8 +4,7 @@
 			<div class="content-box">
 				<el-form :inline="true" id="form" :model="formData" size="large" label-width="60px" @submit.prevent>
 					<el-form-item label="学校">
-						<el-input class="search-input" clearable placeholder="请输入学校" v-model="formData.school">
-						</el-input>
+						<el-input class="search-input" clearable placeholder="请输入学校" v-model="formData.school"></el-input>
 					</el-form-item>
 					<el-form-item>
 						<el-button type="primary" @click="onSubmit">查询</el-button>
@@ -19,38 +18,44 @@
 						<el-button type="primary" @click="onReset">重置</el-button>
 					</el-form-item>
 				</el-form>
-				<el-table :data="displayDataList" class="table-info" v-loading="loading"
-					header-cell-class-name="header_row_class" style="width: 100%;height: 300px;" stripe
-					element-loading-text="拼命加载中，主人请稍后..." ref="multipleTable" @select="selectionChange"
-					@select-all="selectionChange">
-					<el-table-column type="selection" width="55">
-					</el-table-column>
+				<el-table 
+					:data="displayDataList" 
+					class="table-info" 
+					v-loading="loading"
+					header-cell-class-name="header_row_class" 
+					style="width: 100%;height: 300px;" 
+					stripe
+					element-loading-text="拼命加载中，主人请稍后..." 
+					ref="multipleTable" 
+					@select="selectionChange"
+					@select-all="selectionChange"
+				>
+					<el-table-column type="selection" width="55"></el-table-column>
 					<el-table-column prop="name" label="学校名称" min-width />
 					<el-table-column prop="province" label="省份" min-width />
 					<el-table-column prop="city" label="市" min-width />
 					<el-table-column prop="county" label="区县" min-width />
-
 				</el-table>
 			</div>
 		</div>
-
 		<template #footer>
 			<div class="dialog-footer">
 				<el-button @click="cancelDialog">取消</el-button>
-				<el-button type="primary" @click="saveDialog">
-					保存
-				</el-button>
+				<el-button type="primary" @click="saveDialog">保存</el-button>
 			</div>
 		</template>
 	</el-dialog>
 </template>
+
 <script setup>
 import { ref, onMounted, defineEmits, defineProps, nextTick, computed } from 'vue';
 import dealerService from '@/service/DealerService';
+
+// 接收父组件传参
 const props = defineProps({
 	selectInfo: {
 		type: Object,
-		default: () => { }
+		default: () => ({})
 	},
 	schoolList: {
 		type: Array,
@@ -59,114 +64,139 @@ const props = defineProps({
 	type: {
 		type: String,
 		default: ''
+	},
+	roleLevel: {
+		type: Number,
+		default: null
+	},
+})
+
+// 派发事件
+const emit = defineEmits(['cancelDialog','saveDialog'])
+
+// 加载状态
+const loading = ref(false)
+// 当前页码
+const pageIndex = ref(1)
+// 查询表单数据
+const formData = ref({
+	province_id: '',
+	city_id: '',
+	county_id: '',
+	school: '',
+	user_code: ''
+})
+// 学校列表数据
+const dataList = ref([])
+// 弹窗显示状态
+const dialogVisible = ref(true)
+// 表格勾选的数据集合
+const multipleSelection = ref([])
+// 表格实例
+const multipleTable = ref(null)
+// 是否只看已选数据
+const onlyShowSelected = ref(false)
+
+// 已勾选的学校id集合
+const selectedIds = computed(() => {
+	return multipleSelection.value.map(item => item.id).filter(id => id)
+})
+
+// 表格展示的数据集，根据勾选状态筛选
+const displayDataList = computed(() => {
+	if (!onlyShowSelected.value) return dataList.value;
+	return dataList.value.filter(row => selectedIds.value.includes(row.id))
+})
+
+// 页面初始化加载学校列表+回显勾选数据
+onMounted(async () => {
+	await getSchoolList()
+	// 编辑状态下，回显已选的学校数据
+	if (props.schoolList.length > 0) {
+		multipleSelection.value = dataList.value.filter(row => props.schoolList.includes(row.id))
 	}
 })
 
-let loading = ref(false) // 加载标记
-let pageIndex = ref(1)
-let formData = ref({
-	province_id: '', // 省份
-	city_id: '', // 城市
-	county_id: '', // 区域
-	school: '', // 状态
-	user_code: '', // 状态
-}) // 表单内容
-let dataList = ref([]) // 资源列表
-let dialogVisible = ref(true) // 弹框显隐
-let multipleSelection = ref([])
-let multipleTable = ref(null)
-let onlyShowSelected = ref(false) // 控制"只看已选"的状态标记
-let emit = defineEmits([
-	'cancelDialog',
-	'saveDialog',
-])
-// 计算属性：根据"只看已选"状态筛选显示列表
-const displayDataList = computed(() => {
-	if (!onlyShowSelected.value) {
-		return dataList.value; // 显示全部
-	}
-	// 只显示已选中的学校（匹配schoolList中的ID）
-	return dataList.value.filter(row =>
-		props.schoolList.some(id => String(id) === String(row.id))
-	);
-})
-onMounted(async () => {
-	await initschoolList() // 获取资源列表
-	multipleSelection.value = props.schoolList
-})
-// 切换"只看已选/显示全部"状态
-function toggleOnlyShowSelected() {
+// 切换 只看已选/显示全部
+const toggleOnlyShowSelected = () => {
 	onlyShowSelected.value = !onlyShowSelected.value;
-	// 切换后重新处理选中状态（避免筛选后选中状态异常）
 	nextTick(() => {
+		if (!multipleTable.value || !dataList.value.length) return;
 		dataList.value.forEach(row => {
-			const isSelected = props.schoolList.some(id => String(id) === String(row.id));
-			multipleTable.value.toggleRowSelection(row, isSelected);
+			const isChecked = selectedIds.value.includes(row.id);
+			multipleTable.value.toggleRowSelection(row, isChecked);
 		});
 	});
 }
-async function onSubmit() {
-	pageIndex.value = 1 // 重置页码
-	await initschoolList()
-} // 点击搜索按钮获取资源列表
- // 点击重置按钮获取资源列表
-const onReset = async () => {
-	// 重置所有筛选条件
-	formData.value = {
-		province_id: '', // 省份
-		city_id: '', // 城市
-		county_id: '', // 区域
-		school: '', // 状态
-		user_code: '', // 状态
-	}
-	pageIndex.value = 1 // 重置页码
-	await initschoolList()
+
+// 点击查询按钮
+const onSubmit = async () => {
+	pageIndex.value = 1;
+	await getSchoolList();
 }
 
-const initschoolList = async () => {
-	loading.value = true
+// 重置查询条件
+const onReset = async () => {
+	formData.value = {
+		province_id: '',
+		city_id: '',
+		county_id: '',
+		school: '',
+		user_code: ''
+	}
+	pageIndex.value = 1;
+	await getSchoolList();
+}
+
+// 获取学校列表数据
+const getSchoolList = async () => {
+	loading.value = true;
 	const params = {
 		area_ids: props.selectInfo.area_ids,
 		parent_id: props.selectInfo.parent_id,
 		session: props.selectInfo.session,
 		user_name: props.selectInfo.user_name,
-		school_name: ''
+		school_name: formData.value.school,
+		role_level: props.roleLevel,
 	}
 	try {
-		const res = await dealerService.getExcludeSchoolList(params)
+		const res = await dealerService.getExcludeSchoolList(params);
 		if (res.result_code === 200) {
-			dataList.value = res.list
-			dataList.value.forEach(row => {
-				// 判断当前行ID是否在已选集合中（注意：ID可能是数字/字符串，统一转字符串比较）
-				const isSelected = props.schoolList.some(id => id === row.id);
-				if (isSelected) {
-					nextTick(() => {
-						multipleTable.value.toggleRowSelection(row, true); // 选中行
-					})
-				}
+			dataList.value = res.list || [];
+			nextTick(() => {
+				if (!multipleTable.value) return;
+				dataList.value.forEach(row => {
+					const isChecked = selectedIds.value.includes(row.id);
+					multipleTable.value.toggleRowSelection(row, isChecked);
+				})
 			})
 		} else {
-			dataList.value = []
+			dataList.value = [];
 		}
-	} catch (error) {
-		console.log(error)
+	} catch (err) {
+		console.log(err);
 	} finally {
-		loading.value = false
+		loading.value = false;
 	}
 }
- // 点击取消
-const cancelDialog = () => {
-	emit('cancelDialog')
-}
- // 点击保存
-const saveDialog = () => {
-	let userCodeList = multipleSelection.value.map(item => item.id)
-	emit('saveDialog', userCodeList)
-}
+
+// 表格勾选事件
 const selectionChange = (val) => {
-	multipleSelection.value = val
+	multipleSelection.value = val;
+}
+
+// 关闭弹窗
+const cancelDialog = () => {
+	emit('cancelDialog');
+}
+
+// 保存勾选的学校数据
+const saveDialog = () => {
+	const userCodeList = multipleSelection.value.map(item => item.id).filter(id => id);
+	emit('saveDialog', userCodeList);
 }
 </script>
+
 <style scoped>
 .content-box {
 	padding: 20px;
