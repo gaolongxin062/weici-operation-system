@@ -226,6 +226,46 @@ function apiAiUserSchool(params) {
     });
   });
 }
+
+function aiGetProvincesList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(memberApi.aiGetProvincesList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+function aiGetCityList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(memberApi.aiGetCityList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+function aiGetCountyList(params) {
+  return new Promise((resolve, reject) => {
+    service.get(memberApi.aiGetCountyList, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
 export default {
   getProvincesList,
   getCityList,
@@ -243,5 +283,8 @@ export default {
   savePackage,
   removePackage,
   renewalMember,
-  apiAiUserSchool
+  apiAiUserSchool,
+  aiGetProvincesList,
+  aiGetCityList,
+  aiGetCountyList
 }

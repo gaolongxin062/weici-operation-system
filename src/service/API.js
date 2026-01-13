@@ -112,6 +112,9 @@ export let memberApi = {
   renewalMember: '/renewalMember', // 批量续期
   aiGetTeacherList: '/ai/teacher/list', // 教师列表(作文批改)
   aiUserSchool: '/getAiUserSchool', // 学校列表(作文批改)
+  aiGetProvincesList: '/getAiProvinceList', // 获取所有的省(作文批改)
+  aiGetCityList: '/getAiCityList', // 获取所有的市（作文批改）
+  aiGetCountyList: '/getAiCountyList', // 获取所有的区县（作文批改）
 }
 
 export let wordRaceMemberApi = {

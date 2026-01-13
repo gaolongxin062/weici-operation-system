@@ -14,7 +14,7 @@
         <el-option
           v-for="item in provinceData"
           :key="item.id"
-          :label="item.name"
+          :label="item.name || item.province"
           :value="item.id"
         />
         </el-select>
@@ -30,7 +30,7 @@
         <el-option
           v-for="item in cityData"
           :key="item.id"
-          :label="item.name"
+          :label="item.name || item.city"
           :value="item.id"
         />
         </el-select>
@@ -46,7 +46,7 @@
         <el-option
           v-for="item in areaData"
           :key="item.id"
-          :label="item.name"
+          :label="item.name || item.county"
           :value="item.id"
         />
         </el-select>
@@ -271,7 +271,7 @@ function getProvinceList () {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session
   }
-  return MemberService.getProvincesList(params)
+  return (props.pageFrom === 'Ai' ? MemberService.aiGetProvincesList(params) : MemberService.getProvincesList(params))
     .then((res) => {
       if (res.result_code === 200) {
         provinceData.value = res.list
@@ -286,7 +286,7 @@ function getCityList () {
     session: vocabularyStore.session,
     id: formData.value.province_id
   }
-  return MemberService.getCityList(params)
+  return (props.pageFrom === 'Ai' ? MemberService.aiGetCityList(params) : MemberService.getCityList(params))
     .then((res) => {
       if (res.result_code === 200) {
         cityData.value = res.list
@@ -356,7 +356,7 @@ function getAreaList () {
     session: vocabularyStore.session,
     id: formData.value.city_id
   }
-  return MemberService.getCountyList(params)
+  return (props.pageFrom === 'Ai' ? MemberService.aiGetCountyList(params) : MemberService.getCountyList(params))
     .then((res) => {
       if (res.result_code === 200) {
         areaData.value = res.list
