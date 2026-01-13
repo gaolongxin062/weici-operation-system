@@ -105,7 +105,7 @@
           :rules="rules" 
           :disabled="dialogFormDisabled"
         >
-          <el-form-item v-if="!dialogForm.role_id" label="职务级别" prop="role_level" label-width="80px">
+          <el-form-item v-if="!dialogForm.role_id || dialogFormDisabled" label="职务级别" prop="role_level" label-width="80px">
             <el-select 
               :disabled="dialogFormDisabled" 
               v-model="dialogForm.role_level" 
@@ -158,7 +158,7 @@
         <template #footer>
           <div class="dialog-footer">
             <el-button @click="closeDialogAdd">取消</el-button>
-            <el-button type="primary" @click="makeSureBtn">
+            <el-button type="primary" @click="makeSureBtn" v-if="!dialogFormDisabled">
               保存
             </el-button>
           </div>
