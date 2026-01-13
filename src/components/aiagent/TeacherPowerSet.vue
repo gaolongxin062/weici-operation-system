@@ -517,9 +517,7 @@ const getCheckedData = () => {
 	}));
 	
 	// 组装末级权限数据
-	formData.value.right_end.value = treeRef.value.getCheckedNodes(true, false).map(item => item.menu_index);
-	console.log('2222222222222222222', formData.value.rights);
-	
+	formData.value.right_end = treeRef.value.getCheckedNodes(true, false).map(item => item.menu_index);
 };
 
 // 递归获取节点所有父节点数据

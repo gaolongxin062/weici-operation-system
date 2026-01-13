@@ -106,7 +106,7 @@
           <div v-if="dialogType === 'power'" class="power-info"> {{  detailData.user_name }}-{{  detailData.phone }} </div>
           <el-form-item label="姓名" prop="name" v-if="dialogType !== 'power'">
             <el-input class="search-input" clearable placeholder="请输入" show-word-limit :maxlength="20"
-              v-model="dialogForm.name">
+              v-model.trim="dialogForm.name">
             </el-input>
           </el-form-item>
           <el-form-item label="手机号码" prop="phone" v-if="dialogType !== 'power'">
@@ -420,7 +420,7 @@ const processedDealerList = computed(() => {
     return options.map(option => {
       const newOption = { ...option };
       // 第四级（level=4）禁用
-      if (option.role_level === 4) {
+      if (option.role_level === 4 || option.role_level===null || option.stop_flag === 1) {
         newOption.disabled = true;
       }
       if (newOption.children && newOption.children.length > 0) {
