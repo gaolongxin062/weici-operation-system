@@ -125,12 +125,20 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="dialogType !== 'edit'" label="负责范围" prop="area_ids">
-            <el-cascader style="width:250px" v-if='role_level!==4' v-model="dialogForm.area_ids" clearable :options="areaTreeList" :props="cascaderAreaProps"
+            <el-cascader ref="cascaderRef" style="width:250px" v-if='role_level!==4' v-model="dialogForm.area_ids" clearable :options="areaTreeList" :props="cascaderAreaProps"
               :show-all-levels="false" @change="changeArea" collapse-tags />
               <el-button v-else type="primary" @click="addRoleSchool">{{ dialogForm.area_ids.length ? `已选择
               ${dialogForm.area_ids.length} 所学校` : '选择学校' }}</el-button>
           </el-form-item>
           <el-form-item v-if="dialogType !== 'edit' && role_level!==4" label="特例学校" prop="role_level">
+            <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="其只负责部分区域的部分学校，需勾选不需要负责的部分学校"
+              placement="top-start"
+            >
+              <el-icon><QuestionFilled /></el-icon>
+            </el-tooltip>
             <el-button type="primary" @click="addSpecialSchool">{{ dialogForm.school_ids.length ? `已选择
               ${dialogForm.school_ids.length} 所学校` : '特例学校' }}</el-button>
           </el-form-item>
@@ -282,6 +290,7 @@ const selectInfo = ref({})  // 选择学校弹窗入参
 const dialogDetail = ref(false)
 const roleSelectSchoolShow = ref(false) // 普通人员选择学校弹窗显示隐藏
 const powerStatus = ref(true)
+const cascaderRef = ref({})
 const roleEnum = reactive(
   [
     {
@@ -588,6 +597,7 @@ const changeDealer = (val) => {
 // 触发职务改变时
 
 const changeRole = (val) => {
+  getAreaTree(dialogForm.parent_id)
   console.log('触发职务', val, dialogForm)
   roleList.value.map((item) => {
     if (item.role_id === val) {
@@ -641,7 +651,7 @@ const selectRole = (val) => {
 }
 
 const addSpecialSchool = () => {
-  selectSchoolShow.value = false
+  selectSchoolShow.value = true
   // 拼一下子组件接口需要的参数 此参数不会变化，变化的在子组件中定义
   selectInfo.value = {
     session: vocabularyStore.session,
@@ -649,7 +659,7 @@ const addSpecialSchool = () => {
     parent_id: dialogForm.parent_id || 0,
     area_ids: dialogForm.area_ids.length ? dialogForm.area_ids.join(',') : dialogForm.area_ids || '',
   }
-  selectSchoolShow.value = true
+
 }
 
 const addRoleSchool = () => {

@@ -1,5 +1,5 @@
 <template>
-	<el-dialog v-model="dialogVisible" title="选择学校" width="1000" :show-close="false" append-to-body>
+	<el-dialog v-model="dialogVisible" title="选择学校" width="1000" :show-close="false" :close-on-click-modal="false" append-to-body>
 		<div class="page define-page">
 			<div class="content-box">
 				<el-form :inline="true" id="form" :model="formData" size="large" label-width="60px" @submit.prevent>
