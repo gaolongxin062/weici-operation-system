@@ -284,7 +284,17 @@ function getCityList () {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    id: formData.value.province_id
+  }
+  if (props.pageFrom === 'Ai' ) {
+    params = {
+      ...params,
+      province_id: formData.value.province_id
+    }
+  } else {
+    params = {
+      ...params,
+      id: formData.value.province_id
+    }
   }
   return (props.pageFrom === 'Ai' ? MemberService.aiGetCityList(params) : MemberService.getCityList(params))
     .then((res) => {
@@ -354,7 +364,17 @@ function getAreaList () {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    id: formData.value.city_id
+  }
+  if (props.pageFrom === 'Ai' ) {
+    params = {
+      ...params,
+      city_id: formData.value.city_id
+    }
+  } else {
+    params = {
+      ...params,
+      id: formData.value.city_id
+    }
   }
   return (props.pageFrom === 'Ai' ? MemberService.aiGetCountyList(params) : MemberService.getCountyList(params))
     .then((res) => {
