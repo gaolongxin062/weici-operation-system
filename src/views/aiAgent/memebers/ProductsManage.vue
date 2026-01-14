@@ -600,7 +600,7 @@ const save = async () => {
               getList()
             } else {
               ElMessage({
-                message: '新增失败',
+                message: res.description,
                 type: 'error',
                 duration: 1000
               })
