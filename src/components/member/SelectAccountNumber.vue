@@ -137,7 +137,7 @@
 import { ref, onMounted, defineEmits, nextTick, defineProps } from 'vue';
 import MemberService from '@/service/MemberService';
 import { useVocabularyStore } from '@/store/vocabulary';
-// import { ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 let vocabularyStore = useVocabularyStore();
 let loading = ref(false) // 加载标记
 // let screenHeight = ref(0)
@@ -184,6 +184,9 @@ onMounted(async () => {
   }
 })
 async function onSubmit() {
+  if(props.pageFrom === 'Ai' && !formData.value.school) {
+    return ElMessage('请选择学校')
+  }
   pageIndex.value = 1 // 重置页码
   await initMemberList()
   nextTick(() => {
