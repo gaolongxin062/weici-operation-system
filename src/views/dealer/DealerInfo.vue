@@ -832,7 +832,8 @@ const selectSureBtn = () => {
 // 取消选择下放职务
 const closeDialogselect = () => {
   dialogRole.value = false
-  selectDevolveRoleList.value = []
+  selectDevolveRoleList.value = !dialogForm.sub_role_ids ? [] : Array.isArray(dialogForm.sub_role_ids) ? [...dialogForm.sub_role_ids] : dialogForm.sub_role_ids.split(',').map(Number)
+  
 }
 
 // 获取经销商详情
