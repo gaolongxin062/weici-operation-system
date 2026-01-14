@@ -99,12 +99,23 @@ const onlyShowSelected = ref(false)
 
 // 已勾选的学校id集合
 const selectedIds = computed(() => {
+	console.log('11111111111111', multipleSelection.value);
+	console.log(multipleSelection.value.map(item => item.id).filter(id => id));
+	
 	return multipleSelection.value.map(item => item.id).filter(id => id)
 })
 
 // 表格展示的数据集，根据勾选状态筛选
 const displayDataList = computed(() => {
 	if (!onlyShowSelected.value) return dataList.value;
+	nextTick(() => {
+		if (!multipleTable.value || !dataList.value.length) return;
+		dataList.value.forEach(row => {
+			const isChecked = selectedIds.value.includes(row.id);
+			multipleTable.value.toggleRowSelection(row, isChecked);
+		});
+		
+	});
 	return dataList.value.filter(row => selectedIds.value.includes(row.id))
 })
 
@@ -126,6 +137,8 @@ const toggleOnlyShowSelected = () => {
 			const isChecked = selectedIds.value.includes(row.id);
 			multipleTable.value.toggleRowSelection(row, isChecked);
 		});
+		console.log('dataList.value', dataList.value);
+		
 	});
 }
 

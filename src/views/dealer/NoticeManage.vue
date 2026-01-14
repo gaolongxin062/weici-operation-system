@@ -43,7 +43,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="接受范围" width="80px">
+      <el-table-column label="接收范围" width="80px">
         <template #default="scope">
           <div>{{ scope.row.receive_range ? '部分区域' : '全部' }}</div>
         </template>
@@ -99,7 +99,7 @@
               v-model="dialogForm.title" :autosize="{ minRows: 4, maxRows: 6 }">
             </el-input>
           </el-form-item>
-          <el-form-item label="接受范围" prop="area_ids">
+          <el-form-item label="接收范围" prop="receive_range">
             <el-cascader style="width:250px" v-model="dialogForm.receive_range" clearable :options="areaTreeList"
               :props="cascaderAreaProps" :show-all-levels="false" @change="changeArea" collapse-tags />
           </el-form-item>
@@ -196,7 +196,7 @@ const cascaderAreaProps = {
 }
 let dialogForm = reactive({
   title: '', // 公告名称
-  receive_range: '', // 接受范围
+  receive_range: '', // 接收范围
   content: '', // 内容
 })
 let rules = ref({
@@ -213,7 +213,14 @@ let rules = ref({
       }
     },
     { required: true, message: '请输入', trigger: 'blur' }
-  ]
+  ],
+  receive_range: [
+    {
+      required: true,
+      message: '请选择接收范围',
+      trigger: 'change'
+    }
+  ],
 });
 
 onMounted(() => {
