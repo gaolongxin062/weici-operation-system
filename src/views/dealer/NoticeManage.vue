@@ -103,8 +103,11 @@
             <el-cascader style="width:250px" v-model="dialogForm.receive_range" clearable :options="areaTreeList"
               :props="cascaderAreaProps" :show-all-levels="false" @change="changeArea" collapse-tags />
           </el-form-item>
-          <el-form-item label="公告内容">
-            <rich-text-editor ref="basicEditor" :default-text="dialogForm.content || ''"/>
+          <el-form-item label="公告内容" prop="content">
+            <rich-text-editor ref="basicEditor" :default-text="dialogForm.content || ''"
+              @input="syncRichTextContent"
+              @change="syncRichTextContent"
+            />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -138,7 +141,8 @@
           </div>
           <div class="detail-item">
             <h6>内容</h6>
-            <rich-text-editor :default-text="dialogForm.content || ''" :disabled="true"/>
+            <rich-text-editor :default-text="dialogForm.content || ''" :disabled="true"
+            />
           </div>
         </div>
       </el-dialog>
@@ -221,12 +225,26 @@ let rules = ref({
       trigger: 'change'
     }
   ],
+  content: [
+    {
+      required: true,
+      message: '请输入内容',
+      trigger: 'blur'
+    }
+  ]
 });
 
 onMounted(() => {
   getUserPower()
   getNoticesList()
 })
+const syncRichTextContent = () => {
+  if (basicEditor.value) {
+    // 获取富文本内容
+    const richContent = basicEditor.value.contentHandle();
+    dialogForm.content = richContent;
+  }
+}
 // 获取用户权限
 const getUserPower = () => {
   return basicService.getPower(
