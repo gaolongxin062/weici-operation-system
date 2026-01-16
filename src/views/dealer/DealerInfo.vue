@@ -214,7 +214,7 @@
           </div>
           <div class="detail-item">
             <h6>负责情况</h6>
-            <p class=""> 负责描述：{{ detailData.remark }} </p>
+            <p class=""> 负责范围描述：{{ detailData.remark }} </p>
           </div>
           <div class="detail-item">
             <h6>负责范围</h6>
@@ -222,23 +222,23 @@
               ref="multipleTable" stripe element-loading-text="拼命加载中，主人请稍后...">
               <el-table-column label="省份" width="120" show-overflow-tooltip>
                 <template #default="scope">
-                  <div>{{ scope.row.province || '-' }}</div>
+                  <div class="region">{{ scope.row.province || '-' }}</div>
                 </template>
               </el-table-column>
 
               <el-table-column label="城市" show-overflow-tooltip>
                 <template #default="scope">
-                  <div>{{ scope.row.citys || '-' }}</div>
+                  <div class="region">{{ scope.row.citys || '-' }}</div>
                 </template>
               </el-table-column>
-              <el-table-column label="区县" show-overflow-tooltip>
+              <el-table-column width="200" label="区县" v-if="detailData.role_level!==1" show-overflow-tooltip>
                 <template #default="scope">
-                  <div>{{ scope.row.countys || '-' }}</div>
+                  <div class="region">{{ scope.row.countys || '-' }}</div>
                 </template>
               </el-table-column>
-              <el-table-column label="学校" show-overflow-tooltip>
+              <el-table-column width="200" label="学校" v-if="detailData.role_level===4" show-overflow-tooltip>
                 <template #default="scope">
-                  <div>{{ scope.row.name || '-' }}</div>
+                  <div class="region">{{ scope.row.name || '-' }}</div>
                 </template>
               </el-table-column>
             </el-table>
@@ -1298,5 +1298,12 @@ const roleCancelDialog = () => {
   margin-left: 100px;
   margin-bottom: 20px;
   font-size: 16px;
+}
+.region{
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
 }
 </style>
