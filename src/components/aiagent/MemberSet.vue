@@ -229,6 +229,7 @@
   ]) // 学校
   let isShowSelectAccountNumber = ref(false) // 是否显示选择账号弹框
   let maxEndTime = ref('') // 如果是作文批改-编辑时候-并且有数组得情况下 结束时间不能超过此数值
+  let isClickSelectUserCode = ref(false) // 是否点击选择账号按钮 去选择账号
   let rules = ref({
     user_codes: [
       { required: true, message: '请输入账号（只能输入数字，多账号用英文逗号分隔）', trigger: 'blur' }
@@ -356,7 +357,7 @@
       .then((res) => {
         if (res.result_code === 200) {
           provinceList.value = res.list
-          if (!props.isEdit) return
+          if (!props.isEdit && !isClickSelectUserCode.value) return
             getCityList()
           }
     }).catch((error) => {
@@ -373,7 +374,7 @@
       .then((res) => {
         if (res.result_code === 200) {
           cityList.value = res.list
-          if (!props.isEdit || formData.value.city === '') return
+          if ((!props.isEdit || formData.value.city === '') && !isClickSelectUserCode.value) return
             getAreaList()
           }
     }).catch((error) => {
@@ -390,7 +391,7 @@
       .then((res) => {
         if (res.result_code === 200) {
           countyList.value = res.list
-          if (!props.isEdit || formData.value.county === '') return
+          if ((!props.isEdit || formData.value.county === '') && !isClickSelectUserCode.value) return
             initGetSchool()
           }
     }).catch((error) => {
@@ -561,12 +562,21 @@
   function cancelSelectAccountNumber () {
     isShowSelectAccountNumber.value = false
   } // 取消展开选择账号弹框
-  function confirmSelectAccountNumber (val) {
+  function confirmSelectAccountNumber (val, cityCountyObj) {
     console.log(val)
+    // console.log('cityCountyObj', cityCountyObj)
     let list = formData.value.user_codes.length ? formData.value.user_codes.split(',').concat(val) : val // 将输入框中的内容和用户选择的内容拼接
     console.log(list)
     formData.value.user_codes = [...new Set(list)].join(',') // 将内容转为字符串
     isShowSelectAccountNumber.value = false
+    if (val.length !== 0) { // 选择账号确定要带回省市区县学校信息
+      isClickSelectUserCode.value = true
+      getProvinceList() // 获取省份
+      formData.value.province = cityCountyObj.province_id || '' // 省
+      formData.value.city = cityCountyObj.city ? cityCountyObj.city_id : '' // 市
+      formData.value.county = cityCountyObj.county ? cityCountyObj.county_id : '' // 区县
+      formData.value.school = cityCountyObj.school_id || '' // 学校
+    }
   } // 确认展开选择账号弹框
   function handleInput (value) {
     // 只允许输入数字或英文逗号

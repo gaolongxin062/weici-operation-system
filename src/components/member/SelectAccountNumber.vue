@@ -415,7 +415,7 @@ function cancelDialog () {
 } // 点击取消
 function saveDialog () {
   let userCodeList = selectStudent.value.map(item => item.phone)
-  emit('saveDialog', userCodeList)
+  emit('saveDialog', userCodeList, selectStudent.value[0])
   // formRef.value.validate((valid) => {
   //   console.log(valid)
   //   if (valid) {
