@@ -154,8 +154,8 @@
 
       <el-table-column label="操作" fixed="right"  min-width="160px" v-if="deletePower || editPower">
         <template #default="scope">
-          <!-- 只有体验中的才显示 -->
-          <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower && scope.row.state === 1">
+          <!-- 只有体验中的并且是体验用户才显示 -->
+          <el-button class="button-style" link type="primary" @click="editUser(scope.row)" v-if="editPower && scope.row.state === 1 && scope.row.user_type === 1">
             编辑
           </el-button>
            <el-button class="button-style" link type="primary" v-else style="color: transparent;">
