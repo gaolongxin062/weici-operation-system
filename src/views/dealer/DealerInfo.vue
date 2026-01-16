@@ -781,7 +781,7 @@ const makeSureBtn = () => {
           loading.close()
         } finally {
           loading.close()
-          dialogType.value = 'add'
+          // dialogType.value = 'add'
         }
       } else if (dialogType.value === 'power'){
         // 更改权限逻辑
