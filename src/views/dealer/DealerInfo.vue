@@ -176,7 +176,7 @@
     <!-- 选择下方职务弹窗 -->
     <div class="add-dialog">
       <el-dialog v-model="dialogRole" top="5vh" title="选择下放职务" width="800" :close-on-click-modal="false" :show-close="false">
-        <div class="role-card">
+        <div class="role-card" v-if="devolveRoleList.length">
           <div class="role-card-item" v-for="(item, index) in devolveRoleList" :key="index" @click="selectRole(item)">
             <div class="label"> {{ getRoleLabel(item.role_level) }} </div>
             <div class="title"> {{ item.role_name }} </div>
@@ -187,10 +187,11 @@
             </div>
           </div>
         </div>
+        <el-empty v-else description="暂无可选下放职务" />
         <template #footer>
           <div class="dialog-footer">
             <el-button @click="closeDialogselect">取消</el-button>
-            <el-button type="primary" @click="selectSureBtn">
+            <el-button type="primary" @click="selectSureBtn" v-if="devolveRoleList.length">
               保存
             </el-button>
           </div>
@@ -1271,6 +1272,9 @@ const roleCancelDialog = () => {
 .detail-box {
   display: flex;
   flex-direction: column;
+  padding: 10px 30px;
+  height: 500px;
+  overflow-y: auto;
 }
 
 .detail-box .detail-item {
