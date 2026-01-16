@@ -23,7 +23,12 @@
           <el-date-picker v-model="formData.trial_start_time" value-format="YYYY-MM-DD" type="date" :disabled="true" placeholder="请选择开始时间" clearable />
         </el-form-item>
         <el-form-item label="结束时间" label-width="130px" prop="trial_end_time">
-          <el-date-picker v-model="formData.trial_end_time" value-format="YYYY-MM-DD" type="date" placeholder="请选择结束时间" clearable />
+          <div v-if="isEdit && pageFrom === 'Ai' && maxEndTime !== ''" >
+            <el-date-picker :disabled-date="disabledDate" v-model="formData.trial_end_time" value-format="YYYY-MM-DD" type="date" placeholder="请选择结束时间" clearable />
+          </div>
+          <div v-else >
+            <el-date-picker v-model="formData.trial_end_time" value-format="YYYY-MM-DD" type="date" placeholder="请选择结束时间" clearable />
+          </div>
         </el-form-item>
       </div>
 
@@ -223,7 +228,7 @@
   let schoolList = ref([
   ]) // 学校
   let isShowSelectAccountNumber = ref(false) // 是否显示选择账号弹框
-
+  let maxEndTime = ref('') // 如果是作文批改-编辑时候-并且有数组得情况下 结束时间不能超过此数值
   let rules = ref({
     user_codes: [
       { required: true, message: '请输入账号（只能输入数字，多账号用英文逗号分隔）', trigger: 'blur' }
@@ -319,6 +324,14 @@
     setDefaultConfig() // 设置默认设置
     getProvinceList() // 获取省份
   })
+  function disabledDate(time) {  
+    // 禁止选择maxEndTime当天及之后的日期
+    return (format.formatDateDay(time.getTime())) >= maxEndTime.value
+    // const [year, month, day] = maxEndTime.value.split('-').map(Number)
+    // const maxDate = new Date(year, month - 1, day)
+    // 禁用 maxEndTime 当天及之后的日期
+    // return time.getTime() >= maxDate.getTime()
+  }
   function changeProvince () { // 省
     getCityList() // 获取市
     formData.value.city = ''
@@ -457,6 +470,7 @@
         console.log(res)
         if (res.result_code === 200) {
           // provinceData.value = res.list
+          maxEndTime.value = res.data.max_end_time
           formData.value.use_info = res.data.use_info
         }
     }).catch((error) => {
