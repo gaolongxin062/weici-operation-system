@@ -219,6 +219,7 @@ export let dealerApi = {
   deleteDistributorNotice: '/deleteDistributorNotice', // 删除公告
   releaseDistributorNotice: '/releaseDistributorNotice', // 发布公告
   getNoticeDetail: '/getNoticeDetail', // 获取公告详情
+  checkDistributorQuote: '/checkDistributorQuote', // 删除经销商前检查经销商被引用状态
 }
 
 // 经销商管理api

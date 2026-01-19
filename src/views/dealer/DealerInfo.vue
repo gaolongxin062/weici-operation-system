@@ -29,8 +29,8 @@
       </div>
     </el-form>
     <el-table row-key="user_id" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" :data="dealerList"
-      class="table-info" header-cell-class-name="header_row_class" :max-height="screenHeight" v-loading="loading" ref="multipleTable" stripe
-      element-loading-text="拼命加载中，主人请稍后...">
+      class="table-info" header-cell-class-name="header_row_class" :max-height="screenHeight" v-loading="loading"
+      ref="multipleTable" stripe element-loading-text="拼命加载中，主人请稍后...">
       <el-table-column label="姓名" width="200">
         <template #default="scope">
           <div>{{ scope.row.user_name || '-' }}</div>
@@ -89,8 +89,8 @@
                 <el-dropdown-item @click="detail(scope.row)">详情</el-dropdown-item>
                 <el-dropdown-item v-if="editPower" @click="edit(scope.row)">修改</el-dropdown-item>
                 <el-dropdown-item v-if="selectPower" @click="changePower(scope.row)">变更权限</el-dropdown-item>
-                <el-dropdown-item v-if="deletePower" style="color:#f56c6c" type="danger" :disabled="scope.row.stop_flag === 0"
-                  @click="editStatus(scope.row, 1)">删除</el-dropdown-item>
+                <el-dropdown-item v-if="deletePower" style="color:#f56c6c" type="danger"
+                  :disabled="scope.row.stop_flag === 0" @click="editStatus(scope.row, 1)">删除</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -103,7 +103,8 @@
         @close="closeDialogAdd">
         <el-form :inline="true" ref="formref" id="form" :model="dialogForm" size="large" label-width="100px"
           :rules="rules" :disabled="dialogFormDisabled" style="display: flex; flex-direction: column;">
-          <div v-if="dialogType === 'power'" class="power-info"> {{  detailData.user_name }}-{{  detailData.phone }} </div>
+          <div v-if="dialogType === 'power'" class="power-info"> {{ detailData.user_name }}-{{ detailData.phone }}
+          </div>
           <el-form-item label="姓名" prop="name" v-if="dialogType !== 'power'">
             <el-input class="search-input" clearable placeholder="请输入" show-word-limit :maxlength="20"
               v-model.trim="dialogForm.name">
@@ -115,8 +116,8 @@
             </el-input>
           </el-form-item>
           <el-form-item v-if="dialogType !== 'edit'" label="所属上级">
-            <el-cascader style="width:250px" :disabled="dialogType === 'power'" v-model="dialogForm.parent_id" clearable :options="processedDealerList" :props="cascaderProps"
-              :show-all-levels="false" @change="changeDealer"/>
+            <el-cascader style="width:250px" :disabled="dialogType === 'power'" v-model="dialogForm.parent_id" clearable
+              :options="processedDealerList" :props="cascaderProps" :show-all-levels="false" @change="changeDealer" />
           </el-form-item>
           <el-form-item v-if="dialogType !== 'edit'" label="职务" prop="role_id">
             <el-select :disabled="dialogFormDisabled" v-model="dialogForm.role_id" placeholder="请选择内容"
@@ -125,24 +126,22 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="dialogType !== 'edit'" label="负责范围" prop="area_ids">
-            <el-cascader ref="cascaderRef" style="width:250px" v-if='role_level!==4' v-model="dialogForm.area_ids" clearable :options="areaTreeList" :props="cascaderAreaProps"
-              :show-all-levels="false" @change="changeArea" collapse-tags />
-              <el-button v-else type="primary" @click="addRoleSchool">{{ dialogForm.area_ids.length ? `已选择
+            <el-cascader ref="cascaderRef" style="width:250px" v-if='role_level !== 4' v-model="dialogForm.area_ids"
+              clearable :options="areaTreeList" :props="cascaderAreaProps" :show-all-levels="false" @change="changeArea"
+              collapse-tags />
+            <el-button v-else type="primary" @click="addRoleSchool">{{ dialogForm.area_ids.length ? `已选择
               ${dialogForm.area_ids.length} 所学校` : '选择学校' }}</el-button>
           </el-form-item>
-          <el-form-item v-if="dialogType !== 'edit' && role_level!==4" label="特例学校" prop="role_level">
-            <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="其只负责部分区域的部分学校，需勾选不需要负责的部分学校"
-              placement="top-start"
-            >
-              <el-icon><QuestionFilled /></el-icon>
+          <el-form-item v-if="dialogType !== 'edit' && role_level !== 4" label="特例学校" prop="role_level">
+            <el-tooltip class="box-item" effect="dark" content="其只负责部分区域的部分学校，需勾选不需要负责的部分学校" placement="top-start">
+              <el-icon>
+                <QuestionFilled />
+              </el-icon>
             </el-tooltip>
             <el-button type="primary" @click="addSpecialSchool">{{ dialogForm.school_ids.length ? `已选择
               ${dialogForm.school_ids.length} 所学校` : '特例学校' }}</el-button>
           </el-form-item>
-          <el-form-item v-if="dialogType !== 'edit' && role_level!==4" label="下放职务" prop="sub_role_ids">
+          <el-form-item v-if="dialogType !== 'edit' && role_level !== 4" label="下放职务" prop="sub_role_ids">
             <el-button type="primary" @click="selectRoleBtn">{{ selectDevolveRoleList.length ? `已选择
               ${selectDevolveRoleList.length} 职务` : '选择职务' }}</el-button>
 
@@ -175,7 +174,8 @@
     </div>
     <!-- 选择下方职务弹窗 -->
     <div class="add-dialog">
-      <el-dialog v-model="dialogRole" top="5vh" title="选择下放职务" width="800" :close-on-click-modal="false" :show-close="false">
+      <el-dialog v-model="dialogRole" top="5vh" title="选择下放职务" width="800" :close-on-click-modal="false"
+        :show-close="false">
         <div class="role-card" v-if="devolveRoleList.length">
           <div class="role-card-item" v-for="(item, index) in devolveRoleList" :key="index" @click="selectRole(item)">
             <div class="label"> {{ getRoleLabel(item.role_level) }} </div>
@@ -232,12 +232,12 @@
                   <div class="region">{{ scope.row.citys || '-' }}</div>
                 </template>
               </el-table-column>
-              <el-table-column width="200" label="区县" v-if="detailData.role_level!==1" show-overflow-tooltip>
+              <el-table-column width="200" label="区县" v-if="detailData.role_level !== 1" show-overflow-tooltip>
                 <template #default="scope">
                   <div class="region">{{ scope.row.countys || '-' }}</div>
                 </template>
               </el-table-column>
-              <el-table-column width="200" label="学校" v-if="detailData.role_level===4" show-overflow-tooltip>
+              <el-table-column width="200" label="学校" v-if="detailData.role_level === 4" show-overflow-tooltip>
                 <template #default="scope">
                   <div class="region">{{ scope.row.name || '-' }}</div>
                 </template>
@@ -247,15 +247,52 @@
         </div>
       </el-dialog>
     </div>
+    <!-- 经销商关联弹窗 -->
+    <div class="detail-dialog">
+      <el-dialog v-model="dialogQuote" title="提示" width="800" :show-close="true" :destroy-on-close="true">
+        <div class="detail-box">
+          <div class="detail-item" style="margin-bottom:20px">
+            以下用户存在历史订单信息，可进行禁用，但是无法进行删除操作
+          </div>
+          <el-table row-key="user_id"
+            :data="quoteList" class="table-info" header-cell-class-name="header_row_class" :max-height="600">
+            <el-table-column label="用户" width="200">
+              <template #default="scope">
+                <div>{{ scope.row.user_name || '-' }}</div>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="手机">
+              <template #default="scope">
+                <div>{{ scope.row.phone || '-' }}</div>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="存在订单类型">
+              <template #default="scope">
+                <div> {{ quoteTypeList.find(item => item.value === scope.row.type)?.label || '-' }}</div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="closeQuote" type="primary">我知道了</el-button>
+          </div>
+        </template>
+      </el-dialog>
+    </div>
   </div>
   <!-- 普通人员选择学校弹窗 -->
-  <select-school v-if="roleSelectSchoolShow" :roleLevel="role_level" type="roleSelece" :selectInfo="selectInfo" @saveDialog="roleSaveDialog" @cancelDialog="roleCancelDialog" :schoolList="dialogForm.area_ids"></select-school>
+  <select-school v-if="roleSelectSchoolShow" :roleLevel="role_level" type="roleSelece" :selectInfo="selectInfo"
+    @saveDialog="roleSaveDialog" @cancelDialog="roleCancelDialog" :schoolList="dialogForm.area_ids"></select-school>
   <!-- 选择特例学校弹窗 -->
-  <select-school v-if="selectSchoolShow" type="caseSelect" :selectInfo="selectInfo" @saveDialog="saveDialog" @cancelDialog="cancelDialog" :schoolList="dialogForm.school_ids"></select-school>
+  <select-school v-if="selectSchoolShow" type="caseSelect" :selectInfo="selectInfo" @saveDialog="saveDialog"
+    @cancelDialog="cancelDialog" :schoolList="dialogForm.school_ids"></select-school>
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, computed} from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import { useScreenHeight } from '@/hooks/useScreenHeight.js';
 const { screenHeight } = useScreenHeight();
 import basicService from '@/service/BasicService.js';
@@ -292,6 +329,8 @@ const dialogDetail = ref(false)
 const roleSelectSchoolShow = ref(false) // 普通人员选择学校弹窗显示隐藏
 const powerStatus = ref(true)
 const cascaderRef = ref({})
+const quoteList = ref([])
+const dialogQuote = ref(false)
 const roleEnum = reactive(
   [
     {
@@ -341,6 +380,20 @@ let dialogForm = reactive({
   password: '',
   school_ids: ''
 })
+const quoteTypeList = [
+  {
+    value: 1,
+    label: '班级统一付费类订单'
+  },
+  {
+    value: 2,
+    label: '学生自主付费类订单'
+  },
+  {
+    value: 3,
+    label: '班级统一付费类订单、学生自主付费类订单'
+  }
+]
 let rules = ref({
   name: [
     {
@@ -411,10 +464,10 @@ let rules = ref({
       }
     }
   ],
-  sub_role_ids:[
+  sub_role_ids: [
     { required: true, message: '请选择', trigger: 'change' }
   ],
-  area_ids:[
+  area_ids: [
     { required: true, message: '请选择', trigger: 'change' }
   ]
 });
@@ -423,14 +476,14 @@ onMounted(() => {
   getUserPower()
   getDealerList()
 })
-  // 递归处理节点：给第四级添加 disabled: true 用于上级选择第四级禁用
+// 递归处理节点：给第四级添加 disabled: true 用于上级选择第四级禁用
 const processedDealerList = computed(() => {
   const disableFourthLevel = (options, level = 0) => {
     if (!Array.isArray(options)) return [];
     return options.map(option => {
       const newOption = { ...option };
       // 第四级（level=4）禁用
-      if (option.role_level === 4 || option.role_level===null || option.stop_flag === 1) {
+      if (option.role_level === 4 || option.role_level === null || option.stop_flag === 1) {
         newOption.disabled = true;
       }
       if (newOption.children && newOption.children.length > 0) {
@@ -631,7 +684,7 @@ const handlePhoneInput = () => {
 
 // 触发按钮选择下放职务
 const selectRoleBtn = () => {
-  if (dialogForm.role_id){
+  if (dialogForm.role_id) {
     dialogRole.value = true
   } else {
     ElMessage.warning('请选择职务')
@@ -664,7 +717,7 @@ const addSpecialSchool = () => {
 }
 
 const addRoleSchool = () => {
-    // 拼一下子组件接口需要的参数 此参数不会变化，变化的在子组件中定义
+  // 拼一下子组件接口需要的参数 此参数不会变化，变化的在子组件中定义
   selectInfo.value = {
     session: vocabularyStore.session,
     user_name: vocabularyStore.user_name,
@@ -674,7 +727,7 @@ const addRoleSchool = () => {
 }
 
 // 取消新增
-const closeDialogAdd = async() => {
+const closeDialogAdd = async () => {
   dialogAdd.value = false
   formref.value.resetFields()
   dialogForm.id = ''
@@ -784,7 +837,7 @@ const makeSureBtn = () => {
           loading.close()
           // dialogType.value = 'add'
         }
-      } else if (dialogType.value === 'power'){
+      } else if (dialogType.value === 'power') {
         // 更改权限逻辑
         let params = {
           session: vocabularyStore.session,
@@ -844,7 +897,7 @@ const selectSureBtn = () => {
 const closeDialogselect = () => {
   dialogRole.value = false
   selectDevolveRoleList.value = !dialogForm.sub_role_ids ? [] : Array.isArray(dialogForm.sub_role_ids) ? [...dialogForm.sub_role_ids] : dialogForm.sub_role_ids.split(',').map(Number)
-  
+
 }
 
 // 获取经销商详情
@@ -912,10 +965,10 @@ const changePower = async (row) => {
   dialogForm.role_id = detailData.value.role_id || ''
   // 获取负责范围
   await getAreaTree(row.parent_id)
-  dialogForm.area_ids = detailData.value.area_ids ? detailData.value.area_ids.split(',').map(item => Number(item.trim())): ''
+  dialogForm.area_ids = detailData.value.area_ids ? detailData.value.area_ids.split(',').map(item => Number(item.trim())) : ''
   dialogForm.school_ids = detailData.value.school_ids ? detailData.value.school_ids.split(',').map(item => Number(item.trim())) : ''
   console.log(' dialogForm.school_ids', dialogForm.school_ids, detailData.value.school_ids)
-  
+
   // 获取下放职务
   getRoleList(row.parent_id, detailData.value.role_level)
   selectDevolveRoleList.value = detailData.value.role_ids ? detailData.value.role_ids.split(',').map(item => Number(item.trim())) : []
@@ -976,14 +1029,20 @@ const editStatus = async (row, type) => {
   let label = ''
   let mesTitle = ''
   if (type === 1) {
+    await checkDistributorQuote(row)
     label = '是否确认删除'
     title = '确定后，将同时删除其下级账号数据'
     mesTitle = '删除成功'
+    if (quoteList.value.length) {
+      dialogQuote.value = true
+      return
+    }
   } else if (type === 0) {
     label = '是否确认禁用'
     title = '禁用后将对其账号以及其创建的下级账号全部进行禁用'
     mesTitle = '禁用成功'
   }
+
   ElMessageBox.confirm(
     title,
     label,
@@ -1027,63 +1086,99 @@ const editStatus = async (row, type) => {
   }).catch(() => {
   })
 }
+
+// 关闭引用弹窗
+const closeQuote = () => {
+  dialogQuote.value = false
+  quoteList.value = []
+}
+
+//删除时检测是否经销商有无被引用
+const checkDistributorQuote = async (row) => {
+  const params = {
+    user_name: vocabularyStore.user_name,
+    session: vocabularyStore.session,
+    distributor_id: row.user_id,
+  }
+  try {
+    const res = await dealerService.getCheckDistributorQuote(params)
+    if (res.result_code === 200) {
+      if (res.quoteList && res.quoteList.length) {
+        quoteList.value = res.quoteList
+      } else {
+        quoteList.value = []
+      }
+    } else {
+      quoteList.value = []
+      ElMessage({
+        message: res.description,
+        type: 'info',
+        duration: 3000
+      })
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// 启用禁用时检查时权限范围等
 const editStatusDisable = async (row) => {
   const params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
     distributor_id: row.user_id,
   }
-  try{
+  try {
     const res = await dealerService.checkDistributorAuth(params)
-      if (res.result_code === 920) {
-        powerStatus.value = true
-        ElMessageBox.confirm(
-          '请先完善负责范围信息',
-          {
-            confirmButtonText: '确定',
-            confirmButtonClass: 'button-confirm',
-            cancelButtonText: '取消',
-            center: true,
-          }
-        ).then(() => {
-          changePower(row)
-          return false
-        }).catch(() => {
-        })
-      } else if (res.result_code === 921) {
-        powerStatus.value = true
-        ElMessageBox.confirm(
-          '请先完善职务信息',
-          {
-            confirmButtonText: '确定',
-            confirmButtonClass: 'button-confirm',
-            cancelButtonText: '取消',
-            center: true,
-          }
-        ).then(() => {
-          changePower(row)
-          return false
-        }).catch(() => {
-        })
-      } else if (res.result_code === 922) {
-        powerStatus.value = true
-        ElMessage({
-          message: `当前上级账号已被禁用，请先启用其上级后再进行操作`,
-          type: 'warning',
-          duration: 1000
-        })
+    if (res.result_code === 920) {
+      powerStatus.value = true
+      ElMessageBox.confirm(
+        '请先完善负责范围信息',
+        {
+          confirmButtonText: '确定',
+          confirmButtonClass: 'button-confirm',
+          cancelButtonText: '取消',
+          center: true,
+        }
+      ).then(() => {
+        changePower(row)
         return false
-      } else if (res.result_code === 200) {
-        powerStatus.value = false
+      }).catch(() => {
+      })
+    } else if (res.result_code === 921) {
+      powerStatus.value = true
+      ElMessageBox.confirm(
+        '请先完善职务信息',
+        {
+          confirmButtonText: '确定',
+          confirmButtonClass: 'button-confirm',
+          cancelButtonText: '取消',
+          center: true,
+        }
+      ).then(() => {
+        changePower(row)
+        return false
+      }).catch(() => {
+      })
+    } else if (res.result_code === 922) {
+      powerStatus.value = true
+      ElMessage({
+        message: `当前上级账号已被禁用，请先启用其上级后再进行操作`,
+        type: 'warning',
+        duration: 1000
+      })
+      return false
+    } else if (res.result_code === 200) {
+      powerStatus.value = false
 
-      }
+    }
   } catch (error) {
     console.log(error)
   }
 }
 // 启用
 const editStatusEnable = async (row) => {
-  await editStatusDisable (row)
+  await editStatusDisable(row)
   // 启用前先判断一下权限状态是否丢失
   if (powerStatus.value) {
     return
@@ -1133,19 +1228,19 @@ const saveDialog = async (schooleList) => {
 }
 
 // 普通职务选择学校保存逻辑
-const roleSaveDialog = async (schooleList) => { 
+const roleSaveDialog = async (schooleList) => {
   console.log('schooleListIDa111', schooleList)
   roleSelectSchoolShow.value = false
   dialogForm.area_ids = schooleList
 }
 
 // 特例学校取消逻辑
-const cancelDialog = () => { 
+const cancelDialog = () => {
   selectSchoolShow.value = false
 }
 
 // 特例学校取消逻辑
-const roleCancelDialog = () => { 
+const roleCancelDialog = () => {
   roleSelectSchoolShow.value = false
 }
 
@@ -1298,12 +1393,14 @@ const roleCancelDialog = () => {
   margin: 0;
   margin-bottom: 10px;
 }
-.power-info{
+
+.power-info {
   margin-left: 100px;
   margin-bottom: 20px;
   font-size: 16px;
 }
-.region{
+
+.region {
   width: 200px;
   white-space: nowrap;
   overflow: hidden;

@@ -476,6 +476,29 @@ const checkDistributorAuth = (params) => {
   })
 }
 
+/**
+ * 获取公告详情
+ * @param session session
+ * @param user_name 账号
+ * @param id 公告id
+ */
+const getCheckDistributorQuote = (params) => {
+  return new Promise((resolve, reject) => {
+    service
+      .get(dealerApi.checkDistributorQuote, {
+        params
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          resolve(res.data)
+        } else reject(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
 export default {
   getDistributorRoleList,
   getDistributorRightTree,
@@ -498,5 +521,6 @@ export default {
   deleteDistributorNotice,
   releaseDistributorNotice,
   getNoticeDetail,
-  checkDistributorAuth
+  checkDistributorAuth,
+  getCheckDistributorQuote
 }
