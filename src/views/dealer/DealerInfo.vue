@@ -115,7 +115,11 @@
               v-model="dialogForm.phone" @input="handlePhoneInput">
             </el-input>
           </el-form-item>
-          <el-form-item v-if="dialogType !== 'edit'" label="所属上级">
+          <el-form-item v-if="dialogType !== 'edit' && role_level!==4" label="所属上级">
+            <el-cascader style="width:250px" :disabled="dialogType === 'power'" v-model="dialogForm.parent_id" clearable
+              :options="processedDealerList" :props="cascaderProps" :show-all-levels="false" @change="changeDealer" />
+          </el-form-item>
+          <el-form-item v-if="dialogType !== 'edit' && role_level===4" label="所属上级" prop="parent_id">
             <el-cascader style="width:250px" :disabled="dialogType === 'power'" v-model="dialogForm.parent_id" clearable
               :options="processedDealerList" :props="cascaderProps" :show-all-levels="false" @change="changeDealer" />
           </el-form-item>
@@ -468,6 +472,9 @@ let rules = ref({
     { required: true, message: '请选择', trigger: 'change' }
   ],
   area_ids: [
+    { required: true, message: '请选择', trigger: 'change' }
+  ],
+  parent_id: [
     { required: true, message: '请选择', trigger: 'change' }
   ]
 });
