@@ -785,7 +785,7 @@ const makeSureBtn = () => {
             closeDialogAdd()
           } else if (res.result_code === 913) {
             ElMessage({
-              message: '手机号重复，经销商已存在',
+              message: '手机号或账号重复，经销商已存在',
               type: 'error',
             })
           } else {

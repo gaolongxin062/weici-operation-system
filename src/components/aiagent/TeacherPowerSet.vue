@@ -90,7 +90,8 @@
 					:props="defaultProps"
 					:default-expand-all="true" 
 					@check-change="getCheckedData" 
-					show-checkbox 
+					show-checkbox
+					:class="{ 'tree-complete-disabled': isCheck }"
 				/>
 			</el-form-item>
 		</el-form>
@@ -111,7 +112,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps, defineEmits, computed } from 'vue';
+import { ref, onMounted, defineProps, defineEmits, computed, nextTick } from 'vue';
 import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage } from 'element-plus';
 import aiAgentService from '@/service/AiAgentService.js';
@@ -363,11 +364,36 @@ const getRightTree = async () => {
 	try {
 		const res = await AiTeacherPower.ApiAiUserRightTree(params);
 		treeList.value = res.rights && res.rights.length ? res.rights : [];
+		await nextTick();
+    if(treeRef.value && treeList.value.length) {
+      if(!props.isEdit && !props.isCheck) {
+        // 获取所有可勾选的节点menu_index数组
+        const defaultCheckedKeys = getAllCheckableMenuIndex(treeList.value);
+        // 执行默认勾选
+        treeRef.value.setCheckedKeys(defaultCheckedKeys);
+				treeRef.value.setChecked('GradeExamination', false);
+        getCheckedData();
+      }
+    }
 	} catch (error) {
 		console.log('获取权限树失败：', error);
 	}
 };
-
+// 递归遍历权限树，收集【排除系统管理、年级考试】的所有menu_index，用于默认勾选
+const getAllCheckableMenuIndex = (treeData, excludeList = ['Sys', 'GradeExamination']) => {
+  let result = [];
+  treeData.forEach(item => {
+    // 不是需要排除的节点，就收集它的menu_index
+    if (!excludeList.includes(item.menu_index)) {
+      result.push(item.menu_index);
+      // 有子节点就递归遍历子节点
+      if (item.children && item.children.length > 0) {
+        result = [...result, ...getAllCheckableMenuIndex(item.children, excludeList)];
+      }
+    }
+  });
+  return result;
+};
 // 获取用户详情（编辑场景）- 含权限回显
 const getCompositionDetail = () => {
 	const params = {
@@ -376,7 +402,7 @@ const getCompositionDetail = () => {
 		id: props.row.id
 	};
 	return AiTeacherPower.ApiAiUserDetail(params)
-		.then((res) => {
+		.then(async(res) => {
 			if (res.result_code === 200) {
 				const { rights, province_id, city_id, county_id, school_id, user_source, teacher_code } = res.data[0];
 				// 基础信息赋值
@@ -393,6 +419,7 @@ const getCompositionDetail = () => {
 				formData.value.rights = rightsArr;
 				
 				// 等待树渲染完成后回显勾选
+				await nextTick(); 
 				if (treeRef.value && rightsArr.length) {
 					treeRef.value.setCheckedKeys(rightsArr);
 					getCheckedData();
@@ -564,6 +591,9 @@ const getParentNodeData = (node, parentNodes = []) => {
 	align-items: center;
 	justify-content: space-between;
 	grid-template-columns: 130px 1fr;
+}
+:deep(.tree-complete-disabled) {
+  pointer-events: none;
 }
 </style>
 
