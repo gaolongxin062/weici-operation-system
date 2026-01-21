@@ -4,7 +4,7 @@
       <h4>区县列表</h4>
     </div>
 
-    <el-form id="forms" :inline="true" :model="searchForm" size="large" label-width="60px">
+    <el-form id="form" :inline="true" :model="searchForm" size="large" label-width="60px">
       <div style="display: flex;align-items: center;">
         <div style="margin-right: 20px;">
           <el-form-item label="省" v-if="provinceList.length">
@@ -186,10 +186,24 @@ const addPower = ref(false)
 const editPower = ref(false)
 const deletePower = ref(false)
 onMounted(async () => {
+  // 设置页面展示高度
+  window.addEventListener('resize', updateScreenHeight)
+  updateScreenHeight()
   getUserPower()
   await getProvinceList()
   await getCountyList()
 })
+const updateScreenHeight = () => {
+  var element = document.getElementById('form');
+  if (element) {
+    var rect = element.getBoundingClientRect();
+    var formHeight = rect.height // form表单的高
+  }
+    
+   var pageHeight = 80 // 分页高度
+   var menuHeight = 64 // 导航栏高度
+   screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
+}
 // 获取用户权限
 const getUserPower = () => {
   return basicService.getPower(
