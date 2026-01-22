@@ -177,6 +177,30 @@ function getTeacherClass(params) {
 }
 
 /**
+ * 作文批改学生权限开通教师班级接口
+ * @param session 
+ * @param user_name
+ * @param ids 教师id
+ * @param schoolId 学校id
+ * @returns {Promise<unknown>}
+ */
+function getUnifyPayClass(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentMemebersApi.getUnifyPayClass, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+
+
+/**
  * 老师下的班级列表
  * @param session 
  * @param user_name
@@ -673,6 +697,7 @@ export default {
     getCountyList,
     getTeacher,
     getTeacherClass,
+    getUnifyPayClass,
     getClassStudent,
     getUnifyPaylist,
     getUnifyPayDetail,

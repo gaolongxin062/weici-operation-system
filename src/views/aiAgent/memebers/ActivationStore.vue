@@ -147,7 +147,6 @@
             v-model="dislogFormData.startTime"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
-            :disabled-date="disabledStartDate"
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
@@ -316,16 +315,6 @@ let rules = ref({
   ],
   startTime: [
     { required: true, message: '请选择开始时间', trigger: 'change' },
-    {
-      validator: (rule, value, callback) => {
-        if (maxEndTime.value && value && value < maxEndTime.value) {
-          callback(new Error('开始时间不能小于最大结束时间'));
-        } else {
-          callback();
-        }
-      },
-      trigger: 'change'
-    }
   ],
   endTime: [
     { required: true, message: '请选择结束时间', trigger: 'change' },
@@ -352,13 +341,6 @@ let studentDetails = reactive(null)// 学生详情
 let saveLoading = ref(false) // 保存按钮加载状态
 let info = ref([])
 
-// 禁用开始时间小于maxEndTime的日期
-const disabledStartDate = (time) => {
-  if (maxEndTime.value) {
-    return time.getTime() < new Date(maxEndTime.value).getTime()
-  }
-  return false
-}
 
 onMounted(() => {
   // 设置页面展示高度
@@ -413,6 +395,8 @@ const newlyAdded = () => {
   classList.value = []
   studentList.value = []
   totalStudent.value = 0
+  // 设置开始时间为当天日期
+  dislogFormData.startTime = new Date().toISOString().split('T')[0]
   dialogVisible.value = true
 }
 
@@ -616,9 +600,10 @@ const getTeacherClass = () => {
   let params = {
     user_name: vocabularyStore.user_name,
     session: vocabularyStore.session,
-    ids: dislogFormData.teacher.join(',') // 教师id，多个用英文逗号分隔
+    ids: dislogFormData.teacher.join(','), // 教师id，多个用英文逗号分隔
+    school_id: dislogFormData.school
   }
-  return AiAgentMemebers.getTeacherClass(params)
+  return AiAgentMemebers.getUnifyPayClass(params)
     .then((res) => {
       if (res.result_code === 200) {
         const allList = res.data.map(item => ({
@@ -836,7 +821,6 @@ const changeDialogSchool = () => {
   if (dislogFormData.school) {
     const matchedSchool = schoolList.value.find(item => item?.school_id === dislogFormData.school);
     maxEndTime.value = matchedSchool ? matchedSchool.max_end_time : '';
-    dislogFormData.startTime = matchedSchool ? new Date(new Date(matchedSchool.max_end_time).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0] : '';
     teacherList.value = [] // 教师
     dislogFormData.teacher = [] // 已选教师数据
     // 获取教师

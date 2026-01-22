@@ -163,6 +163,7 @@ export let aiAgentMemebersApi = {
   getCountyList: '/distributor/county/list', // 区列表
   getTeacher: '/distributor/teacher', // 教师列表
   getTeacherClass: '/teacher/class', // 教师班级
+  getUnifyPayClass: '/unify/pay/class', // 作文批改学生权限开通教师班级接口
   getClassStudent: '/class/student', // 班级学生列表
   getUnifyPaylist: '/unify/pay/list', // 学生权益列表
   getUnifyPayDetail : '/unify/pay/detail', // 获取学生权益详情
