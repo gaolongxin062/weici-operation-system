@@ -3,7 +3,7 @@
     <el-form ref="formRef" id="form" :model="formData" size="large" label-width="100px" :rules="rules">
 
       <el-form-item label="选择账号" label-width="130px" prop="user_codes">
-        <el-input class="search-input" clearable placeholder="请输入账号（只能输入数字，多账号用英文逗号分隔）" :disabled="userCodeDisabled"
+        <el-input class="search-input" clearable placeholder="请选择账号" :disabled="userCodeDisabled"
           v-model="formData.user_codes"  :rows="4" type="textarea" @input="handleInput">
         </el-input>
         <el-button type="primary" :disabled="selectBtnDisabled" class="select-btn" @click="showSelectAccountNumber">选择账号</el-button>
@@ -307,7 +307,7 @@
     if (props.isRenewal) return true // 批量续期
     if (props.isCheck) return true // 查看
     if (props.isEdit) return true // 编辑
-    return false
+    return true
   }) // 用户输入框是否禁用
   let selectBtnDisabled = computed(() => {
     if (props.isRenewal) return true // 批量续期
