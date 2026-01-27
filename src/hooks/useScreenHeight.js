@@ -1,9 +1,19 @@
 import { onMounted, ref, onBeforeUnmount, nextTick } from 'vue'
 
 export function useScreenHeight() {
-  const screenHeight = ref(0);
+  const screenHeight = ref(null);
+  const isMobileDevice = ref(false); // 默认是桌面电脑
+  const isMobile = () => { // 判断是移动端 还是桌面端
+    const userAgent = navigator.userAgent.toLowerCase()
+    return /android|iphone|ipad|ipod|mobile/i.test(userAgent)
+  }
   const calculateHeight = () => {
     nextTick(() => { // 确保 DOM 更新完成
+      isMobileDevice.value = isMobile()
+      if (isMobileDevice.value) {
+        screenHeight.value = null
+        return
+      }
       const element = document.getElementById('forms');
       const titleElement = document.getElementById('page-title');
   
@@ -12,8 +22,7 @@ export function useScreenHeight() {
         const titleHeight = titleElement.getBoundingClientRect().height;
         const pageHeight = 80; // 分页高度
         const menuHeight = 64; // 导航栏高度
-  
-        screenHeight.value = window.innerHeight - formHeight - titleHeight - pageHeight - menuHeight;
+        screenHeight.value = window.innerHeight - formHeight - titleHeight - pageHeight - menuHeight  - 80; // 80其余padding等大概值
       }
     });
   };
@@ -29,7 +38,7 @@ export function useScreenHeight() {
     window.removeEventListener('resize', calculateHeight);
   });
  
-  return { screenHeight };
+  return { screenHeight, isMobileDevice };
 }
 
 

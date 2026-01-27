@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'">
     <div class="page-title" id="page-title">
       <h4>省列表</h4>
     </div>
@@ -108,7 +108,7 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
 import { useScreenHeight } from '@/hooks/useScreenHeight.js';
-const { screenHeight } = useScreenHeight();
+const { screenHeight, isMobileDevice } = useScreenHeight();
 import basicService from '@/service/BasicService.js';
 import aiAgentService from '@/service/AiAgentService.js';
 import { useVocabularyStore } from '@/store/vocabulary';

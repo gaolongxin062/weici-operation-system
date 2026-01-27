@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'">
     <div class="page-title" id="page-title">
       <h4>学生购买套餐配置</h4>
     </div>
@@ -216,7 +216,7 @@
   import { useVocabularyStore } from '@/store/vocabulary';
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
   import { useScreenHeight } from '@/hooks/useScreenHeight.js';
-  const { screenHeight } = useScreenHeight();
+  const { screenHeight, isMobileDevice } = useScreenHeight();
   let vocabularyStore = useVocabularyStore();
   let memberForm = reactive({
     vip_name: '' // 套餐名称

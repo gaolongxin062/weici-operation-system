@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'" >
     <div class="page-title" id="page-title">
       <h4>职务管理</h4>
     </div>
@@ -179,7 +179,7 @@ import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus';
 
 // 页面高度适配
-const { screenHeight } = useScreenHeight();
+const { screenHeight, isMobileDevice } = useScreenHeight();
 // 全局状态存储
 const vocabularyStore = useVocabularyStore();
 

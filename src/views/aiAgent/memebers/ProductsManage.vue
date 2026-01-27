@@ -1,10 +1,10 @@
 <template>
-  <div class="page define-page">
+  <div class="page define-page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'">
     <div class="page-title" id="page-title">
       <h4>产品配置</h4>
     </div>
     <div class="content-box">
-      <el-form :inline="true" id="form" :model="formData" size="large" label-width="90px" @submit.prevent>
+      <el-form :inline="true" id="forms" :model="formData" size="large" label-width="90px" @submit.prevent>
         <el-form-item label="产品：" label-width="130px">
           <el-input class="search-input" clearable placeholder="请输入产品名称" v-model="formData.product"></el-input>
         </el-form-item>
@@ -208,8 +208,7 @@ import AiAgentMemebers from '@/service/AiAgentMemebers.js';
 import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage, ElMessageBox } from 'element-plus'
 const vocabularyStore = useVocabularyStore();
-const { screenHeight } = useScreenHeight();
-
+const { screenHeight, isMobileDevice } = useScreenHeight();
 let formData = reactive({
   product: '', // 产品
   distributor: 1, // 产品类型
@@ -286,26 +285,25 @@ let currentMsg = reactive(null) // 当前产品配置详情
 
 onMounted(() => {
   // 设置页面展示高度
-  window.addEventListener('resize', updateScreenHeight)
-  updateScreenHeight()
+  // window.addEventListener('resize', updateScreenHeight)
+  // updateScreenHeight()
   // 付费周期
   getProductCycleList()
   // 列表数据
   getList()
 })
-
 // 动态设置表格高度
-const updateScreenHeight = () => {
-  var element = document.getElementById('form');
-  if (element) {
-    var rect = element.getBoundingClientRect();
-    var formHeight = rect.height // form表单的高
-  }
+// const updateScreenHeight = () => {
+//   var element = document.getElementById('form');
+//   if (element) {
+//     var rect = element.getBoundingClientRect();
+//     var formHeight = rect.height // form表单的高
+//   }
     
-   var pageHeight = 80 // 分页高度
-   var menuHeight = 64 // 导航栏高度
-   screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
-}
+//    var pageHeight = 80 // 分页高度
+//    var menuHeight = 64 // 导航栏高度
+//    screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
+// }
 
 // 付费周期
 const getProductCycleList = () => {

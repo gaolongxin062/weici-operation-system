@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'">
     <div class="page-title" id="page-title">
       <h4>教师认证</h4>
     </div>
@@ -290,7 +290,7 @@
   import basicService from '@/service/BasicService.js';
   import { useVocabularyStore } from '@/store/vocabulary';
   import { useScreenHeight } from '@/hooks/useScreenHeight.js';
-  const { screenHeight } = useScreenHeight();
+  const { screenHeight, isMobileDevice } = useScreenHeight();
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
   let vocabularyStore = useVocabularyStore();
   let teacherForm = reactive({

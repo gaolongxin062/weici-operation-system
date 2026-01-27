@@ -1,10 +1,10 @@
 <template>
-  <div class="page define-page">
+  <div class="page define-page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'">
     <div class="page-title" id="page-title">
       <h4>订单记录</h4>
     </div>
     <div class="content-box">
-      <el-form :inline="true" id="form" :model="formData" size="large" label-width="90px" @submit.prevent>
+      <el-form :inline="true" id="forms" :model="formData" size="large" label-width="90px" @submit.prevent>
         <el-form-item label="经销商：" label-width="130px">
           <el-select
             style="width: 180px;"
@@ -171,7 +171,7 @@ import { useVocabularyStore } from '@/store/vocabulary';
 import { useScreenHeight } from '@/hooks/useScreenHeight.js';
 import AiAgentMemebers from '@/service/AiAgentMemebers.js';
 const vocabularyStore = useVocabularyStore();
-const { screenHeight } = useScreenHeight();
+const { screenHeight, isMobileDevice } = useScreenHeight();
 import { ElMessage } from 'element-plus'
 
 
@@ -198,8 +198,8 @@ let currentRowMsg = reactive(null)
 
 onMounted(() => {
   // 设置页面展示高度
-  window.addEventListener('resize', updateScreenHeight)
-  updateScreenHeight()
+  // window.addEventListener('resize', updateScreenHeight)
+  // updateScreenHeight()
   // 经销商数据
   initMemberList()
   // 列表数据
@@ -209,17 +209,17 @@ onMounted(() => {
 })
 
 // 动态设置表格高度
-const updateScreenHeight = () => {
-  var element = document.getElementById('form');
-  if (element) {
-    var rect = element.getBoundingClientRect();
-    var formHeight = rect.height // form表单的高
-  }
+// const updateScreenHeight = () => {
+//   var element = document.getElementById('form');
+//   if (element) {
+//     var rect = element.getBoundingClientRect();
+//     var formHeight = rect.height // form表单的高
+//   }
     
-   var pageHeight = 80 // 分页高度
-   var menuHeight = 64 // 导航栏高度
-   screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
-}
+//    var pageHeight = 80 // 分页高度
+//    var menuHeight = 64 // 导航栏高度
+//    screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
+// }
 
 // 查询
 const onSubmit = () => {

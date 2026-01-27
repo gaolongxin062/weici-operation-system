@@ -1,10 +1,10 @@
 <template>
-  <div class="page define-page">
+  <div class="page define-page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'">
     <div class="page-title" id="page-title">
       <h4>作文批改权限开通管理</h4>
     </div>
     <div class="content-box">
-      <el-form :inline="true" id="form" :model="formData" size="large" label-width="60px" @submit.prevent>
+      <el-form :inline="true" id="forms" :model="formData" size="large" label-width="60px" @submit.prevent>
       <el-form-item label="省份">
         <el-select
           v-model="formData.province_id"
@@ -206,7 +206,7 @@ import CertificationSet from '@/components/CertificationSet';
 import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useScreenHeight } from '@/hooks/useScreenHeight.js';
-const { screenHeight } = useScreenHeight();
+const { screenHeight, isMobileDevice } = useScreenHeight();
 let vocabularyStore = useVocabularyStore();
 let loading = ref(false) // 加载标记
 let total = ref(0)
@@ -271,8 +271,8 @@ onMounted(() => {
   getProvinceList() // 获取省份
   initMemberList() // 获取会员体验列表
   // 设置页面展示高度
-  window.addEventListener('resize', updateScreenHeight)
-  updateScreenHeight()
+  // window.addEventListener('resize', updateScreenHeight)
+  // updateScreenHeight()
 })
 async function onSubmit() {
   pageIndex.value = 1 // 重置页码
@@ -437,17 +437,17 @@ function getAreaList () {
     console.log(error)
   })
 } // 获取区县
-function updateScreenHeight () {
-  var element = document.getElementById('form');
-  if (element) {
-    var rect = element.getBoundingClientRect();
-    var formHeight = rect.height // form表单的高
-  }
+// function updateScreenHeight () {
+//   var element = document.getElementById('form');
+//   if (element) {
+//     var rect = element.getBoundingClientRect();
+//     var formHeight = rect.height // form表单的高
+//   }
     
-   var pageHeight = 80 // 分页高度
-   var menuHeight = 64 // 导航栏高度
-   screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
-} // 动态设置表格高度
+//    var pageHeight = 80 // 分页高度
+//    var menuHeight = 64 // 导航栏高度
+//    screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
+// } // 动态设置表格高度
 function newlyAdded() {
   addDialog.value = true
 } // 打开新增弹框

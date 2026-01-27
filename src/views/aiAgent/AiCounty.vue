@@ -1,10 +1,10 @@
 <template>
-  <div class="page">
+  <div class="page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'" >
     <div class="page-title" id="page-title">
       <h4>区县列表</h4>
     </div>
 
-    <el-form id="form" :inline="true" :model="searchForm" size="large" label-width="60px">
+    <el-form id="forms" :inline="true" :model="searchForm" size="large" label-width="60px">
       <div style="display: flex;align-items: center;">
         <div style="margin-right: 20px;">
           <el-form-item label="省" v-if="provinceList.length">
@@ -143,7 +143,7 @@ import { ref, onMounted, reactive } from 'vue';
 import basicService from '@/service/BasicService.js';
 import aiAgentService from '@/service/AiAgentService.js';
 import { useScreenHeight } from '@/hooks/useScreenHeight.js';
-const { screenHeight } = useScreenHeight();
+const { screenHeight, isMobileDevice } = useScreenHeight();
 import { useVocabularyStore } from '@/store/vocabulary';
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 let vocabularyStore = useVocabularyStore();
@@ -187,23 +187,23 @@ const editPower = ref(false)
 const deletePower = ref(false)
 onMounted(async () => {
   // 设置页面展示高度
-  window.addEventListener('resize', updateScreenHeight)
-  updateScreenHeight()
+  // window.addEventListener('resize', updateScreenHeight)
+  // updateScreenHeight()
   getUserPower()
   await getProvinceList()
   await getCountyList()
 })
-const updateScreenHeight = () => {
-  var element = document.getElementById('form');
-  if (element) {
-    var rect = element.getBoundingClientRect();
-    var formHeight = rect.height // form表单的高
-  }
+// const updateScreenHeight = () => {
+//   var element = document.getElementById('form');
+//   if (element) {
+//     var rect = element.getBoundingClientRect();
+//     var formHeight = rect.height // form表单的高
+//   }
     
-   var pageHeight = 80 // 分页高度
-   var menuHeight = 64 // 导航栏高度
-   screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
-}
+//    var pageHeight = 80 // 分页高度
+//    var menuHeight = 64 // 导航栏高度
+//    screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
+// }
 // 获取用户权限
 const getUserPower = () => {
   return basicService.getPower(

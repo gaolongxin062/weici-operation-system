@@ -1,5 +1,5 @@
 <template>
-  <div class="page define-page">
+  <div class="page define-page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'" >
     <div class="page-title" id="page-title">
       <h4>教师菜单权限开通管理</h4>
     </div>
@@ -186,7 +186,7 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import { useScreenHeight } from '@/hooks/useScreenHeight.js';
 
 // 页面高度适配
-const { screenHeight } = useScreenHeight();
+const { screenHeight, isMobileDevice } = useScreenHeight();
 // 全局状态存储
 const vocabularyStore = useVocabularyStore();
 
@@ -255,8 +255,8 @@ onMounted(() => {
   initMemberList();     // 加载教师权限列表
   
   // 监听窗口大小变化，动态调整表格高度
-  window.addEventListener('resize', updateScreenHeight);
-  updateScreenHeight();
+  // window.addEventListener('resize', updateScreenHeight);
+  // updateScreenHeight();
 });
 
 // 点击查询按钮 - 重置页码，重新加载列表
@@ -447,19 +447,19 @@ const getAreaList = () => {
 };
 
 // 动态调整表格高度
-const updateScreenHeight = () => {
-  const element = document.getElementById('form');
-  let formHeight = 0;
-  if (element) {
-    const rect = element.getBoundingClientRect();
-    formHeight = rect.height; // 获取查询表单高度
-  }
+// const updateScreenHeight = () => {
+//   const element = document.getElementById('form');
+//   let formHeight = 0;
+//   if (element) {
+//     const rect = element.getBoundingClientRect();
+//     formHeight = rect.height; // 获取查询表单高度
+//   }
   
-  const pageHeight = 80;    // 分页组件高度
-  const menuHeight = 64;    // 顶部导航栏高度
-  // 计算表格可用高度
-  screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100;
-};
+//   const pageHeight = 80;    // 分页组件高度
+//   const menuHeight = 64;    // 顶部导航栏高度
+//   // 计算表格可用高度
+//   screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100;
+// };
 
 // 打开新增弹窗
 const newlyAdded = () => {

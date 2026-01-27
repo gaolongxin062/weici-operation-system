@@ -78,4 +78,12 @@ window.ResizeObserver = class ResizeObserver extends _ResizeObserver {
     background-color: #f3f9f9 !important;
     color: #6E7484;
   }
+  /* 移动端 */
+  .mobile-page{
+    overflow-y: scroll;
+  }
+  /* 桌面端 */
+  .computer-page{
+    overflow-y: hidden;
+  }
 </style>

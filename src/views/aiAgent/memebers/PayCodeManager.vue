@@ -1,10 +1,10 @@
 <template>
-    <div class="page define-page">
+    <div class="page define-page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'">
         <div class="page-title" id="page-title">
             <h4>付费码管理</h4>
         </div>
         <div class="content-box">
-          <el-form :inline="true" id="form" :model="formData" size="large" label-width="90px" @submit.prevent>
+          <el-form :inline="true" id="forms" :model="formData" size="large" label-width="90px" @submit.prevent>
             <el-form-item label="产品：" label-width="130px">
               <el-input class="search-input" clearable placeholder="请输入姓名" v-model="formData.product"></el-input>
             </el-form-item>
@@ -400,7 +400,7 @@ import { useOssImage } from '@/hooks/useOssImage.js';
 import AiAgentMemebers from '@/service/AiAgentMemebers.js';
 import { ElMessage } from 'element-plus'
 const vocabularyStore = useVocabularyStore();
-const { screenHeight } = useScreenHeight();
+const { screenHeight, isMobileDevice } = useScreenHeight();
 const { getOssImageUrl } = useOssImage()
 
 
@@ -505,8 +505,8 @@ let detailsMessage = reactive(null)
 let currentRow = reactive(null)
 onMounted(() => {
   // 设置页面展示高度
-  window.addEventListener('resize', updateScreenHeight)
-  updateScreenHeight()
+  // window.addEventListener('resize', updateScreenHeight)
+  // updateScreenHeight()
   // 获取选择产品下拉框数据
   getProductList()
   // 付费周期
@@ -525,17 +525,17 @@ const getDefaultExpiryDate = () => {
 }
 
 // 动态设置表格高度
-const updateScreenHeight = () => {
-  var element = document.getElementById('form');
-  if (element) {
-    var rect = element.getBoundingClientRect();
-    var formHeight = rect.height // form表单的高
-  }
+// const updateScreenHeight = () => {
+//   var element = document.getElementById('form');
+//   if (element) {
+//     var rect = element.getBoundingClientRect();
+//     var formHeight = rect.height // form表单的高
+//   }
     
-   var pageHeight = 80 // 分页高度
-   var menuHeight = 64 // 导航栏高度
-   screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
-}
+//    var pageHeight = 80 // 分页高度
+//    var menuHeight = 64 // 导航栏高度
+//    screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
+// }
 
 
 // 列表

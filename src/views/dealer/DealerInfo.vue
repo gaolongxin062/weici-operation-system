@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'" >
     <div class="page-title" id="page-title">
       <h4>经销商管理</h4>
     </div>
@@ -298,7 +298,7 @@
 <script setup>
 import { ref, onMounted, reactive, computed } from 'vue';
 import { useScreenHeight } from '@/hooks/useScreenHeight.js';
-const { screenHeight } = useScreenHeight();
+const { screenHeight, isMobileDevice } = useScreenHeight();
 import basicService from '@/service/BasicService.js';
 import dealerService from '@/service/DealerService';
 import SelectSchool from '@/components/dealer/SelectSchool.vue'

@@ -1,10 +1,10 @@
 <template>
-  <div class="page define-page">
+  <div class="page define-page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'">
     <div class="page-title" id="page-title">
       <h4>作文批改用户权益</h4>
     </div>
     <div class="content-box">
-      <el-form :inline="true" id="form" :model="formData" size="large" label-width="90px" @submit.prevent>
+      <el-form :inline="true" id="forms" :model="formData" size="large" label-width="90px" @submit.prevent>
         <el-form-item label="产品类型：" label-width="130px">
           <el-select
             style="width: 200px;"
@@ -100,7 +100,7 @@ import { ref, onMounted, reactive } from 'vue'
 import { useScreenHeight } from '@/hooks/useScreenHeight.js';
 import AiAgentMemebers from '@/service/AiAgentMemebers.js';
 import { useVocabularyStore } from '@/store/vocabulary';
-const { screenHeight } = useScreenHeight();
+const { screenHeight, isMobileDevice } = useScreenHeight();
 const vocabularyStore = useVocabularyStore();
 import { ElMessage, ElMessageBox } from 'element-plus';
 
@@ -148,24 +148,24 @@ let productType = ref([ // 产品类型
 
 onMounted(() => {
    // 设置页面展示高度
-  window.addEventListener('resize', updateScreenHeight)
-  updateScreenHeight()
+  // window.addEventListener('resize', updateScreenHeight)
+  // updateScreenHeight()
   // 查询列表
   getList()
 })
 
 // 动态设置表格高度
-const updateScreenHeight = () => {
-  var element = document.getElementById('form');
-  if (element) {
-    var rect = element.getBoundingClientRect();
-    var formHeight = rect.height // form表单的高
-  }
+// const updateScreenHeight = () => {
+//   var element = document.getElementById('form');
+//   if (element) {
+//     var rect = element.getBoundingClientRect();
+//     var formHeight = rect.height // form表单的高
+//   }
     
-   var pageHeight = 80 // 分页高度
-   var menuHeight = 64 // 导航栏高度
-   screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
-} 
+//    var pageHeight = 80 // 分页高度
+//    var menuHeight = 64 // 导航栏高度
+//    screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
+// } 
 
 // 序号
 const showIndex = (index) => {

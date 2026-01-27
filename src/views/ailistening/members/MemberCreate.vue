@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" :class="isMobileDevice ? 'mobile-page' : 'computer-page'">
     <div class="page-title" id="page-title">
       <h4>学生体验开通</h4>
     </div>
@@ -244,7 +244,7 @@
   import { ElMessage, ElMessageBox, ElLoading} from 'element-plus'
   let vocabularyStore = useVocabularyStore();
   import { useScreenHeight } from '@/hooks/useScreenHeight.js';
-  const { screenHeight } = useScreenHeight();
+  const { screenHeight, isMobileDevice } = useScreenHeight();
   let memberForm = reactive({
     // province: '', // 省份
     // city: '', // 城市
