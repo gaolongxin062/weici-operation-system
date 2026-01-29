@@ -172,17 +172,16 @@
       </div>
     </template>
   </el-dialog>
-  <el-dialog v-model="studentVisible" title="筛选学生" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
+  <el-dialog v-model="studentVisible" title="筛选学生" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
     <div>{{ currentClass.name }}:</div>
      <el-table
         center
-        max-height="250"
         ref="studentTableRef"
         :data="studentList"
         class="table-info"
         header-cell-class-name="header_row_class"
         tooltip-effect="dark"
-        style="width: 100%"
+        style="width: 100%;height: 500px;"
         @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
@@ -190,14 +189,18 @@
         </el-table-column>
         <el-table-column
           label="学生姓名"
-          prop="student_name">
+          sortable
+          prop="student_name"
+          :sort-method="sortStudentName">
         </el-table-column>
         <el-table-column
           label="电话"
+          sortable
           prop="phone">
         </el-table-column>
         <el-table-column
           label="学号"
+          sortable
           prop="student_number">
         </el-table-column>
       </el-table>
@@ -283,6 +286,9 @@ let countyList = ref([]) // 新增弹窗区县列表
 let teacherList = ref([]) // 新增弹窗教师列表
 let classList = ref([]) // 新增弹窗教师下班级列表
 let studentList = ref([]) // 当前学生列表
+let sortOrder = ref('asc') // 排序顺序：asc-正序，desc-倒序
+
+
 let currentClass = reactive(null)
 let tableRef = ref(null)
 let list = ref([]) // 表格数据
@@ -370,6 +376,19 @@ onMounted(() => {
 //    var menuHeight = 64 // 导航栏高度
 //    screenHeight.value = window.innerHeight - formHeight - pageHeight - menuHeight - 100
 // }
+
+// 学生姓名排序方法
+const sortStudentName = (a, b) => {
+  const nameA = a.student_name?.charAt(0)?.toUpperCase() || ''
+  const nameB = b.student_name?.charAt(0)?.toUpperCase() || ''
+  
+  if (sortOrder.value === 'asc') {
+    return nameA.localeCompare(nameB)
+  } else {
+    return nameB.localeCompare(nameA)
+  }
+}
+
 
 // 序号
 const showIndex = (index) => {
