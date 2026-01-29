@@ -196,6 +196,10 @@
           label="电话"
           prop="phone">
         </el-table-column>
+        <el-table-column
+          label="学号"
+          prop="student_number">
+        </el-table-column>
       </el-table>
       <template #footer>
         <div class="dialog-footer">
