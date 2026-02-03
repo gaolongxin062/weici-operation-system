@@ -44,6 +44,20 @@ function saveComposition(params) {
     })
   });
 }
+// 所选择的账号有没有过开通体验的记录
+function checkComposition(params) {
+  return new Promise((resolve, reject) => {
+    service.get(aiAgentApi.checkComposition, {
+      params
+    }).then(res => {
+      if (res.status === 200) {
+        resolve(res.data);
+      } else reject(res);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
 function batchComposition(params) {
   return new Promise((resolve, reject) => {
     service.post(
@@ -228,6 +242,7 @@ function delAiSchool(params) {
 export default {
   getCompositionList,
   saveComposition,
+  checkComposition,
   getUse,
   removeComposition,
   batchComposition,

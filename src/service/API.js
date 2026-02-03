@@ -131,6 +131,7 @@ export let aiAgentApi = {
   getCompositionList: '/composition/list', // 教师体验开通列表
   getUse: '/composition/getUse', // 获取使用次数
   saveComposition: '/composition/save', // 新增编辑ai agent权限
+  checkComposition: '/composition/check', // 所选择的账号有没有过开通体验的记录
   removeComposition: '/composition/del', // 教师体验开通删除
   getCompositionDetail: '/composition/detail', // 获取用户权限详情
   batchComposition: '/composition/batch', // 批量续期

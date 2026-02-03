@@ -177,16 +177,26 @@
     </el-pagination>
     </div>
   <el-dialog v-model="dialogVisible" title="提示" width="800" :show-close="false" :close-on-click-modal="false" append-to-body>
-    <div class="no-success-list">
-      <div style="margin-bottom: 20px;">结果信息：{{ noSuccessInfo.description }}</div>
+    <div class="no-success-list" v-if='checkList.length'>
+      <div style="margin-bottom: 20px;">所选择的账号已有开通体验的记录, 是否继续开通</div>
+      <div style="margin-bottom: 15px" v-for="(item, index) in checkList" :key="index">
+        账号：{{item.user_code}} &nbsp;&nbsp;&nbsp; 体验时间：{{ item.trial_end_time }}
+      </div>
+    </div>
+    <div class="no-success-list" v-else>
+      <div style="margin-bottom: 20px;">结果信息：{{ noSuccessInfo?.description }}</div>
       <div>未开通账号:</div>
-      <div style="margin-bottom: 5px;margin-left: 85px;" v-for="(item, index) in noSuccessInfo.filteredUserCodes" :key="index">
+      <div style="margin-bottom: 5px;margin-left: 85px;" v-for="(item, index) in noSuccessInfo?.filteredUserCodes" :key="index">
         {{ item }}
       </div>
     </div>
 
     <template #footer>
-      <div class="dialog-footer">
+      <div class="dialog-footer" v-if="checkList.length">
+        <el-button type="primary" @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="saveCheckComposition">确定</el-button>
+      </div>
+      <div class="dialog-footer" v-else>
         <el-button type="primary" @click="dialogVisible = false">确定</el-button>
       </div>
     </template>
@@ -266,6 +276,7 @@ let dataIdKey = ref('id')
 let multipleTable = ref(null)
 let dialogCertification = ref(false) // 认证弹窗
 let userCode = ref('') // 用户输入得账号
+let checkList = ref([]) // 所选择的账号有没有过开通体验的记录data数据
 onMounted(() => {
   getUserPower() // 获取用户权限列表
   getProvinceList() // 获取省份
@@ -455,6 +466,15 @@ function closeAddDialog() {
   addDialog.value = false
 } // 取消新增
 async function addMember(content) {
+  setConfig.value = content // 保存设置
+  await getCheckComposition() // 所选择的账号有没有过开通体验的记录
+  if (checkList.value.length) {
+    dialogVisible.value = true
+    return
+  }
+  addContinueMember(content)
+} // 新增会员体验
+async function addContinueMember (content) {
   console.log(content)
   setConfig.value = content // 保存设置
   userCode.value = content.user_codes // 用户输入得账号
@@ -466,13 +486,14 @@ async function addMember(content) {
   }
   pageIndex.value = 1 // 重置页码
   initMemberList() // 会员体验列表
-} // 新增会员体验
-function saveMember() {
+}
+async function saveMember() {
   let params = dealSaveOrUpdateParams() // 获取接口参数
   console.log(params)
   return AiAgentService.saveComposition(params)
     .then((res) => {
       // 所有账号都在有效期内，无法开通
+      // console.log('sssssssss', res)
       if (res.result_code === 1004) {
         addDialog.value = false // 关闭弹框
         isSaveError.value = true
@@ -506,6 +527,27 @@ function saveMember() {
       console.log(error)
     })
 } // 新增会员体验信息
+function saveCheckComposition () {
+  checkList.value = []
+  if (addDialog.value) {
+    addContinueMember(setConfig.value)
+  } else {
+    editContinusMemberInfo(setConfig.value)
+  }
+}
+async function getCheckComposition () { // 所选择的账号有没有过开通体验的记录
+  let params = {
+    user_codes: setConfig.value.user_codes, // 老师账号
+    user_name: vocabularyStore.user_name,
+    session: vocabularyStore.session,
+  }
+  try {
+    const res = await AiAgentService.checkComposition(params);
+    checkList.value = res.data
+  } catch (error) {
+    console.log(error);
+  }
+}
 function cancelTeaching () { // 取消教师认证
   dialogCertification.value = false // 教师认证弹窗
 }
@@ -549,6 +591,15 @@ function closeEditDialog() {
   editDialog.value = false
 } // 取消修改
 async function editMemberInfo(content) {
+  setConfig.value = content // 保存设置
+  await getCheckComposition() // 所选择的账号有没有过开通体验的记录
+  if (checkList.value.length) {
+    dialogVisible.value = true
+    return
+  }
+  editContinusMemberInfo(content)
+} // 修改会员体验
+async function editContinusMemberInfo (content) {
   console.log(content)
   setConfig.value = content // 保存设置
   editDialog.value = false // 关闭弹框
@@ -563,7 +614,7 @@ async function editMemberInfo(content) {
     pageIndex.value -= 1
   }
   initMemberList() // 会员体验列表
-} // 修改会员体验
+}
 function updateMember() {
   let params = dealSaveOrUpdateParams(true) // 获取接口参数
   console.log(params)
