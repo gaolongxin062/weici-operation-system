@@ -82,15 +82,15 @@
     </el-pagination>
     </div>
   </div>
-  <el-dialog top="5vh" v-model="dialogVisible" title="新增" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" @close="close">
+  <el-dialog top="10vh" v-model="dialogVisible" title="新增" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true" @close="close">
     <div style="padding-left: 30px;max-height: 650px;overflow-y: auto;padding-right: 15px;">
       <el-form ref="formRef" id="form" :model="dislogFormData" size="large" label-width="150px" :rules="rules">
-        <el-form-item label="经销商:" label-width="130px" prop="distributor">
+        <el-form-item label="经销商:" label-width="130px" prop="distributor" style="font-weight: bold;">
           <el-select style="width: 200px;" v-model="dislogFormData.distributor" clearable filterable placeholder="请输入经销商姓名" :filter-method="filterMethod" @change="changeDialogDistributor">
             <el-option v-for="item in distributorsList" :key="item.distributor_id" :label="item.distributor_name" :value="item.distributor_id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择学校：" label-width="130px" prop="school">
+        <el-form-item label="选择学校：" label-width="130px" prop="school" style="font-weight: bold;">
           <el-select  style="width: 180px;margin-right: 10px;" clearable  v-model="dislogFormData.province" placeholder="请选择省份" @change="changeDialogProvince">
             <el-option v-for="item in provinceList" :key="item.province_id" :label="item.province" :value="item.province_id"></el-option>
           </el-select>
@@ -104,7 +104,7 @@
             <el-option v-for="item in schoolList" :key="item.school_id" :label="item.school_name" :value="item.school_id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择老师：" label-width="130px" prop="teacher">
+        <el-form-item label="选择老师：" label-width="130px" prop="teacher" style="font-weight: bold;">
           <el-select style="width: 300px;" filterable v-model="dislogFormData.teacher" multiple placeholder="请选择老师" v-if="teacherList.length > 0" @change="changeTeacher">
             <el-option
               v-for="item in teacherList"
@@ -115,7 +115,7 @@
           </el-select>
           <span v-else>暂无老师</span>
         </el-form-item>
-        <el-form-item label="选择班级：" label-width="130px">
+        <el-form-item label="选择班级：" label-width="130px" style="font-weight: bold;">
           <div v-if="dislogFormData.teacher.length > 0">
             <div style="color: red;">共选择{{totalStudent}}个学生</div>
             <div v-for="(item, index) in classList" :key="index">
@@ -134,14 +134,11 @@
           </div>
           <span v-else>暂无班级</span>
         </el-form-item>
-        <el-form-item label="次数：" label-width="130px" prop="num">
+        <el-form-item label="次数：" label-width="130px" prop="num" style="font-weight: bold;">
           <el-input-number v-model="dislogFormData.num" :min="0" :step="1"></el-input-number>
           <span style="margin-left: 10px;">次/人</span>
         </el-form-item>
-        <el-form-item :label="item.type_name + '：'" label-width="130px" v-for="(item, index) in info" :key="index">
-          <span>{{ item.config_value }}</span>
-        </el-form-item>
-        <el-form-item  label="开始时间：" label-width="130px" prop="startTime" >
+        <el-form-item  label="开始时间：" label-width="130px" prop="startTime" style="font-weight: bold;">
           <el-date-picker
             type="date"
             v-model="dislogFormData.startTime"
@@ -150,16 +147,17 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="结束时间：" label-width="130px" prop="endTime" >
+        <el-form-item label="结束时间：" label-width="130px" prop="endTime" style="font-weight: bold;">
           <el-date-picker
             type="date"
             v-model="dislogFormData.endTime"
             format="YYYY-MM-DD"
             value-format="YYYY-MM-DD"
-            placeholder="选择日期">
+            placeholder="选择日期"
+            @change="calculateWeeks">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="收款金额：" label-width="130px">
+        <el-form-item label="收款金额：" label-width="130px" style="font-weight: bold;">
           <el-input-number v-model="dislogFormData.amount" :precision='2' :min="0"></el-input-number>
           <span style="margin-left: 10px;">次/人</span>
         </el-form-item>
@@ -210,7 +208,7 @@
         </div>
       </template>
   </el-dialog>
-  <el-dialog v-model="checkVisible" title="查看" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="5vh">
+  <el-dialog v-model="checkVisible" title="查看" width="600" :close-on-click-modal="false" append-to-body :destroy-on-close="true" top="15vh">
     <div style="padding-left: 40px;max-height: 650px;overflow-y: auto;padding-right: 15px;">
       <div class="marginBottom">
         <span style="font-weight: bold;">经销商：</span>
@@ -233,16 +231,7 @@
           <div style="margin-top: 10px;margin-bottom: 10px;" v-for="(otem, ondex) in item.student_list" :key="ondex">{{otem.class_name}}：{{ otem.student_info}}</div>
         </div>
       </div>
-      <div class="marginBottom">
-        <span style="font-weight: bold;">次数：</span>
-        {{ studentDetails.count }}次/人
-      </div>
-      <div style="display: flex;justify-content: space-between;flex-wrap:wrap">
-        <div class="marginBottom" v-for="(item, index) in info" :key="index">
-          <span style="font-weight: bold;">{{ item.type_name + '：' }}</span>
-          <span>{{ item.config_value }}</span>
-        </div>
-      </div>
+     
       <div style="display: flex;justify-content: space-between;">
         <div class="marginBottom">
           <span style="font-weight: bold;">开始时间：</span>
@@ -257,6 +246,10 @@
           {{ studentDetails.pay_money / 100 }}元
         </div>
       </div>
+      <div class="marginBottom">
+        <span style="font-weight: bold;">次数：</span>
+        {{ studentDetails.count }}次/人
+      </div>
     </div>
   </el-dialog>
 </template>
@@ -265,7 +258,6 @@ import { ref, reactive, onMounted, nextTick } from 'vue'
 import { useScreenHeight } from '@/hooks/useScreenHeight.js';
 import AiAgentMemebers from '@/service/AiAgentMemebers.js';
 import { useVocabularyStore } from '@/store/vocabulary';
-import AiAgentService from '@/service/AiAgentService';
 const { screenHeight, isMobileDevice } = useScreenHeight();
 const vocabularyStore = useVocabularyStore();
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -332,8 +324,6 @@ let rules = ref({
       validator: (rule, value, callback) => {
         if (value && dislogFormData.startTime && value <= dislogFormData.startTime) {
           callback(new Error('结束时间必须大于开始时间'));
-        } else if (value && maxEndTime.value && value <= maxEndTime.value) {
-          callback(new Error('结束时间必须大于最大结束时间'));
         } else {
           callback();
         }
@@ -346,10 +336,8 @@ let studentVisible = ref(false) // 筛选学生弹窗
 let studentTableRef = ref(null)
 let checkVisible = ref(false) // 查看弹窗显隐
 let totalStudent = ref(0) // 新增班级总人数
-let maxEndTime = ref('') // 限制日期
 let studentDetails = reactive(null)// 学生详情
 let saveLoading = ref(false) // 保存按钮加载状态
-let info = ref([])
 
 
 onMounted(() => {
@@ -360,8 +348,6 @@ onMounted(() => {
   initMemberList()
   // 列表数据
   getList()
-  // 获取使用次数
-  getUseInfo()
 })
 
 // 动态设置表格高度
@@ -386,6 +372,24 @@ const sortStudentName = (a, b) => {
     return nameA.localeCompare(nameB)
   } else {
     return nameB.localeCompare(nameA)
+  }
+}
+
+// 计算周数方法
+const calculateWeeks = () => {
+  if (dislogFormData.startTime && dislogFormData.endTime) {
+    const startDate = new Date(dislogFormData.startTime)
+    const endDate = new Date(dislogFormData.endTime)
+    
+    // 计算天数差
+    const timeDiff = endDate.getTime() - startDate.getTime()
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24))
+    
+    // 计算周数（天数除以7，有余数向上取整）
+    const weeks = Math.ceil(daysDiff / 7)
+    
+    // 赋值给次数字段
+    dislogFormData.num = weeks
   }
 }
 
@@ -422,23 +426,6 @@ const newlyAdded = () => {
   dislogFormData.startTime = new Date().toISOString().split('T')[0]
   dialogVisible.value = true
 }
-
-function getUseInfo () {
-    let params = {
-      user_name: vocabularyStore.user_name,
-      session: vocabularyStore.session,
-      type: 2,
-      user_source: 0
-    }
-    return AiAgentService.getUse(params)
-      .then((res) => {
-        if (res.result_code === 200) {
-          info.value = res.data.filter(item => item.type_name !== 'AI班级作文批改')
-        }
-    }).catch((error) => {
-      console.log(error)
-    })
-  } // 获取默认次数数据
 
 // 获取经销商数据
 const initMemberList = () => {
@@ -842,8 +829,6 @@ const changeDialogCounty = () => {
 // 新增学校change事件
 const changeDialogSchool = () => {
   if (dislogFormData.school) {
-    const matchedSchool = schoolList.value.find(item => item?.school_id === dislogFormData.school);
-    maxEndTime.value = matchedSchool ? matchedSchool.max_end_time : '';
     teacherList.value = [] // 教师
     dislogFormData.teacher = [] // 已选教师数据
     // 获取教师
@@ -854,7 +839,6 @@ const changeDialogSchool = () => {
     teacherList.value = [] 
     // 已选教师数据
     dislogFormData.teacher = [] 
-    maxEndTime.value = '';
     dislogFormData.startTime = '';
     dislogFormData.endTime = '';
   }
