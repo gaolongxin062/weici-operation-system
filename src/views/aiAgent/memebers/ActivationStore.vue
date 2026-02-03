@@ -171,7 +171,7 @@
     </template>
   </el-dialog>
   <el-dialog v-model="studentVisible" title="筛选学生" width="800" :close-on-click-modal="false" append-to-body :destroy-on-close="true">
-    <div>{{ currentClass.name }}:</div>
+    <div>{{ currentClass.name + '(共' + studentList.length + '人)' + '(已选' + selectedStudentsCount + '人)'}}:</div>
      <el-table
         center
         ref="studentTableRef"
@@ -279,6 +279,7 @@ let teacherList = ref([]) // 新增弹窗教师列表
 let classList = ref([]) // 新增弹窗教师下班级列表
 let studentList = ref([]) // 当前学生列表
 let sortOrder = ref('asc') // 排序顺序：asc-正序，desc-倒序
+let selectedStudentsCount = ref(0) // 已选学生数量
 
 
 let currentClass = reactive(null)
@@ -1092,6 +1093,9 @@ const checkStudent = (iItem, name) => {
 
 // 筛选学生表格筛选事件
 const handleSelectionChange = (options) => {
+  // 更新已选学生数量
+  selectedStudentsCount.value = options.length;
+  
   classList.value.forEach((teacherItem) => {
     // 如果当前教师ID匹配
     if (teacherItem.id === currentClass.teacher_id) {
