@@ -134,10 +134,6 @@
           </div>
           <span v-else>暂无班级</span>
         </el-form-item>
-        <el-form-item label="次数：" label-width="130px" prop="num" style="font-weight: bold;">
-          <el-input-number v-model="dislogFormData.num" :min="0" :step="1"></el-input-number>
-          <span style="margin-left: 10px;">次/人</span>
-        </el-form-item>
         <el-form-item  label="开始时间：" label-width="130px" prop="startTime" style="font-weight: bold;">
           <el-date-picker
             type="date"
@@ -156,6 +152,10 @@
             placeholder="选择日期"
             @change="calculateWeeks">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="次数：" label-width="130px" prop="num" style="font-weight: bold;">
+          <el-input-number v-model="dislogFormData.num" :min="0" :step="1"></el-input-number>
+          <span style="margin-left: 10px;">次/人</span>
         </el-form-item>
         <el-form-item label="收款金额：" label-width="130px" style="font-weight: bold;">
           <el-input-number v-model="dislogFormData.amount" :precision='2' :min="0"></el-input-number>
