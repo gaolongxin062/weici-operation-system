@@ -529,10 +529,9 @@ async function saveMember() {
 } // 新增会员体验信息
 function saveCheckComposition () {
   checkList.value = []
+  dialogVisible.value = false
   if (addDialog.value) {
     addContinueMember(setConfig.value)
-  } else {
-    editContinusMemberInfo(setConfig.value)
   }
 }
 async function getCheckComposition () { // 所选择的账号有没有过开通体验的记录
@@ -591,12 +590,12 @@ function closeEditDialog() {
   editDialog.value = false
 } // 取消修改
 async function editMemberInfo(content) {
-  setConfig.value = content // 保存设置
-  await getCheckComposition() // 所选择的账号有没有过开通体验的记录
-  if (checkList.value.length) {
-    dialogVisible.value = true
-    return
-  }
+  // setConfig.value = content // 保存设置
+  // await getCheckComposition() // 所选择的账号有没有过开通体验的记录
+  // if (checkList.value.length) {
+  //   dialogVisible.value = true
+  //   return
+  // }
   editContinusMemberInfo(content)
 } // 修改会员体验
 async function editContinusMemberInfo (content) {
