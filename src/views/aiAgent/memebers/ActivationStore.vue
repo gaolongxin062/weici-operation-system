@@ -386,8 +386,8 @@ const calculateWeeks = () => {
     const timeDiff = endDate.getTime() - startDate.getTime()
     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24))
     
-    // 计算周数（天数除以7，有余数向上取整）
-    const weeks = Math.ceil(daysDiff / 7)
+    // 计算周数（天数除以7向上取整后乘以2）
+    const weeks = Math.ceil(daysDiff / 7) * 2
     
     // 赋值给次数字段
     dislogFormData.num = weeks
